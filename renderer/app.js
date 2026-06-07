@@ -1,0 +1,1036 @@
+const { io } = require('socket.io-client');
+const { ipcRenderer } = require('electron');
+
+let CLOUD_SERVER_URL = 'https://hamsters-theater-cloud.onrender.com';
+let isCloudMode = true;
+
+function getServerUrl() {
+  if (isCloudMode) return CLOUD_SERVER_URL;
+  const val = el('serverUrlInput').value.trim();
+  return 'http://' + val.replace(/^https?:\/\//, '');
+}
+
+const RTC_CONFIG = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun2.l.google.com:19302' },
+    { urls: 'stun:stun.xten.com:3478' },
+    { urls: 'stun:stun.voiparound.com' }
+  ]
+};
+
+let socket = null;
+let localStream = null;
+let mySocketId = null;
+let roomId = null;
+let isHost = false;
+let myAddress = 'localhost:3000';
+let serverPort = 3000;
+let localAddress = 'localhost:3000';
+let sharingScreen = false;
+let screenStream = null;
+let sharerId = null;
+let pttMode = false;
+let pttActive = false;
+let prevMicOn = true;
+let camOn = true;
+let micOn = true;
+let micMode = 'normal'; // 'normal' | 'ptt'
+let pendingPeers = [];
+let pendingOffers = [];
+
+let peers = {};
+
+ipcRenderer.invoke('get-server-port').then(p => {
+  serverPort = p;
+  myAddress = 'localhost:' + p;
+  log('Server port: ' + p);
+  // Auto-update server URL input with actual port (only for local addresses)
+  const input = el('serverUrlInput');
+  if (input && input.value.includes('localhost')) {
+    const parts = input.value.split(':');
+    input.value = parts[0] + ':' + p;
+  }
+  // Get local LAN IP for local mode
+  ipcRenderer.invoke('get-local-ip').then(lan => {
+    localAddress = (lan || 'localhost') + ':' + p;
+    if (!isCloudMode) {
+      const elIP = document.getElementById('publicIP');
+      if (elIP) elIP.textContent = localAddress;
+    }
+  });
+  // Get public IP (for copyAddress in cloud mode)
+  ipcRenderer.invoke('get-public-ip').then(ip => {
+    myAddress = ip + ':' + p;
+  });
+});
+ipcRenderer.invoke('get-upnp-status').then(s => {
+  const el = document.getElementById('upnpStatus');
+  if (el) el.textContent = '\uD83D\uDD0C ' + s;
+});
+ipcRenderer.invoke('get-cloud-url').then(url => {
+  CLOUD_SERVER_URL = url;
+});
+
+const el = (id) => document.getElementById(id);
+const showError = (msg) => { const e = el('errorMsg'); if (e) e.textContent = msg; };
+const log = (msg) => console.log('[NT]', msg);
+const appDebug = (msg) => {}; // placeholder
+
+function copyAddress() {
+  const text = isCloudMode ? CLOUD_SERVER_URL : t('copy.server_prefix') + localAddress;
+  ipcRenderer.invoke('copy-clipboard', text).then(() => showCopyToast()).catch(() => {});
+}
+
+function showToast(msg) {
+  let toast = document.getElementById('copyToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'copyToast';
+    toast.className = 'copy-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}
+function showCopyToast() { showToast(t('toast.copied')); }
+
+// --- i18n ---
+function applyLangToUI() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+  });
+  document.querySelectorAll('[data-tooltip-i18n]').forEach(el => {
+    el.setAttribute('data-tooltip', t(el.getAttribute('data-tooltip-i18n')));
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    el.setAttribute('title', t(el.getAttribute('data-i18n-title')));
+  });
+  updateControlTooltips();
+}
+
+function updateControlTooltips() {
+  el('toggleCameraBtn').setAttribute('data-tooltip', t('tooltip.camera'));
+  el('toggleMicBtn').setAttribute('data-tooltip', micMode === 'ptt' ? t('tooltip.mic_ptt') : t('tooltip.mic'));
+  if (sharingScreen || sharerId) {
+    el('shareScreenBtn').setAttribute('data-tooltip', t('tooltip.share_disabled'));
+  } else {
+    el('shareScreenBtn').setAttribute('data-tooltip', t('tooltip.share'));
+  }
+  el('leaveBtn').setAttribute('data-tooltip', t('tooltip.leave'));
+  el('pttBtn').setAttribute('data-tooltip', t('tooltip.ptt'));
+}
+
+document.addEventListener('langchange', (e) => {
+  applyLangToUI();
+  ipcRenderer.send('set-language', e.detail);
+});
+
+function applyModeUI() {
+  if (isCloudMode) {
+    el('modeCloud').classList.add('active');
+    el('modeLan').classList.remove('active');
+    el('serverUrlInput').value = CLOUD_SERVER_URL;
+    el('serverUrlInput').placeholder = t('mode.cloud_placeholder');
+    el('upnpStatus').style.display = 'none';
+    el('publicIP').textContent = CLOUD_SERVER_URL;
+  } else {
+    el('modeLan').classList.add('active');
+    el('modeCloud').classList.remove('active');
+    el('serverUrlInput').placeholder = t('mode.local_placeholder');
+    el('serverUrlInput').value = 'localhost:' + serverPort;
+    el('upnpStatus').style.display = '';
+    el('publicIP').textContent = localAddress;
+  }
+}
+el('modeLan').onclick = () => {
+  isCloudMode = false;
+  applyModeUI();
+};
+el('modeCloud').onclick = () => {
+  isCloudMode = true;
+  applyModeUI();
+};
+
+// --- Shared Socket Setup ---
+function setupSocketListeners() {
+  function onPeerJoined(peerId) {
+    log('peer-joined: ' + peerId);
+    if (localStream) createOfferToPeer(peerId);
+    else pendingPeers.push(peerId);
+  }
+  socket.on('user-joined', onPeerJoined);
+  socket.on('peer-joined', onPeerJoined);
+  socket.on('offer', (data) => {
+    if (data.type === 'screen') { handleScreenOffer(data); return; }
+    if (localStream) handleOffer(data);
+    else pendingOffers.push(data);
+  });
+  socket.on('answer', handleAnswer);
+  socket.on('ice-candidate', handleIceCandidate);
+  socket.on('peer-disconnected', (peerId) => removePeer(peerId));
+  socket.on('error-msg', showError);
+  socket.on('disconnect', () => { showError(t('error.server_lost')); });
+  socket.on('signal', handleSignal);
+  socket.on('server-log', (msg) => log(msg));
+}
+
+// --- Landing ---
+el('createRoomBtn').onclick = () => {
+  showError('');
+  isHost = true;
+  socket = io(getServerUrl());
+  setupSocketListeners();
+  socket.on('connect', () => { log('Connected'); socket.emit('create-room'); });
+  socket.on('room-created', async (id) => {
+    roomId = id;
+    mySocketId = socket.id;
+    el('roomCodeDisplay').textContent = t('room.code_label') + ' ' + id;
+    el('roomCodeDisplay').className = 'copyable';
+    const serverLabel = isCloudMode ? CLOUD_SERVER_URL : ('\u0421\u0435\u0440\u0432\u0435\u0440: ' + localAddress);
+    const connectInfo = serverLabel + '\n' + t('room.code_label') + ' ' + id;
+    ipcRenderer.invoke('copy-clipboard', connectInfo).then(() => showCopyToast()).catch(() => {});
+    showRoom();
+    await startCamera();
+    if (pendingPeers.length) {
+      pendingPeers.forEach(pid => createOfferToPeer(pid));
+      pendingPeers = [];
+    }
+    pendingOffers.forEach(o => handleOffer(o));
+    pendingOffers = [];
+  });
+};
+
+el('joinRoomBtn').onclick = () => {
+  showError('');
+  const code = el('roomCodeInput').value.trim();
+  if (!code) { showError(t('error.enter_code')); return; }
+  isHost = false;
+  roomId = code;
+  socket = io(getServerUrl());
+  setupSocketListeners();
+  socket.on('connect', () => { log('Connected'); socket.emit('join-room', code); });
+  socket.on('joined', async () => {
+    mySocketId = socket.id;
+    showRoom();
+    await startCamera();
+    pendingOffers.forEach(o => handleOffer(o));
+    pendingOffers = [];
+    if (pendingPeers.length) {
+      pendingPeers.forEach(pid => createOfferToPeer(pid));
+      pendingPeers = [];
+    }
+  });
+  socket.on('room-users', (users) => {
+    log('room-users: ' + JSON.stringify(users));
+  });
+};
+
+function showRoom() {
+  el('landing').style.display = 'none';
+  el('room').style.display = 'flex';
+}
+
+// --- Camera ---
+async function startCamera() {
+  try {
+    localStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+    });
+    // Ensure echo cancellation is applied
+    localStream.getAudioTracks().forEach(t => {
+      try { t.applyConstraints({ echoCancellation: true, noiseSuppression: true, autoGainControl: true }); } catch(e) {}
+      log('Audio track settings:', JSON.stringify(t.getSettings ? t.getSettings() : {}));
+    });
+    el('localVideo').srcObject = localStream;
+    log('Camera ready');
+    setupPTT();
+  } catch (err) {
+    log('Camera error:', err.message);
+    const label = el('localFace').querySelector('.face-label');
+    if (label) label.textContent = t('error.camera_unavailable');
+  }
+}
+
+// --- Peer Entry ---
+function createPeerEntry(peerId) {
+  if (!peers[peerId]) {
+    peers[peerId] = { pc: null, screenPC: null, remoteStream: null, cameraCandidates: [], screenCandidates: [] };
+  }
+  return peers[peerId];
+}
+
+// --- Video Elements ---
+function addPeerVideo(peerId) {
+  const container = el('remote-faces');
+  if (!container || document.getElementById('face-' + peerId)) return;
+  const wrapper = document.createElement('div');
+  wrapper.className = 'face-wrapper';
+  wrapper.id = 'face-' + peerId;
+  const video = document.createElement('video');
+  video.id = 'video-' + peerId;
+  video.dataset.peerId = peerId;
+  video.autoplay = true;
+  video.playsInline = true;
+  const label = document.createElement('div');
+  label.className = 'face-label';
+  label.id = 'label-' + peerId;
+  label.textContent = '\u0425\u043e\u043c\u044f\u0447\u043e\u043a ' + Object.keys(peers).length;
+  wrapper.appendChild(video);
+  wrapper.appendChild(label);
+  // Volume slider
+  const slider = document.createElement('input');
+  slider.type = 'range';
+  slider.className = 'volume-slider';
+  slider.min = 0;
+  slider.max = 100;
+  slider.value = localStorage.getItem('vol-' + peerId) || 100;
+  slider.oninput = () => {
+    const vol = slider.value / 100;
+    const v = document.getElementById('video-' + peerId);
+    if (v) v.volume = vol;
+    localStorage.setItem('vol-' + peerId, slider.value);
+  };
+  wrapper.appendChild(slider);
+  container.appendChild(wrapper);
+  // Apply saved volume after stream attaches
+  setTimeout(() => {
+    const v = document.getElementById('video-' + peerId);
+    if (v) v.volume = (parseInt(localStorage.getItem('vol-' + peerId) || '100')) / 100;
+  }, 1000);
+}
+
+function removePeerVideo(peerId) {
+  const el = document.getElementById('face-' + peerId);
+  if (el) el.remove();
+}
+
+// --- Peer Connection ---
+function createPC(peerId) {
+  const conn = new RTCPeerConnection(RTC_CONFIG);
+  conn.onicecandidate = (e) => {
+    if (e.candidate && peerId)
+      socket.emit('ice-candidate', { to: peerId, candidate: e.candidate, type: 'camera' });
+  };
+  conn.ontrack = (e) => {
+    const peer = peers[peerId];
+    if (!peer) return;
+    if (!peer.remoteStream) {
+      peer.remoteStream = new MediaStream();
+      const videoEl = document.getElementById('video-' + peerId);
+      if (videoEl) videoEl.srcObject = peer.remoteStream;
+    }
+    peer.remoteStream.addTrack(e.track);
+    log('Remote track from ' + peerId + ': ' + e.track.kind);
+  };
+  conn.oniceconnectionstatechange = () => {
+    if (['disconnected', 'failed'].includes(conn.iceConnectionState)) {
+      const peer = peers[peerId];
+      if (peer && !peer.remoteStream && peerId) {
+        log('Initial connection failed to ' + peerId + ' – retrying');
+        conn.close();
+        if (peers[peerId]) peers[peerId].pc = null;
+        socket.emit('signal', { to: peerId, signalType: 'request-offer' });
+      }
+    }
+  };
+  return conn;
+}
+
+function createScreenPC(peerId) {
+  const conn = new RTCPeerConnection(RTC_CONFIG);
+  conn.onicecandidate = (e) => {
+    if (e.candidate && peerId)
+      socket.emit('ice-candidate', { to: peerId, candidate: e.candidate, type: 'screen' });
+  };
+  conn.ontrack = (e) => {
+    el('screenshareVideo').style.display = 'block';
+    el('screenshare-placeholder').style.display = 'none';
+    el('screenshareVideo').srcObject = e.streams[0];
+    el('screenshareVideo').muted = false;
+    log('SCREEN TRACK from ' + peerId);
+  };
+  conn.onconnectionstatechange = () => {
+    log('screenPC[' + peerId + '] state=' + conn.connectionState);
+    if (conn.connectionState === 'disconnected' || conn.connectionState === 'failed') {
+      if (sharerId === peerId) {
+        sharerId = null;
+        el('shareScreenBtn').disabled = false;
+        updateControlTooltips();
+        el('screenshareVideo').srcObject = null;
+        el('screenshareVideo').style.display = 'none';
+        el('screenshare-placeholder').style.display = 'block';
+      }
+      if (peers[peerId]) peers[peerId].screenPC = null;
+    }
+  };
+  return conn;
+}
+
+// --- Signaling ---
+function createOfferToPeer(peerId) {
+  if (!localStream) return;
+  if (!peers[peerId]) { peers[peerId] = createPeerEntry(peerId); addPeerVideo(peerId); }
+  const peer = peers[peerId];
+  if (peer.pc) { peer.pc.close(); }
+  peer.pc = createPC(peerId);
+  localStream.getTracks().forEach(t => peer.pc.addTrack(t, localStream));
+  peer.pc.createOffer().then(offer => {
+    peer.pc.setLocalDescription(offer);
+    socket.emit('offer', { to: peerId, sdp: offer, type: 'camera' });
+    log('Offer sent to ' + peerId);
+  });
+  if (sharingScreen && screenStream) {
+    createScreenOffer(peerId, screenStream);
+  }
+}
+
+function handleOffer(data) {
+  if (data.type === 'screen') { handleScreenOffer(data); return; }
+  const fromId = data.from;
+  log('handleOffer from: ' + fromId);
+  if (!peers[fromId]) { peers[fromId] = createPeerEntry(fromId); addPeerVideo(fromId); }
+  const peer = peers[fromId];
+  if (peer.pc) { peer.pc.close(); }
+  peer.pc = createPC(fromId);
+  if (localStream) localStream.getTracks().forEach(t => peer.pc.addTrack(t, localStream));
+  peer.pc.setRemoteDescription(new RTCSessionDescription(data.sdp))
+    .then(() => {
+      peer.cameraCandidates.forEach(c => {
+        peer.pc.addIceCandidate(new RTCIceCandidate(c)).catch(e => log('flush cam cand err: ' + e.message));
+      });
+      peer.cameraCandidates = [];
+      return peer.pc.createAnswer();
+    })
+    .then(answer => {
+      peer.pc.setLocalDescription(answer);
+      socket.emit('answer', { to: fromId, sdp: answer, type: 'camera' });
+      log('Answer sent to ' + fromId);
+    });
+}
+
+function handleScreenOffer(data) {
+  const fromId = data.from;
+  if (sharingScreen) { log('Screen offer ignored – already sharing'); return; }
+  log('handleScreenOffer from: ' + fromId);
+  if (!peers[fromId]) { peers[fromId] = createPeerEntry(fromId); addPeerVideo(fromId); }
+  const peer = peers[fromId];
+  if (peer.screenPC) { peer.screenPC.close(); }
+  peer.screenPC = createScreenPC(fromId);
+  peer.screenPC.setRemoteDescription(new RTCSessionDescription(data.sdp))
+    .then(() => {
+      peer.screenCandidates.forEach(c => {
+        peer.screenPC.addIceCandidate(new RTCIceCandidate(c)).catch(e => log('flush screen cand err: ' + e.message));
+      });
+      peer.screenCandidates = [];
+      return peer.screenPC.createAnswer();
+    })
+    .then(answer => {
+      peer.screenPC.setLocalDescription(answer);
+      socket.emit('answer', { to: fromId, sdp: answer, type: 'screen' });
+      log('Screen answer sent to ' + fromId);
+    })
+    .catch(e => log('screenPC error: ' + e.message));
+  sharerId = fromId;
+  el('shareScreenBtn').disabled = true;
+  updateControlTooltips();
+}
+
+function handleAnswer(data) {
+  if (data.type === 'screen') { handleScreenAnswer(data); return; }
+  const fromId = data.from;
+  const peer = peers[fromId];
+  if (peer && peer.pc && peer.pc.signalingState !== 'stable') {
+    peer.pc.setRemoteDescription(new RTCSessionDescription(data.sdp))
+      .then(() => {
+        peer.cameraCandidates.forEach(c => {
+          peer.pc.addIceCandidate(new RTCIceCandidate(c)).catch(e => log('flush cam cand err: ' + e.message));
+        });
+        peer.cameraCandidates = [];
+      });
+  }
+}
+
+function handleScreenAnswer(data) {
+  const fromId = data.from;
+  const peer = peers[fromId];
+  if (peer && peer.screenPC && peer.screenPC.signalingState !== 'stable') {
+    peer.screenPC.setRemoteDescription(new RTCSessionDescription(data.sdp));
+    peer.screenCandidates.forEach(c => {
+      peer.screenPC.addIceCandidate(new RTCIceCandidate(c)).catch(e => log('flush screen cand err: ' + e.message));
+    });
+    peer.screenCandidates = [];
+    log('screenPC remote from answer ' + fromId);
+  }
+}
+
+function handleIceCandidate(data) {
+  if (!data.type || !data.candidate || !data.from) return;
+  const fromId = data.from;
+  if (!peers[fromId]) { peers[fromId] = createPeerEntry(fromId); addPeerVideo(fromId); }
+  const peer = peers[fromId];
+  if (data.type === 'screen') {
+    if (peer.screenPC && peer.screenPC.remoteDescription && peer.screenPC.remoteDescription.type) {
+      peer.screenPC.addIceCandidate(new RTCIceCandidate(data.candidate));
+    } else {
+      peer.screenCandidates.push(data.candidate);
+    }
+  } else {
+    if (peer.pc && peer.pc.remoteDescription && peer.pc.remoteDescription.type) {
+      peer.pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+    } else {
+      peer.cameraCandidates.push(data.candidate);
+    }
+  }
+}
+
+function handleSignal(data) {
+  log('handleSignal: ' + data.type + ' from=' + data.from);
+  if (data.type === 'screen-started') {
+    sharerId = data.from;
+    el('shareScreenBtn').disabled = true;
+    updateControlTooltips();
+  }
+  if (data.type === 'screen-stopped') {
+    sharerId = null;
+    el('shareScreenBtn').disabled = false;
+    updateControlTooltips();
+    el('screenshareVideo').srcObject = null;
+    el('screenshareVideo').style.display = 'none';
+    el('screenshare-placeholder').style.display = 'block';
+    if (peers[data.from]) {
+      if (peers[data.from].screenPC) { peers[data.from].screenPC.close(); peers[data.from].screenPC = null; }
+    }
+  }
+  if (data.type === 'request-offer') {
+    if (localStream) createOfferToPeer(data.from);
+  }
+}
+
+// --- Screen Share with Window Picker ---
+async function openSourcePicker() {
+  if (sharingScreen) { stopScreenShare(); return; }
+  if (Object.keys(peers).length === 0) { showError(t('error.no_peer')); return; }
+  let sources;
+  try {
+    sources = await ipcRenderer.invoke('get-screens');
+  } catch (e) {
+    log('get-screens failed: ' + e.message);
+    return;
+  }
+  sources = sources.filter(s => !s.name.toLowerCase().includes('hamsters theater'));
+  const list = el('sourceList');
+  list.innerHTML = '';
+  if (!sources.length) {
+    el('sourcePickerModal').style.display = 'flex';
+    return;
+  }
+  for (const src of sources) {
+    const item = document.createElement('div');
+    item.className = 'source-item' + (src.minimized ? ' minimized' : '');
+    const thumb = document.createElement('img');
+    if (src.thumbnail) {
+      thumb.src = src.thumbnail;
+    } else {
+      thumb.alt = t('sourcepicker.no_preview') || 'Нет превью';
+      thumb.className = 'no-thumb';
+    }
+    item.appendChild(thumb);
+    const label = document.createElement('span');
+    label.textContent = src.name;
+    item.appendChild(label);
+    item.onclick = () => {
+      el('sourcePickerModal').style.display = 'none';
+      if (src.minimized) {
+        const title = src.name.replace(' (свёрнуто)', '');
+        ipcRenderer.invoke('restore-window', title).then(ok => {
+          if (ok) {
+            showError('Окно восстановлено, выберите его снова');
+            setTimeout(() => { showError(''); openSourcePicker(); }, 1500);
+          } else {
+            showError(t('sourcepicker.restore_hint') || 'Разверните окно и нажмите заново');
+          }
+        });
+        return;
+      }
+      log('Selected source: ' + src.name + ' (' + src.id + ')');
+      startShareWithSource(src.id);
+    };
+    list.appendChild(item);
+  }
+  el('sourcePickerModal').style.display = 'flex';
+}
+
+async function startShareWithSource(sourceId) {
+  await ipcRenderer.invoke('set-screen-source', sourceId);
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+  } catch (e) {
+    log('Screen share error:', e.message);
+    return;
+  }
+  doStartScreenShare(stream);
+}
+
+el('shareScreenBtn').onclick = openSourcePicker;
+el('closeSourcePickerBtn').onclick = () => el('sourcePickerModal').style.display = 'none';
+el('sourcePickerModal').onclick = (e) => { if (e.target === el('sourcePickerModal')) el('sourcePickerModal').style.display = 'none'; };
+
+async function doStartScreenShare(stream) {
+  screenStream = stream;
+  sharingScreen = true;
+  el('screenshareVideo').style.display = 'block';
+  el('screenshare-placeholder').style.display = 'none';
+  el('screenshareVideo').srcObject = stream;
+  el('screenshareVideo').muted = true;
+  el('shareScreenBtn').classList.add('sharing');
+  // Minimize main window, show panel + faces
+  await ipcRenderer.invoke('window-mode', 'minimized');
+  await ipcRenderer.invoke('create-panel');
+  await ipcRenderer.invoke('create-faces');
+  startFacesTimer();
+  updateControlTooltips();
+  for (const peerId of Object.keys(peers)) {
+    createScreenOffer(peerId, stream);
+  }
+  broadcastSignal('screen-started', { hasAudio: stream.getAudioTracks().length > 0 });
+  if (stream.getVideoTracks().length) {
+    stream.getVideoTracks()[0].onended = () => stopScreenShare();
+  }
+}
+
+function createScreenOffer(peerId, stream) {
+  if (!peers[peerId]) return;
+  const peer = peers[peerId];
+  if (peer.screenPC) { peer.screenPC.close(); }
+  peer.screenPC = createScreenPC(peerId);
+  stream.getTracks().forEach(t => peer.screenPC.addTrack(t, stream));
+  peer.screenPC.createOffer().then(offer => {
+    peer.screenPC.setLocalDescription(offer);
+    socket.emit('offer', { to: peerId, sdp: offer, type: 'screen' });
+    log('Screen offer sent to ' + peerId);
+  }).catch(e => log('screen offer error: ' + e.message));
+}
+
+function stopScreenShare() {
+  sharingScreen = false;
+  if (screenStream) { screenStream.getTracks().forEach(t => t.stop()); screenStream = null; }
+  for (const peerId of Object.keys(peers)) {
+    if (peers[peerId].screenPC) { peers[peerId].screenPC.close(); peers[peerId].screenPC = null; }
+  }
+  broadcastSignal('screen-stopped');
+  el('screenshareVideo').srcObject = null;
+  el('screenshareVideo').style.display = 'none';
+  el('screenshare-placeholder').style.display = 'block';
+  el('shareScreenBtn').classList.remove('sharing');
+  ipcRenderer.invoke('close-panel');
+  ipcRenderer.invoke('close-faces');
+  stopFacesTimer();
+  ipcRenderer.invoke('window-mode', 'restore');
+  updateControlTooltips();
+  setTimeout(() => showError(''), 2000);
+}
+
+function broadcastSignal(type, extra) {
+  for (const peerId of Object.keys(peers)) {
+    socket.emit('signal', { to: peerId, signalType: type, ...(extra || {}) });
+  }
+}
+
+// --- PTT (for ALL users, two modes) ---
+function setupPTT() {
+  if (pttMode) return;
+  pttMode = true;
+  pttActive = false;
+  prevMicOn = micOn;
+  // Restore saved mic mode
+  micMode = localStorage.getItem('micMode') || 'normal';
+  // Start with mic off in PTT mode
+  if (micMode === 'ptt') {
+    micOn = false;
+    if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = false);
+  }
+  updatePTTUI();
+  updateMicButtonUI();
+  log('PTT mode on');
+  el('pttBtn').style.display = micMode === 'ptt' ? 'flex' : 'none';
+  el('pttBtn').classList.remove('active');
+
+  const onKeyDown = (e) => {
+    if ((e.code === 'Space' || e.key === ' ') && pttMode && micMode === 'ptt') {
+      e.preventDefault();
+      log('PTT keydown');
+      startPTT();
+    }
+  };
+  const onKeyUp = (e) => {
+    if ((e.code === 'Space' || e.key === ' ') && pttMode && micMode === 'ptt') {
+      e.preventDefault();
+      log('PTT keyup');
+      stopPTT();
+    }
+  };
+  window.addEventListener('keydown', onKeyDown, true);
+  window.addEventListener('keyup', onKeyUp, true);
+  // PTT button: hold to talk (mouse)
+  el('pttBtn').onmousedown = (e) => { e.preventDefault(); if (pttMode && micMode === 'ptt') startPTT(); };
+  el('pttBtn').onmouseup = (e) => { e.preventDefault(); if (pttMode && micMode === 'ptt') stopPTT(); };
+  el('pttBtn').onmouseleave = (e) => { if (pttMode && pttActive && micMode === 'ptt') stopPTT(); };
+  el('pttBtn')._onKeyDown = onKeyDown;
+  el('pttBtn')._onKeyUp = onKeyUp;
+}
+let timeoutPTTRemoval = null;
+
+function removePTT() {
+  if (!pttMode) return;
+  pttMode = false;
+  if (pttActive) stopPTT();
+  window.removeEventListener('keydown', el('pttBtn')._onKeyDown, true);
+  window.removeEventListener('keyup', el('pttBtn')._onKeyUp, true);
+  el('pttBtn').onmousedown = null;
+  el('pttBtn').onmouseup = null;
+  el('pttBtn').onmouseleave = null;
+  el('pttBtn').style.display = 'none';
+  clearTimeout(timeoutPTTRemoval);
+  micOn = micMode === 'normal' ? prevMicOn : false;
+  if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = micOn);
+  updateMicButtonUI();
+  showError('');
+  log('PTT mode off');
+}
+
+function toggleMicMode() {
+  // Enter PTT mode from normal mode
+  if (micMode !== 'normal') return;
+  prevMicOn = micOn;
+  micMode = 'ptt';
+  micOn = false;
+  if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = false);
+  updatePTTUI();
+  updateMicButtonUI();
+  localStorage.setItem('micMode', 'ptt');
+}
+
+function updatePTTUI() {
+  if (micMode === 'ptt') {
+    el('pttBtn').style.display = 'flex';
+  } else {
+    el('pttBtn').style.display = 'none';
+  }
+}
+
+function updateMicButtonUI() {
+  if (micMode === 'ptt') {
+    el('toggleMicBtn').className = 'control-btn ptt-mode' + (pttActive ? ' active' : '');
+    el('toggleMicBtn').innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg><span class="ptt-badge">PTT</span>';
+  } else {
+    el('toggleMicBtn').innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>';
+    el('toggleMicBtn').className = 'control-btn' + (micOn ? ' active' : ' active off');
+  }
+}
+
+function startPTT() {
+  if (pttActive) { log('PTT start skipped — already active'); return; }
+  log('PTT start');
+  pttActive = true;
+  micOn = true;
+  if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = true);
+  el('pttBtn').classList.add('active');
+  updateMicButtonUI();
+}
+
+function stopPTT() {
+  if (!pttActive) { log('PTT stop skipped — not active'); return; }
+  log('PTT stop');
+  pttActive = false;
+  micOn = false;
+  if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = false);
+  el('pttBtn').classList.remove('active');
+  updateMicButtonUI();
+}
+
+// --- Remove Peer ---
+function removePeer(peerId) {
+  log('removePeer: ' + peerId);
+  const peer = peers[peerId];
+  if (peer) {
+    if (peer.pc) { peer.pc.close(); }
+    if (peer.screenPC) { peer.screenPC.close(); }
+    if (sharerId === peerId) {
+      sharerId = null;
+      el('shareScreenBtn').disabled = false;
+      updateControlTooltips();
+      el('screenshareVideo').srcObject = null;
+      el('screenshareVideo').style.display = 'none';
+      el('screenshare-placeholder').style.display = 'block';
+    }
+    delete peers[peerId];
+  }
+  removePeerVideo(peerId);
+  if (Object.keys(peers).length === 0) {
+    cleanupCall();
+  }
+}
+
+function cleanupCall() {
+  for (const pid of Object.keys(peers)) {
+    if (peers[pid].pc) { peers[pid].pc.close(); }
+    if (peers[pid].screenPC) { peers[pid].screenPC.close(); }
+    delete peers[pid];
+  }
+  peers = {};
+  // Clear all peer video elements from DOM
+  const facesContainer = el('remote-faces');
+  if (facesContainer) facesContainer.innerHTML = '';
+  sharingScreen = false;
+  sharerId = null;
+  if (screenStream) { screenStream.getTracks().forEach(t => t.stop()); screenStream = null; }
+  el('screenshareVideo').srcObject = null;
+  el('screenshareVideo').style.display = 'none';
+  el('screenshare-placeholder').style.display = 'block';
+  el('shareScreenBtn').classList.remove('sharing');
+  ipcRenderer.invoke('close-panel');
+  ipcRenderer.invoke('close-faces');
+  stopFacesTimer();
+  ipcRenderer.invoke('window-mode', 'restore');
+  el('shareScreenBtn').disabled = false;
+  updateControlTooltips();
+  el('toggleCameraBtn').className = 'control-btn active';
+  removePTT();
+  micMode = localStorage.getItem('micMode') || 'normal';
+  micOn = true;
+  updateMicButtonUI();
+}
+
+// --- Leave ---
+el('leaveBtn').onclick = () => {
+  cleanupCall();
+  if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
+  if (socket) { socket.close(); socket = null; }
+  roomId = null; isHost = false; mySocketId = null;
+  el('room').style.display = 'none';
+  el('landing').style.display = 'flex';
+  el('roomCodeInput').value = '';
+  showError('');
+};
+
+// --- Toggle ---
+camOn = true;
+el('toggleCameraBtn').classList.add('active');
+el('toggleCameraBtn').onclick = () => {
+  camOn = !camOn;
+  el('toggleCameraBtn').className = 'control-btn' + (camOn ? ' active' : ' active off');
+  if (localStream) localStream.getVideoTracks().forEach(t => t.enabled = camOn);
+};
+micOn = true;
+el('toggleMicBtn').classList.add('active');
+function exitPTTMode() {
+  if (micMode !== 'ptt') return;
+  micMode = 'normal';
+  micOn = true;
+  if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = true);
+  updatePTTUI();
+  updateMicButtonUI();
+  localStorage.setItem('micMode', 'normal');
+}
+
+el('toggleMicBtn').onclick = () => {
+  if (micMode === 'normal') {
+    micOn = !micOn;
+    if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = micOn);
+    updateMicButtonUI();
+  } else {
+    exitPTTMode();
+  }
+};
+el('toggleMicBtn').oncontextmenu = (e) => {
+  e.preventDefault();
+  if (micMode === 'normal') {
+    toggleMicMode();
+  } else {
+    exitPTTMode();
+  }
+};
+updateMicButtonUI();
+
+window.addEventListener('mousedown', (e) => {
+  if (e.button === 1) { log('Middle-click → toggle fullscreen'); ipcRenderer.send('toggle-fullscreen'); }
+}, true);
+
+// --- Modals ---
+el('helpBtn').onclick = () => el('helpModal').style.display = 'flex';
+el('closeHelpBtn').onclick = () => el('helpModal').style.display = 'none';
+el('helpModal').onclick = (e) => { if (e.target === el('helpModal')) el('helpModal').style.display = 'none'; };
+ipcRenderer.on('show-help', () => el('helpModal').style.display = 'flex');
+
+el('closeReleaseBtn').onclick = () => el('releaseNotesModal').style.display = 'none';
+el('releaseNotesModal').onclick = (e) => { if (e.target === el('releaseNotesModal')) el('releaseNotesModal').style.display = 'none'; };
+ipcRenderer.on('show-release-notes', () => el('releaseNotesModal').style.display = 'flex');
+
+el('closeSettingsBtn').onclick = () => el('settingsModal').style.display = 'none';
+el('settingsModal').onclick = (e) => { if (e.target === el('settingsModal')) el('settingsModal').style.display = 'none'; };
+ipcRenderer.on('show-settings', () => el('settingsModal').style.display = 'flex');
+
+// Settings - Window Mode
+document.querySelectorAll('[data-window]').forEach(btn => {
+  btn.onclick = () => {
+    const mode = btn.getAttribute('data-window');
+    ipcRenderer.invoke('window-mode', mode);
+  };
+});
+
+// Settings - Language
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.onclick = () => {
+    setLang(btn.getAttribute('data-lang'));
+  };
+});
+
+// Settings - Desktop Shortcut
+window.createDesktopShortcut = async () => {
+  const ok = await ipcRenderer.invoke('create-desktop-shortcut');
+  if (ok) showToast(t('settings.shortcut_created') || 'Ярлык создан на рабочем столе');
+  else showToast(t('settings.shortcut_failed') || 'Ошибка создания ярлыка');
+};
+
+// --- Panel ---
+let panelTimer = null;
+
+function startPanelTimer() {
+  if (panelTimer) clearInterval(panelTimer);
+  panelTimer = setInterval(() => {
+    ipcRenderer.send('panel-update', {
+      micOn, camOn, micMode, pttActive, sharingScreen
+    });
+  }, 500);
+}
+
+function stopPanelTimer() {
+  if (panelTimer) { clearInterval(panelTimer); panelTimer = null; }
+}
+
+// --- Faces Window Timer ---
+let facesTimer = null;
+
+function startFacesTimer() {
+  if (facesTimer) clearInterval(facesTimer);
+  facesTimer = setInterval(() => {
+    const frames = [];
+    // Local face
+    const localVideo = el('localVideo');
+    if (localVideo && localVideo.srcObject && localVideo.readyState >= 2) {
+      const c = document.createElement('canvas');
+      c.width = localVideo.videoWidth || 160;
+      c.height = localVideo.videoHeight || 120;
+      c.getContext('2d').drawImage(localVideo, 0, 0);
+      frames.push({ id: '_local', data: c.toDataURL('image/jpeg', 0.3), isLocal: true });
+    } else {
+      frames.push({ id: '_local', data: '', isLocal: true });
+    }
+    // Remote faces
+    document.querySelectorAll('#remote-faces video').forEach(v => {
+      if (v.srcObject && v.readyState >= 2) {
+        const c = document.createElement('canvas');
+        c.width = v.videoWidth || 160;
+        c.height = v.videoHeight || 120;
+        c.getContext('2d').drawImage(v, 0, 0);
+        frames.push({ id: v.dataset.peerId || '', data: c.toDataURL('image/jpeg', 0.3) });
+      } else {
+        frames.push({ id: v.dataset.peerId || '', data: '' });
+      }
+    });
+    ipcRenderer.send('faces-frames', frames);
+  }, 200);
+}
+
+function stopFacesTimer() {
+  if (facesTimer) { clearInterval(facesTimer); facesTimer = null; }
+}
+
+// Faces volume change listener
+ipcRenderer.on('faces-volume', (event, data) => {
+  const video = document.querySelector(`#remote-faces video[data-peer-id="${data.peerId}"]`);
+  if (video) video.volume = data.volume;
+});
+
+// Panel action listener
+ipcRenderer.on('panel-action', (event, action) => {
+  if (action === '__ping__') return;
+  if (action === 'toggle-mic') {
+    if (micMode === 'normal') {
+      micOn = !micOn;
+      if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = micOn);
+      updateMicButtonUI();
+    } else {
+      micMode = 'normal'; micOn = true;
+      if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = true);
+      updatePTTUI(); updateMicButtonUI();
+      localStorage.setItem('micMode', 'normal');
+    }
+  } else if (action === 'toggle-mic-mode') {
+    if (micMode === 'normal') {
+      micMode = 'ptt'; micOn = false;
+      if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = false);
+      updatePTTUI(); updateMicButtonUI();
+      localStorage.setItem('micMode', 'ptt');
+    } else {
+      micMode = 'normal'; micOn = true;
+      if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = true);
+      updatePTTUI(); updateMicButtonUI();
+      localStorage.setItem('micMode', 'normal');
+    }
+  } else if (action === 'toggle-cam') {
+    camOn = !camOn;
+    el('toggleCameraBtn').className = 'control-btn' + (camOn ? ' active' : ' active off');
+    if (localStream) localStream.getVideoTracks().forEach(t => t.enabled = camOn);
+  } else if (action === 'toggle-screen') {
+    if (sharingScreen) stopScreenShare(); else el('shareScreenBtn').onclick();
+  } else if (action === 'open-ptt') {
+    startPTT();
+  } else if (action === 'close-ptt') {
+    stopPTT();
+  } else if (action === 'leave') {
+    el('leaveBtn').onclick();
+  }
+});
+
+// Start panel timer when sharing starts, stop when sharing stops
+// (panel timer checks sharingScreen, so it's safe to always run)
+startPanelTimer();
+
+initLang();
+applyModeUI();
+// Init PTT mode early (works without localStream)
+setupPTT();
+
+// First-launch shortcut prompt (shows once per version)
+(function() {
+  const ver = '1.7.1';
+  if (localStorage.getItem('shortcutPrompted') === ver) return;
+  const modal = document.getElementById('shortcutPromptModal');
+  if (!modal) return;
+  setTimeout(() => { modal.style.display = 'flex'; }, 500);
+  function close() { modal.style.display = 'none'; }
+  function done(skipReminder) {
+    close();
+    localStorage.setItem('shortcutPrompted', ver);
+    if (!skipReminder) setTimeout(() => showToast(t('shortcut.reminder')), 600);
+  }
+  document.getElementById('shortcutYes').onclick = async () => {
+    await window.createDesktopShortcut();
+    done();
+  };
+  document.getElementById('shortcutNo').onclick = () => done();
+  document.getElementById('shortcutDontAsk').onclick = () => {
+    localStorage.setItem('shortcutPrompted', ver);
+    done(true);
+  };
+  modal.onclick = (e) => { if (e.target === modal) done(); };
+})();

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: transparent;
+      overflow: hidden;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      height: 100vh;
+    }
+    #faces-container {
+      display: flex;
+      gap: 8px;
+      padding: 8px;
+      height: 100%;
+      overflow-x: auto;
+      align-items: stretch;
+    }
+    .face-card {
+      position: relative;
+      min-width: 100px;
+      flex: 1;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .face-card img {
+      width: 100%;
+      flex: 1;
+      object-fit: cover;
+      display: block;
+    }
+    .face-card .no-video {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 11px;
+      width: 100%;
+    }
+    .face-card .label {
+      font-size: 10px;
+      color: var(--text-dim);
+      text-align: center;
+      padding: 3px 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      background: rgba(0,0,0,0.3);
+      width: 100%;
+    }
+    .face-card .vol-container {
+      position: absolute;
+      right: 2px;
+      top: 2px;
+      bottom: 2px;
+      width: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .face-card input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 4px;
+      height: 60px;
+      background: var(--border);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+      writing-mode: vertical-lr;
+      direction: rtl;
+    }
+    .face-card input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .no-faces {
+      width: 100%;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
+      align-self: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="faces-container"></div>
+  <script src="faces.js"></script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{
+  "name": "hamsters-theater",
+  "version": "1.7.1",
+  "description": "Смотрите фильмы и видео вместе — трансляция экрана с голосовым чатом, видеочат и рация",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "server": "node server/index.js",
+    "prebuild": "node -e \"var f=require('fs'),p='dist';if(f.existsSync(p)){f.readdirSync(p).filter(x=>x.endsWith('.exe')).forEach(x=>{f.mkdirSync(p+'/Archive',{recursive:true});f.renameSync(p+'/'+x,p+'/Archive/'+x)})}\"",
+    "build": "electron-builder --win --x64",
+    "build-portable": "electron-builder --prepackaged dist/win-unpacked --win portable"
+  },
+  "dependencies": {
+    "docx": "^9.7.1",
+    "nat-upnp": "^1.1.1",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
+  },
+  "devDependencies": {
+    "electron": "^34.0.0",
+    "electron-builder": "^25.0.0",
+    "sharp": "^0.34.5"
+  },
+  "build": {
+    "appId": "com.hamsterstheater.app",
+    "productName": "Hamsters Theater",
+    "directories": {
+      "output": "dist"
+    },
+    "includeSubNodeModules": true,
+    "win": {
+      "target": "portable",
+      "icon": "icon.ico"
+    }
+  }
+}

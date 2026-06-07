@@ -1,0 +1,12 @@
+{
+  "name": "hamsters-theater-cloud",
+  "version": "1.0.0",
+  "description": "Hamsters Theater Cloud Signalling Server",
+  "main": "cloud.js",
+  "scripts": {
+    "start": "node cloud.js"
+  },
+  "dependencies": {
+    "socket.io": "^4.8.3"
+  }
+}

@@ -1,0 +1,12 @@
+node_modules/
+dist/Archive/
+dist/win-unpacked/
+dist/*.7z
+dist/*.yml
+dist/*.exe
+dist/.icon-ico/
+*.exe
+*.7z
+cloudflared-windows-amd64.exe
+.DS_Store
+Thumbs.db
