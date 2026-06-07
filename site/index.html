@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hamsters TV — смотрите видео вместе</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Шапка -->
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <img src="https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png" alt="Hamsters TV">
+        <span>Hamsters TV</span>
+      </div>
+      <span class="byline">by Outmilk</span>
+    </div>
+  </header>
+
+  <!-- Герой -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-icon">
+        <svg viewBox="0 0 100 100" width="80" height="80">
+          <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="3" opacity="0.3"/>
+          <text x="50" y="58" text-anchor="middle" font-size="36" fill="currentColor">🐹</text>
+        </svg>
+      </div>
+      <h1>Смотрите видео вместе,<br>будто вы рядом</h1>
+      <p class="hero-sub">Трансляция экрана со звуком, голосовой чат, видеозвонок и рация —<br>всё в одной программе. Бесплатно.</p>
+      <div class="hero-buttons">
+        <a href="#" class="btn btn-primary" id="downloadBtn">Скачать для Windows</a>
+        <a href="#about" class="btn btn-outline">Узнать больше</a>
+      </div>
+      <p class="hero-version" id="versionInfo">Версия 1.7.0 · 25 МБ · Portable</p>
+    </div>
+  </section>
+
+  <!-- О продукте -->
+  <section class="section" id="about">
+    <div class="section-inner">
+      <h2>Как это работает</h2>
+      <div class="features">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <h3>Трансляция экрана</h3>
+          <p>Один показывает видео — остальные видят и слышат. Со звуком системы.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </div>
+          <h3>Голосовой чат + Рация</h3>
+          <p>Общайтесь голосом в реальном времени. Режим рации (Push-to-Talk) — зажал пробел и говоришь.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          </div>
+          <h3>Видеозвонок</h3>
+          <p>Камера, микрофон — до 5 участников в комнате. Всё P2P, без задержек.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3>P2P без серверов</h3>
+          <p>Видео и голос идут напрямую между участниками. Никаких посредников — быстро и приватно.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Скриншот -->
+  <section class="section section-dark">
+    <div class="section-inner">
+      <h2>Посмотрите как это выглядит</h2>
+      <div class="screenshot-placeholder">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor" opacity="0.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <p>Тут будет скриншот программы</p>
+        <span class="hint">Ты покажешь — я добавлю</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Скачать -->
+  <section class="section" id="download">
+    <div class="section-inner">
+      <h2>Скачать Hamsters TV</h2>
+      <p class="section-sub">Windows · Portable · Русский и Английский</p>
+      <div class="download-card">
+        <div class="download-version">
+          <span class="ver-tag">v1.7.0</span>
+        </div>
+        <a href="#" class="btn btn-primary btn-large" id="downloadBtn2">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="vertical-align:-3px;margin-right:6px"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          Скачать .exe (25 МБ)
+        </a>
+        <p class="download-note">Никакой рекламы. Никаких следилок. Просто работает.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Подвал -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span>Hamsters TV</span>
+        <span class="footer-by">by Outmilk</span>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/outmilker1978/hamsters-theater" target="_blank">GitHub</a>
+        <a href="#" id="emailLink">Связаться</a>
+      </div>
+      <div class="footer-copy">© 2026 Outmilker</div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
