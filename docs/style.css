@@ -69,6 +69,13 @@ header {
   color: #b088f0;
 }
 
+.hero-logo {
+  width: 96px;
+  height: 96px;
+  border-radius: 24px;
+  filter: drop-shadow(0 0 32px rgba(139,92,246,0.3));
+}
+
 h1 {
   font-size: clamp(32px, 5vw, 52px);
   font-weight: 700;
