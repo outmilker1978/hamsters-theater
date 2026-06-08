@@ -104,14 +104,28 @@
     </div>
   </section>
 
-  <!-- Скриншот -->
-  <section class="section section-dark">
+  <!-- Связаться -->
+  <section class="section section-dark" id="contact">
     <div class="section-inner">
-      <h2>Посмотрите как это выглядит</h2>
-      <div class="screenshot-placeholder">
-        <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor" opacity="0.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-        <p>Скриншот скоро появится</p>
-        <span class="hint">Скинь мне — я добавлю</span>
+      <h2>Напишите нам</h2>
+      <p class="section-sub">Нашли баг? Есть идея? Просто хотите сказать спасибо? Заполните форму — письмо придёт разработчику.</p>
+      <div class="form-card">
+        <form id="feedbackForm" action="https://formsubmit.co/outmilker@gmail.com" method="POST">
+          <input type="hidden" name="_next" value="https://outmilker1978.github.io/hamsters-theater/">
+          <input type="hidden" name="_subject" value="TV Hamsters — сообщение с сайта">
+          <input type="text" name="_honey" style="display:none">
+          <div class="form-row">
+            <input type="text" name="name" placeholder="Ваше имя" required class="form-input">
+          </div>
+          <div class="form-row">
+            <input type="email" name="email" placeholder="Ваш email (для ответа)" required class="form-input">
+          </div>
+          <div class="form-row">
+            <textarea name="message" placeholder="Что хотите сказать?" rows="4" required class="form-input form-textarea"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-large">Отправить</button>
+        </form>
+        <p class="form-note" id="formSuccess" style="display:none;color:#4ade80;font-size:16px">✓ Спасибо! Письмо отправлено. Мы ответим в ближайшее время.</p>
       </div>
     </div>
   </section>
@@ -144,7 +158,7 @@
       <div class="footer-links">
         <a href="https://github.com/outmilker1978/hamsters-theater" target="_blank">GitHub</a>
         <a href="https://github.com/outmilker1978/hamsters-theater/issues" target="_blank">Сообщить о проблеме</a>
-        <a href="#" id="emailLink">Написать нам</a>
+        <a href="#contact">Написать нам</a>
       </div>
       <div class="footer-copy">© 2026 Outmilker</div>
     </div>

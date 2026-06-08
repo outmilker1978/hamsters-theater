@@ -1,8 +1,18 @@
-// Ссылки на скачивание ведут в GitHub Releases
+// Форма обратной связи
+const form = document.getElementById('feedbackForm');
+const success = document.getElementById('formSuccess');
 
-
-document.getElementById('emailLink').addEventListener('click', function(e) {
-  e.preventDefault();
-  const email = 'outmilker' + '@' + 'gmail.com';
-  window.location.href = 'mailto:' + email;
-});
+if (form) {
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const data = new FormData(form);
+    fetch(form.action, { method: 'POST', body: data })
+      .then(r => {
+        if (r.ok) {
+          form.style.display = 'none';
+          success.style.display = 'block';
+        }
+      })
+      .catch(() => {});
+  });
+}
