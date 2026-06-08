@@ -848,6 +848,9 @@ input, textarea, [contenteditable], .copyable {
   margin-top: 16px;
   padding-top: 12px;
   border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 }
 .donate-link {
   color: var(--accent-light);
@@ -855,10 +858,16 @@ input, textarea, [contenteditable], .copyable {
   text-decoration: none;
   opacity: 0.7;
   transition: opacity 0.2s;
+  cursor: pointer;
 }
 .donate-link:hover {
   opacity: 1;
   text-decoration: underline;
+}
+.donate-sep {
+  color: var(--border);
+  font-size: 13px;
+  align-self: center;
 }
 .help-tip {
   font-size: 12px;

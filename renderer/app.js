@@ -918,6 +918,14 @@ window.createDesktopShortcut = async () => {
   else showToast(t('settings.shortcut_failed') || 'Ошибка создания ярлыка');
 };
 
+// Donate links - open in system browser
+el('donateLinkBoosty').onclick = () => {
+  ipcRenderer.invoke('open-url', 'https://boosty.to/outmilker');
+};
+el('donateLinkCloud').onclick = () => {
+  ipcRenderer.invoke('open-url', 'https://pay.cloudtips.ru/p/8485a55c');
+};
+
 // --- Panel ---
 let panelTimer = null;
 
@@ -1040,7 +1048,7 @@ setupPTT();
 
 // First-launch shortcut prompt (shows once per version)
 (function() {
-  const ver = '1.7.1';
+  const ver = '1.7.2';
   if (localStorage.getItem('shortcutPrompted') === ver) return;
   const modal = document.getElementById('shortcutPromptModal');
   if (!modal) return;

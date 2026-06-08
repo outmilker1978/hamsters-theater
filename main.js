@@ -309,6 +309,11 @@ ipcMain.handle('create-desktop-shortcut', async () => {
   try { execSync(`powershell -Command "${ps}"`, { timeout: 10000 }); return true; } catch { return false; }
 });
 
+ipcMain.handle('open-url', (event, url) => {
+  const { shell } = require('electron');
+  shell.openExternal(url);
+});
+
 // --- Floating panel for screen sharing ---
 let panelWindow = null;
 
