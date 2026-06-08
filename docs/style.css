@@ -212,6 +212,50 @@ h2 {
   line-height: 1.5;
 }
 
+/* Команда */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 48px;
+}
+
+.team-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 28px 20px;
+  text-align: center;
+}
+
+.team-role {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #b088f0;
+  margin-bottom: 8px;
+}
+
+.team-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.team-desc {
+  font-size: 13px;
+  color: #888;
+  line-height: 1.5;
+}
+
+.team-motto {
+  margin-top: 32px;
+  font-size: 14px;
+  color: #777;
+  font-style: italic;
+}
+
 /* Скриншот */
 .screenshot-placeholder {
   margin-top: 32px;
