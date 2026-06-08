@@ -159,7 +159,7 @@ lang.en = {
 
 // === Release notes (English) ===
 var releaseNotesEN = {};
-releaseNotesEN['v1.7.2'] = 'TV Hamsters v1.7.2\n\nWhat\'s new:\n\n🏥 Ward No. Instead of boring "Room code: 1234" now "Ward No. 1234". Because hamsters gather in a ward, not in some "room".\n\n🎬 Scenarios in the "About" modal Added a "Things to do" section with real use cases: home cinema, remote mentorship, connecting with those far away.\n\n🔗 Deep-link hamsters:// Registered the hamsters:// protocol. Now you can send friends links like hamsters://join?code=XXXX — the app will open and connect automatically. Handy for a future Telegram bot.\n\n💸 Donations Two support buttons: Boosty and CloudTips — open in your system browser, not inside the app.\n\n🐛 Fixes\n\nDonation links now open in the system browser (previously opened inside Electron, breaking auth)\nDesktop shortcut prompt now shows for the new version';
+releaseNotesEN['v1.7.2'] = 'TV Hamsters v1.7.2\n\nWhat\'s new\n\nWard No. Instead of boring "Room code: 1234" now "Ward No. 1234". Because hamsters gather in a ward, not in some "room".\nScenarios in the "About" modal Added a "Things to do" section with real use cases: home cinema, remote mentorship, connecting with those far away.\nDeep-link hamsters:// Registered the hamsters:// protocol. Now you can send friends links like hamsters://join?code=XXXX — the app will open and connect automatically. Handy for a future Telegram bot.\nDonations Two support buttons: Boosty and CloudTips — open in your system browser, not inside the app. We\'d appreciate any support for the project.\n\nFixes\n\nDonation links now open in the system browser (previously opened inside Electron, breaking auth).\nDesktop shortcut prompt now shows for the new version.';
 
 // === Выбор языка ===
 var currentLang = 'ru';
@@ -192,7 +192,7 @@ function setLang(l) {
   // Обновить release notes при смене языка
   var rb = document.getElementById('releaseBody');
   if (rb && window._releaseBodyRU && window._releaseBodyEN) {
-    rb.innerHTML = (l === 'ru' ? window._releaseBodyRU : window._releaseBodyEN).replace(/\n/g, '<br>');
+    rb.innerHTML = (l === 'ru' ? window._releaseBodyRU : window._releaseBodyEN);
   }
   // Обновить текст кнопки скачивания, если есть данные о размере
   var btn = document.getElementById('downloadBtnText');
@@ -266,26 +266,21 @@ fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases/late
     function fmtRN(text) {
       text = text.replace(/[🏥🎬🔗💸🐛]/g, '').replace(/\u00A0/g, ' ').replace(/ +/g, ' ').trim();
       text = text.replace(/\r\n/g, '\n');
-      // Убрать первые 2-3 строки (версия + "Что нового:")
       var lines = text.split('\n').filter(Boolean);
-      while (lines.length && (lines[0].startsWith('TV Hamsters') || lines[0].startsWith('Что нового') || lines[0].startsWith('What'))) {
-        lines.shift();
-      }
-      text = lines.join('\n');
-      var lines = text.split('\n');
       var out = [];
       for (var i = 0; i < lines.length; i++) {
         var line = lines[i].trim();
-        if (!line) { out.push(''); continue; }
-        if (line.length < 65 && !line.endsWith('.') && !line.endsWith(')') && !line.endsWith(':') && line.indexOf('—') === -1) {
-          out.push('<span class="rn-hdr">' + line + '</span>');
+        if (/^TV Hamsters v/i.test(line)) {
+          out.push('<span class="rn-h1">' + line + '</span>');
+        } else if (/^(Что нового|What'?s new|Исправления|Fixes)/i.test(line)) {
+          out.push('<span class="rn-h2">' + line + '</span>');
         } else {
-          out.push(line);
+          out.push('<span class="rn-p">' + line + '</span>');
         }
       }
       return out.join('\n');
     }
     window._releaseBodyRU = fmtRN(bodyRU);
     window._releaseBodyEN = fmtRN(bodyEN);
-    document.getElementById('releaseBody').innerHTML = (currentLang === 'en' ? window._releaseBodyEN : window._releaseBodyRU).replace(/\n/g, '<br>');
+    document.getElementById('releaseBody').innerHTML = (currentLang === 'en' ? window._releaseBodyEN : window._releaseBodyRU);
   });

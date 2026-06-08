@@ -656,6 +656,31 @@ footer {
   margin-bottom: 2px;
 }
 
+.release-notes .rn-h1 {
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
+  color: #e8e8ed;
+  margin-bottom: 16px;
+}
+
+.release-notes .rn-h2 {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  color: #b088f0;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.release-notes .rn-p {
+  display: block;
+  font-size: 13px;
+  color: #aaa;
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+
 .footer-links {
   display: flex;
   gap: 20px;
