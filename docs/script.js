@@ -269,7 +269,7 @@ fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases/late
       var lines = text.split('\n').filter(Boolean);
       var out = [];
       for (var i = 0; i < lines.length; i++) {
-        var line = lines[i].trim();
+        var line = lines[i].trim().replace(/:$/, '');
         if (/^TV Hamsters v/i.test(line)) {
           out.push('<span class="rn-h1">' + line + '</span>');
         } else if (/^(Что нового|What'?s new|Исправления|Fixes)/i.test(line)) {
