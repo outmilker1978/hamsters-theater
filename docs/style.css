@@ -648,7 +648,8 @@ h2 {
 
 .release-notes .rn-icon {
   display: inline;
-  filter: sepia(1) hue-rotate(200deg) saturate(4) brightness(1.15);
+  font-size: 14px;
+  filter: grayscale(0.6) brightness(0.8) sepia(0.8) hue-rotate(230deg) saturate(4);
   opacity: 0.9;
 }
 
