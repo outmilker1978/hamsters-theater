@@ -1,19 +1,9 @@
 // Форма обратной связи
-const form = document.getElementById('feedbackForm');
-const success = document.getElementById('formSuccess');
+const formNext = document.getElementById('formNext');
+if (formNext) formNext.value = window.location.origin + '/?sent=ok';
 
-if (form) {
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const data = new FormData(form);
-    fetch(form.action, { method: 'POST', body: data })
-      .then(r => {
-        if (r.ok) {
-          form.reset();
-          success.style.display = 'block';
-          setTimeout(() => { success.style.display = 'none'; }, 3000);
-        }
-      })
-      .catch(() => {});
-  });
+const params = new URLSearchParams(window.location.search);
+if (params.get('sent') === 'ok') {
+  const success = document.getElementById('formSuccess');
+  if (success) success.style.display = 'block';
 }
