@@ -157,6 +157,10 @@ lang.en = {
   'footer.contact': 'Contact us',
 };
 
+// === Release notes (English) ===
+var releaseNotesEN = {};
+releaseNotesEN['v1.7.2'] = 'TV Hamsters v1.7.2\n\nWhat\'s new:\n\n🏥 Ward No. Instead of boring "Room code: 1234" now "Ward No. 1234". Because hamsters gather in a ward, not in some "room".\n\n🎬 Scenarios in the "About" modal Added a "Things to do" section with real use cases: home cinema, remote mentorship, connecting with those far away.\n\n🔗 Deep-link hamsters:// Registered the hamsters:// protocol. Now you can send friends links like hamsters://join?code=XXXX — the app will open and connect automatically. Handy for a future Telegram bot.\n\n💸 Donations Two support buttons: Boosty and CloudTips — open in your system browser, not inside the app.\n\n🐛 Fixes\n\nDonation links now open in the system browser (previously opened inside Electron, breaking auth)\nDesktop shortcut prompt now shows for the new version';
+
 // === Выбор языка ===
 var currentLang = 'ru';
 
@@ -185,6 +189,11 @@ function setLang(l) {
   }
   // Сохранить
   try { localStorage.setItem('tvh_lang', l); } catch(e) {}
+  // Обновить release notes при смене языка
+  var rb = document.getElementById('releaseBody');
+  if (rb && window._releaseBodyRU && window._releaseBodyEN) {
+    rb.innerHTML = (l === 'ru' ? window._releaseBodyRU : window._releaseBodyEN).replace(/\r\n/g, '<br>');
+  }
   // Обновить текст кнопки скачивания, если есть данные о размере
   var btn = document.getElementById('downloadBtnText');
   if (btn && window._releaseSize) {
@@ -252,6 +261,9 @@ fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases/late
       document.getElementById('heroVersion').textContent =
         currentLang === 'ru' ? 'Версия ' + ver.slice(1) + ' · ' + sizeMB + ' МБ · Portable' : 'Version ' + ver.slice(1) + ' · ' + sizeMB + ' MB · Portable';
     }
-    var body = data.body;
-    document.getElementById('releaseBody').innerHTML = body.replace(/\r\n/g, '<br>');
+    var bodyRU = data.body;
+    var bodyEN = releaseNotesEN[data.tag_name] || bodyRU;
+    window._releaseBodyRU = bodyRU;
+    window._releaseBodyEN = bodyEN;
+    document.getElementById('releaseBody').innerHTML = (currentLang === 'en' ? bodyEN : bodyRU).replace(/\r\n/g, '<br>');
   });
