@@ -257,6 +257,41 @@ h2 {
   font-style: italic;
 }
 
+/* Скриншоты */
+.screenshots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.screenshot-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.screenshot-card:hover {
+  border-color: rgba(139,92,246,0.3);
+  transform: translateY(-4px);
+}
+
+.screenshot-img {
+  width: 100%;
+  display: block;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.screenshot-label {
+  display: block;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #999;
+  text-align: center;
+}
+
 /* Форма обратной связи */
 .form-card {
   max-width: 520px;
