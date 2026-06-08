@@ -259,6 +259,64 @@ h2 {
   line-height: 1.5;
 }
 
+/* Чем заняться */
+.uses-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 720px;
+  margin: 36px auto 0;
+}
+
+.use-card {
+  text-align: center;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 20px 16px 18px;
+  transition: all 0.3s;
+}
+
+.use-card:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(139,92,246,0.2);
+}
+
+.use-icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 17px;
+  line-height: 1;
+  padding: 5px 12px;
+  margin-bottom: 12px;
+  background: rgba(139,92,246,0.06);
+  border: 1px solid rgba(139,92,246,0.1);
+  border-radius: 8px;
+  filter: grayscale(0.6) brightness(0.8) sepia(0.8) hue-rotate(230deg) saturate(4);
+  opacity: 0.9;
+}
+
+.use-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #e0e0e8;
+}
+
+.use-card p {
+  font-size: 13px;
+  color: #999;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .uses-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Инструкция */
 .steps {
   max-width: 640px;
