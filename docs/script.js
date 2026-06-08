@@ -266,6 +266,8 @@ fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases/late
     function fmtRN(text) {
       text = text.replace(/[🏥🎬🔗💸🐛]/g, '').replace(/\u00A0/g, ' ').replace(/ +/g, ' ').trim();
       text = text.replace(/\r\n/g, '\n');
+      // Убрать заголовок "TV Hamsters vX.Y.Z\nЧто нового:\n" или "What's new:"
+      text = text.replace(/^TV Hamsters v[\d.]+\s*\n*.*?(Что нового|What'?s new).*?\n{2,}/i, '');
       var lines = text.split('\n');
       var out = [];
       for (var i = 0; i < lines.length; i++) {
