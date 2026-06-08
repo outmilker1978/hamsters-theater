@@ -42,8 +42,8 @@ header {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-weight: 600;
-  font-size: 18px;
+  font-weight: 700;
+  font-size: 20px;
 }
 
 .logo img {
@@ -114,11 +114,10 @@ header {
   filter: drop-shadow(0 0 32px rgba(139,92,246,0.3));
 }
 
+/* Заголовки унциалом */
 h1 {
-  font-size: clamp(32px, 5vw, 52px);
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  font-size: clamp(22px, 4vw, 40px);
+  font-weight: 800;
   margin-bottom: 16px;
 }
 
@@ -132,7 +131,7 @@ h1 {
 .hero-tagline {
   font-size: 16px;
   color: #b088f0;
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 28px;
   opacity: 0.8;
   letter-spacing: 0.02em;
