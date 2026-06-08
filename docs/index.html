@@ -3,220 +3,216 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TV Hamsters — смотрите видео вместе</title>
+  <title data-i18n="page.title">TV Hamsters — смотрите видео вместе</title>
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Шапка -->
   <header>
-      <div class="header-inner">
-        <a href="/" class="logo-link">
-          <div class="logo">
-            <img src="https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png" alt="TV Hamsters">
-            <span>TV Hamsters</span>
-          </div>
-        </a>
-        <span class="byline">by Outmilk</span>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <div class="logo">
+          <img src="https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png" alt="TV Hamsters">
+          <span>TV Hamsters</span>
+        </div>
+      </a>
+      <span class="byline">by Outmilk</span>
+      <div class="lang-switch">
+        <button class="lang-btn active" data-lang="ru">RU</button>
+        <button class="lang-btn" data-lang="en">EN</button>
       </div>
+    </div>
   </header>
 
-  <!-- Герой -->
   <section class="hero">
     <div class="hero-content">
       <div class="hero-icon">
         <img src="https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png" alt="TV Hamsters" class="hero-logo">
       </div>
-      <h1>Смотрите видео вместе,<br>будто вы рядом</h1>
-      <p class="hero-sub">Трансляция экрана со звуком, голосовой чат, видеозвонок и рация —<br>всё в одной программе. Бесплатно.</p>
+      <h1 data-i18n="hero.title">Смотрите видео вместе,<br>будто вы рядом</h1>
+      <p class="hero-sub" data-i18n="hero.sub">Трансляция экрана со звуком, голосовой чат, видеозвонок и рация —<br>всё в одной программе. Бесплатно.</p>
+      <div class="hero-tagline">♪ Lets Hamsters Rock on!!!! ♪</div>
       <div class="hero-buttons">
-        <a href="https://github.com/outmilker1978/hamsters-theater/releases/download/v1.7.1/TV.Hamsters.1.7.1.exe" class="btn btn-primary" id="downloadBtn">Скачать для Windows</a>
-        <a href="#about" class="btn btn-outline">Узнать больше</a>
+        <a href="https://github.com/outmilker1978/hamsters-theater/releases/download/v1.7.1/TV.Hamsters.1.7.1.exe" class="btn btn-primary" data-i18n="hero.download">Скачать для Windows</a>
+        <a href="#about" class="btn btn-outline" data-i18n="hero.learn">Узнать больше</a>
       </div>
-      <p class="hero-version" id="versionInfo">Версия 1.7.1 · 77 МБ · Portable</p>
+      <p class="hero-version" data-i18n="hero.version">Версия 1.7.1 · 77 МБ · Portable</p>
     </div>
   </section>
 
-  <!-- О продукте -->
   <section class="section" id="about">
     <div class="section-inner">
-      <h2>Как это работает</h2>
-      <p class="section-sub">TV Hamsters — это десктопное приложение для совместного просмотра видео онлайн. Один хомячок транслирует экран (с видео и звуком системы), остальные видят и слышат — и все могут общаться голосом одновременно. Без регистрации, без подписок.</p>
+      <h2 data-i18n="about.title">Как это работает</h2>
+      <p class="section-sub" data-i18n="about.desc">TV Hamsters — это десктопное приложение для совместного просмотра видео онлайн. Один хомячок транслирует экран (с видео и звуком системы), остальные видят и слышат — и все могут общаться голосом одновременно. Без регистрации, без подписок.</p>
       <div class="features">
         <div class="feature-card">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
           </div>
-          <h3>Совместный просмотр</h3>
-          <p>Запускаете фильм или видео на своём ПК, включаете трансляцию экрана со звуком — и друзья видят то же самое, что и вы. Идеально для вечерних киносеансов, обсуждения сериалов или совместной работы с видео.</p>
+          <h3 data-i18n="about.feat1_title">Совместный просмотр</h3>
+          <p data-i18n="about.feat1_desc">Запускаете фильм или видео на своём ПК, включаете трансляцию экрана со звуком — и друзья видят то же самое, что и вы. Идеально для вечерних киносеансов, обсуждения сериалов или совместной работы с видео.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
           </div>
-          <h3>Голосовой чат + Рация</h3>
-          <p>Микрофон для общения во время просмотра. А ещё есть режим рации (Push-to-Talk): зажмите Пробел — говорите, отпустите — микрофон выключен. Удобно, когда нужно сказать пару фраз и вернуться к просмотру.</p>
+          <h3 data-i18n="about.feat2_title">Голосовой чат + Рация</h3>
+          <p data-i18n="about.feat2_desc">Микрофон для общения во время просмотра. А ещё есть режим рации (Push-to-Talk): зажмите Пробел — говорите, отпустите — микрофон выключен. Удобно, когда нужно сказать пару фраз и вернуться к просмотру.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
           </div>
-          <h3>Видеозвонок + Камера</h3>
-          <p>Включайте камеру — видите реакцию друзей в реальном времени. До 5 участников в комнате. Каждый подключается напрямую, без задержек и посредников.</p>
+          <h3 data-i18n="about.feat3_title">Видеозвонок + Камера</h3>
+          <p data-i18n="about.feat3_desc">Включайте камеру — видите реакцию друзей в реальном времени. До 5 участников в комнате. Каждый подключается напрямую, без задержек и посредников.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
           </div>
-          <h3>Два режима работы</h3>
-          <p><strong>Локально</strong> — в одной сети (через роутер). Всё остаётся внутри вашей сети, без интернета.<br><strong>Через Интернет</strong> — облачный сервер помогает найти друг друга, а видео и голос идут напрямую между участниками (P2P).</p>
+          <h3 data-i18n="about.feat4_title">Два режима работы</h3>
+          <p data-i18n="about.feat4_desc"><strong data-i18n="about.local_label">Локально</strong> — в одной сети (через роутер). Всё остаётся внутри вашей сети, без интернета.<br><strong data-i18n="about.cloud_label">Через Интернет</strong> — облачный сервер помогает найти друг друга, а видео и голос идут напрямую между участниками (P2P).</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Скриншоты -->
   <section class="section section-dark" id="screenshots">
     <div class="section-inner">
-      <h2>Как это выглядит</h2>
+      <h2 data-i18n="screens.title">Как это выглядит</h2>
       <div class="screenshots-grid">
         <div class="screenshot-card">
           <img src="Screenshot_1.png" alt="Главный экран TV Hamsters" class="screenshot-img">
-          <span class="screenshot-label">Главный экран</span>
+          <span class="screenshot-label" data-i18n="screens.main">Главный экран</span>
         </div>
         <div class="screenshot-card">
           <img src="Screenshot_2.png" alt="Настройки и режимы" class="screenshot-img">
-          <span class="screenshot-label">Настройки / Режимы</span>
+          <span class="screenshot-label" data-i18n="screens.settings">Настройки / Режимы</span>
         </div>
         <div class="screenshot-card">
           <img src="Screenshot_3.png" alt="Форма комнаты" class="screenshot-img">
-          <span class="screenshot-label">Комната просмотра</span>
+          <span class="screenshot-label" data-i18n="screens.room">Комната просмотра</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Инструкция пользователя -->
   <section class="section" id="manual">
     <div class="section-inner">
-      <h2>Как пользоваться</h2>
-      <p class="section-sub">Всё просто — без регистрации, без аккаунтов, без смс</p>
+      <h2 data-i18n="manual.title">Как пользоваться</h2>
+      <p class="section-sub" data-i18n="manual.sub">Всё просто — без регистрации, без аккаунтов, без смс</p>
 
       <div class="steps">
         <div class="step-card">
           <div class="step-num">1</div>
           <div class="step-body">
-            <h3>Создайте комнату</h3>
-            <p>Откройте программу, выберите «Через Интернет» (стоит по умолчанию) и нажмите «Создать комнату». Полученный 4-значный код отправьте друзьям (он уже автоматически в буфере обмена).</p>
+            <h3 data-i18n="manual.step1_title">Создайте комнату</h3>
+            <p data-i18n="manual.step1_desc">Откройте программу, выберите «Через Интернет» (стоит по умолчанию) и нажмите «Создать комнату». Полученный 4-значный код отправьте друзьям (он уже автоматически в буфере обмена).</p>
           </div>
         </div>
 
         <div class="step-card">
           <div class="step-num">2</div>
           <div class="step-body">
-            <h3>Подключитесь</h3>
-            <p>Друзья выбирают тот же режим «Через Интернет», вводят ваш код и нажимают «Подключиться к комнате». Все внутри — до 5 человек.</p>
+            <h3 data-i18n="manual.step2_title">Подключитесь</h3>
+            <p data-i18n="manual.step2_desc">Друзья выбирают тот же режим «Через Интернет», вводят ваш код и нажимают «Подключиться к комнате». Все внутри — до 5 человек.</p>
           </div>
         </div>
 
         <div class="step-card">
           <div class="step-num">3</div>
           <div class="step-body">
-            <h3>Управляйте трансляцией</h3>
-            <p>Камера, микрофон, трансляция экрана со звуком системы, режим рации (правый клик по микрофону → зажать Пробел). При трансляции главное окно сворачивается — появляется плавающая панель управления и окно с лицами участников.</p>
+            <h3 data-i18n="manual.step3_title">Управляйте трансляцией</h3>
+            <p data-i18n="manual.step3_desc">Камера, микрофон, трансляция экрана со звуком системы, режим рации (правый клик по микрофону → зажать Пробел). При трансляции главное окно сворачивается — появляется плавающая панель управления и окно с лицами участников.</p>
           </div>
         </div>
 
         <div class="step-card">
           <div class="step-num">4</div>
           <div class="step-body">
-            <h3>Общайтесь в реальном времени</h3>
-            <p>Всё работает напрямую между участниками (P2P) — видео и голос без задержек. Можно обсуждать, смеяться и комментировать как в настоящем кинотеатре.</p>
+            <h3 data-i18n="manual.step4_title">Общайтесь в реальном времени</h3>
+            <p data-i18n="manual.step4_desc">Всё работает напрямую между участниками (P2P) — видео и голос без задержек. Можно обсуждать, смеяться и комментировать как в настоящем кинотеатре.</p>
           </div>
         </div>
       </div>
 
       <div class="manual-note">
-        <h4>Локальный режим</h4>
-        <p>Без интернета — выберите «Локально», хост создаёт комнату, остальные подключаются по его IP-адресу (показывается программой).</p>
+        <h4 data-i18n="manual.local_title">Локальный режим</h4>
+        <p data-i18n="manual.local_desc">Без интернета — выберите «Локально», хост создаёт комнату, остальные подключаются по его IP-адресу (показывается программой).</p>
       </div>
     </div>
   </section>
 
-  <!-- О команде -->
   <section class="section section-dark" id="team">
     <div class="section-inner">
-      <h2>О команде</h2>
+      <h2 data-i18n="team.title">О команде</h2>
       <div class="team-grid">
         <div class="team-card">
-          <div class="team-role">Разработчик</div>
+          <div class="team-role" data-i18n="team.dev_role">Разработчик</div>
           <div class="team-name">Безумный Хомяк "Outmilker"</div>
-          <div class="team-desc">Придумал и собрал всё от первой строчки кода до последнего билда</div>
+          <div class="team-desc" data-i18n="team.dev_desc">Придумал и собрал всё от первой строчки кода до последнего билда</div>
         </div>
         <div class="team-card">
-          <div class="team-role">Идея</div>
+          <div class="team-role" data-i18n="team.idea_role">Идея</div>
           <div class="team-name">Хомимуми и Настя "Сеня"</div>
-          <div class="team-desc">За вдохновение, которое пришло ко мне ночью, пока вы не давали мне спокойненько спать...</div>
+          <div class="team-desc" data-i18n="team.idea_desc">За вдохновение, которое пришло ко мне ночью, пока вы не давали мне спокойненько спать...</div>
         </div>
         <div class="team-card">
-          <div class="team-role">Помощь в создании</div>
+          <div class="team-role" data-i18n="team.help_role">Помощь в создании</div>
           <div class="team-name">Василька</div>
-          <div class="team-desc">Огромное спасибо за помощь в разработке и тестировании</div>
+          <div class="team-desc" data-i18n="team.help_desc">Огромное спасибо за помощь в разработке и тестировании</div>
         </div>
         <div class="team-card">
-          <div class="team-role">AI-ассистент</div>
+          <div class="team-role" data-i18n="team.ai_role">AI-ассистент</div>
           <div class="team-name">opencode.ai</div>
-          <div class="team-desc">Кодовый напарник, который тоже молодец</div>
+          <div class="team-desc" data-i18n="team.ai_desc">Кодовый напарник, который тоже молодец</div>
         </div>
       </div>
-      <div class="team-motto">И вместе мы бригада «Ух!»... работаем до двух.... ночи)</div>
+      <div class="team-motto" data-i18n="team.motto">И вместе мы бригада «Ух!»... работаем до двух.... ночи)</div>
     </div>
   </section>
 
-  <!-- Связаться -->
   <section class="section section-dark" id="contact">
     <div class="section-inner">
-      <h2>Напишите нам</h2>
-      <p class="section-sub">Нашли баг? Есть идея? Просто хотите сказать спасибо? Заполните форму — письмо придёт разработчику.</p>
+      <h2 data-i18n="contact.title">Напишите нам</h2>
+      <p class="section-sub" data-i18n="contact.sub">Нашли баг? Есть идея? Просто хотите сказать спасибо? Заполните форму — письмо придёт разработчику.</p>
       <div class="form-card">
         <form id="feedbackForm">
           <input type="hidden" name="_subject" value="TV Hamsters — сообщение с сайта">
           <div class="form-row">
-            <input type="text" name="name" placeholder="Ваше имя" required class="form-input">
+            <input type="text" name="name" placeholder="Ваше имя" required class="form-input" data-i18n-placeholder="contact.name_ph">
           </div>
           <div class="form-row">
-            <input type="email" name="email" placeholder="Ваш email (для ответа)" required class="form-input">
+            <input type="email" name="email" placeholder="Ваш email (для ответа)" required class="form-input" data-i18n-placeholder="contact.email_ph">
           </div>
           <div class="form-row">
-            <textarea name="message" placeholder="Что хотите сказать?" rows="4" required class="form-input form-textarea"></textarea>
+            <textarea name="message" placeholder="Что хотите сказать?" rows="4" required class="form-input form-textarea" data-i18n-placeholder="contact.msg_ph"></textarea>
           </div>
-          <button type="submit" class="btn btn-primary btn-large">Отправить</button>
+          <button type="submit" class="btn btn-primary btn-large" data-i18n="contact.send">Отправить</button>
         </form>
-        <p class="form-note" id="formSuccess" style="display:none;color:#4ade80;font-size:16px">✓ Спасибо! Письмо отправлено. Мы ответим в ближайшее время.</p>
+        <p class="form-note" id="formSuccess" style="display:none;color:#4ade80;font-size:16px" data-i18n="contact.success">✓ Спасибо! Письмо отправлено. Мы ответим в ближайшее время.</p>
       </div>
     </div>
   </section>
 
-  <!-- Скачать -->
   <section class="section" id="download">
     <div class="section-inner">
-      <h2>Скачать TV Hamsters</h2>
-      <p class="section-sub">Windows · Portable · Русский и Английский</p>
+      <h2 data-i18n="download.title">Скачать TV Hamsters</h2>
+      <p class="section-sub" data-i18n="download.sub">Windows · Portable · Русский и Английский</p>
       <div class="download-card">
         <div class="download-version">
           <span class="ver-tag">v1.7.1</span>
         </div>
-        <a href="https://github.com/outmilker1978/hamsters-theater/releases/download/v1.7.1/TV.Hamsters.1.7.1.exe" class="btn btn-primary btn-large" id="downloadBtn2">
+        <a href="https://github.com/outmilker1978/hamsters-theater/releases/download/v1.7.1/TV.Hamsters.1.7.1.exe" class="btn btn-primary btn-large">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="vertical-align:-3px;margin-right:6px"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-          Скачать .exe (77 МБ)
+          <span data-i18n="download.btn">Скачать .exe (77 МБ)</span>
         </a>
-        <p class="download-note">Никакой рекламы. Никаких следилок. Просто работает.</p>
+        <p class="download-note" data-i18n="download.note">Никакой рекламы. Никаких следилок. Просто работает.</p>
       </div>
     </div>
   </section>
 
-  <!-- Подвал -->
   <footer>
     <div class="footer-inner">
       <div class="footer-brand">
@@ -225,8 +221,8 @@
       </div>
       <div class="footer-links">
         <a href="https://github.com/outmilker1978/hamsters-theater" target="_blank">GitHub</a>
-        <a href="https://github.com/outmilker1978/hamsters-theater/issues" target="_blank">Сообщить о проблеме</a>
-        <a href="#contact">Написать нам</a>
+        <a href="https://github.com/outmilker1978/hamsters-theater/issues" target="_blank" data-i18n="footer.issues">Сообщить о проблеме</a>
+        <a href="#contact" data-i18n="footer.contact">Написать нам</a>
       </div>
       <div class="footer-copy">© 2026 Outmilker</div>
     </div>
