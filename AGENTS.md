@@ -1,4 +1,4 @@
-# Hamsters Theater — Гайд для агента
+# TV Hamsters — Гайд для агента
 
 ## Цель
 
@@ -28,7 +28,7 @@ npm run build       # prebuild (архив) → electron-builder --win --x64
 npm run build-portable  # из dist/win-unpacked → portable .exe
 ```
 
-- Результат: `dist/Hamsters Theater X.Y.Z.exe`
+- Результат: `dist/TV Hamsters X.Y.Z.exe`
 - Старый .exe автоматически перемещается в `dist/Archive/`
 - winCodeSign extraction fails на Windows (symlink issue) — не влияет на portable, только на подпись кода
 - Новое имя файла при каждой сборке, чтобы избежать блокировки Windows Defender

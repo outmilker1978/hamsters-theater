@@ -1,7 +1,7 @@
 {
-  "name": "hamsters-theater",
+  "name": "tv-hamsters",
   "version": "1.7.1",
-  "description": "Смотрите фильмы и видео вместе — трансляция экрана с голосовым чатом, видеочат и рация",
+  "description": "TV Hamsters — смотрите видео вместе с голосовым чатом, видеочатом и рацией",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -22,8 +22,8 @@
     "sharp": "^0.34.5"
   },
   "build": {
-    "appId": "com.hamsterstheater.app",
-    "productName": "Hamsters Theater",
+    "appId": "com.tvhamsters.app",
+    "productName": "TV Hamsters",
     "directories": {
       "output": "dist"
     },

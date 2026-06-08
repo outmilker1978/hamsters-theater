@@ -35,11 +35,16 @@ ipcRenderer.on('faces-frames', (event, frames) => {
       slider.type = 'range';
       slider.min = 0;
       slider.max = 100;
-      slider.value = localStorage.getItem('fvol-' + f.id) || 100;
+      slider.value = f.isLocal ? (localStorage.getItem('micVolume') || 100) : (localStorage.getItem('fvol-' + f.id) || 100);
       slider.oninput = () => {
         const vol = slider.value / 100;
-        localStorage.setItem('fvol-' + f.id, slider.value);
-        ipcRenderer.send('faces-volume', { peerId: f.id, volume: vol });
+        if (f.isLocal) {
+          localStorage.setItem('micVolume', slider.value);
+          ipcRenderer.send('faces-mic-volume', { volume: vol });
+        } else {
+          localStorage.setItem('fvol-' + f.id, slider.value);
+          ipcRenderer.send('faces-volume', { peerId: f.id, volume: vol });
+        }
       };
       volContainer.appendChild(slider);
       card.appendChild(volContainer);

@@ -19,7 +19,7 @@ const doc = new Document({
     properties: {},
     children: [
       new Paragraph({
-        text: 'Hamsters Theater',
+        text: 'TV Hamsters',
         heading: HeadingLevel.TITLE,
         alignment: AlignmentType.CENTER,
         spacing: { after: 0 }
@@ -44,7 +44,7 @@ const doc = new Document({
       // --- 1. О продукте ---
       new Paragraph({ text: '1. О продукте', heading: HeadingLevel.HEADING_1 }),
       new Paragraph({
-        text: 'Hamsters Theater — смотрите фильмы, сериалы и видео вместе, будто вы рядом. Один включает трансляцию экрана со звуком, остальные видят видео и слышат голоса всех участников. Можно обсуждать происходящее в реальном времени, хохотать и комментировать — как в настоящем кинотеатре, только онлайн.',
+        text: 'TV Hamsters — смотрите фильмы, сериалы и видео вместе, будто вы рядом. Один включает трансляцию экрана со звуком, остальные видят видео и слышат голоса всех участников. Можно обсуждать происходящее в реальном времени, хохотать и комментировать — как в настоящем кинотеатре, только онлайн.',
         spacing: { after: 200 }
       }),
       new Paragraph({
@@ -187,20 +187,20 @@ const doc = new Document({
         spacing: { after: 40 }
       }),
       new Paragraph({
-        text: '• electron-builder упаковывает приложение в dist/win-unpacked/',
+        text: '• electron-builder упаковывает app.asar в dist/win-unpacked/',
         spacing: { after: 40 }
       }),
       new Paragraph({
         text: '• Ошибка winCodeSign про симлинки — НЕ КРИТИЧНА (только подпись кода, не влияет на portable)',
         spacing: { after: 60 }
       }),
-      new Paragraph({ text: 'npm run build-portable', spacing: { after: 40 } }),
+      new Paragraph({ text: 'Сборка портативного .exe (из подготовленного ht-win):', spacing: { after: 40 } }),
       new Paragraph({
-        text: '• Из dist/win-unpacked/ создаёт портативный .exe в dist/',
-        spacing: { after: 100 }
+        text: 'npx electron-builder --prepackaged "C:\\Users\\Hamster\\AppData\\Local\\Temp\\ht-win" --win portable',
+        spacing: { after: 60 }
       }),
 
-      new Paragraph({ text: 'Результат: dist\\Hamsters Theater X.X.X.exe', spacing: { after: 100 } }),
+      new Paragraph({ text: 'Результат: dist\\TV Hamsters X.X.X.exe', spacing: { after: 100 } }),
 
       new Paragraph({
         text: 'ВАЖНО: Старый .exe автоматически архивируется (prebuild). Новое имя файла с версией помогает избежать блокировки Windows Defender. Если Defender блокирует — используйте очередной новый номер версии.',
@@ -239,7 +239,7 @@ const doc = new Document({
       // --- 8. Версии ---
       new Paragraph({ text: '8. История версий', heading: HeadingLevel.HEADING_1 }),
 
-      new Paragraph({ text: '1.7.1 — Исправлены кнопки панели, PTT с панели (правая кнопка микрофона), исправлена кодировка PowerShell, уменьшен размер окна (680×520), возвращены ползунки громкости, flex-wrap для 5 камер, модалка выбора окна — 3 колонки, авто-восстановление свёрнутых окон', spacing: { after: 40 } }),
+      new Paragraph({ text: '1.7.1 — Переименование в TV Hamsters. Исправление эха (applyConstraints-gain вместо AudioContext). Увеличен размер окна до 480×680. Ползунок громкости микрофона на панели лиц. Исправлены кнопки панели, PTT с панели, кодировка PowerShell, flex-wrap для 5 камер, модалка 3 колонки, авто-восстановление свёрнутых окон', spacing: { after: 40 } }),
       new Paragraph({ text: '1.7.0 — Нативный выбор окна (все окна включая свёрнутые), главное окно сворачивается при трансляции, плавающая панель как в главном окне, отдельное окно камер участников с ползунками громкости', spacing: { after: 40 } }),
       new Paragraph({ text: '1.6.1 — Плавающая панель управления (только кнопки, как в главном окне), исправление рации (не глушит собеседника), выбор окна с превью, подсказка о свёрнутых окнах, вход/выход без накопления, выход из рации любой кнопкой мыши', spacing: { after: 40 } }),
       new Paragraph({ text: '1.6.0 — Выбор окна при шаринге, компактный режим шарера, ползунки громкости, рация для всех (2 режима микрофона)', spacing: { after: 40 } }),
@@ -275,7 +275,7 @@ const doc = new Document({
   }]
 });
 
-const outPath = path.join(__dirname, '..', 'docs', 'Hamsters_Theater_Developer_Guide.docx');
+const outPath = path.join(__dirname, '..', 'developer-docs', 'TV_Hamsters_Developer_Guide.docx');
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 Packer.toBuffer(doc).then(buffer => {
   fs.writeFileSync(outPath, buffer);

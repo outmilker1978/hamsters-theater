@@ -4,7 +4,7 @@ const os = require('os');
 const { Server } = require('socket.io');
 const natUpnp = require('nat-upnp');
 
-process.title = 'Hamsters Theater';
+process.title = 'TV Hamsters';
 const CLOUD_SERVER_URL = 'https://hamsters-theater-cloud.onrender.com';
 let signalingServer = null;
 let upnpMapping = null;
@@ -21,7 +21,7 @@ function addUPnPMapping(port) {
     private: port,
     ttl: 0,
     protocol: 'TCP',
-    description: 'Hamsters Theater'
+    description: 'TV Hamsters'
   }, (err) => {
     if (err) { upnpStatus = '❌ UPnP: ' + err.message; console.log('UPnP port mapping failed:', err.message); }
     else { upnpStatus = '✅ Порт ' + port + ' открыт (UPnP)'; console.log('UPnP: port', port, 'opened on router'); upnpMapping = { client, port }; }
@@ -38,7 +38,7 @@ function removeUPnPMapping() {
 function startSignalingServer() {
   const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Hamsters Theater Signaling Server\n');
+    res.end('TV Hamsters Signaling Server\n');
   });
   const io = new Server(server, { cors: { origin: '*' } });
   const rooms = {};
@@ -198,13 +198,13 @@ function rebuildMenus(win) {
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 680,
-    height: 520,
-    minWidth: 400,
-    minHeight: 360,
+    width: 480,
+    height: 680,
+    minWidth: 380,
+    minHeight: 520,
     autoHideMenuBar: false,
     fullscreenable: true,
-    title: 'Hamsters Theater (v1.7.1)',
+    title: 'TV Hamsters (v1.7.1)',
     icon: __dirname + '/icon.png',
     webPreferences: {
       nodeIntegration: true,
@@ -271,7 +271,7 @@ ipcMain.handle('get-screens', async () => {
   const merged = sources.map(s => ({ id: s.id, name: s.name, thumbnail: s.thumbnail ? s.thumbnail.toDataURL() : '', minimized: false }));
   for (const title of allTitles) {
     const tl = title.toLowerCase();
-    if (!capturerNames.includes(tl) && !tl.includes('hamsters theater') && !tl.includes('program manager')) {
+    if (!capturerNames.includes(tl) && !tl.includes('tv hamsters') && !tl.includes('program manager')) {
       merged.push({ id: 'minimized:' + title, name: title + ' (свёрнуто)', thumbnail: '', minimized: true });
     }
   }
@@ -302,7 +302,7 @@ ipcMain.handle('create-desktop-shortcut', async () => {
   const exePath = process.env.PORTABLE_EXECUTABLE_FILE || process.argv[0];
   const iconPath = exePath;
   const desktop = path.join(require('os').homedir(), 'Desktop');
-  const lnk = path.join(desktop, 'Hamsters Theater.lnk');
+  const lnk = path.join(desktop, 'TV Hamsters.lnk');
   const escExe = exePath.replace(/'/g,"''");
   const escIcon = iconPath.replace(/'/g,"''");
   const ps = `$s=(New-Object -COM WScript.Shell).CreateShortcut('${lnk.replace(/'/g,"''")}');$s.TargetPath='${escExe}';$s.IconLocation='${escIcon},0';$s.WorkingDirectory='${path.dirname(exePath).replace(/'/g,"''")}';$s.Save()`;
@@ -435,6 +435,14 @@ ipcMain.on('faces-volume', (event, data) => {
   const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
   if (mainWin) {
     mainWin.webContents.send('faces-volume', data);
+  }
+});
+
+ipcMain.on('faces-mic-volume', (event, data) => {
+  const wins = BrowserWindow.getAllWindows();
+  const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
+  if (mainWin) {
+    mainWin.webContents.send('faces-mic-volume', data);
   }
 });
 

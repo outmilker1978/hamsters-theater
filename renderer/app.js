@@ -249,6 +249,12 @@ async function startCamera() {
       log('Audio track settings:', JSON.stringify(t.getSettings ? t.getSettings() : {}));
     });
     el('localVideo').srcObject = localStream;
+    // Apply saved mic volume
+    const savedMicVol = parseFloat(localStorage.getItem('micVolume') || '100');
+    const audioTrack = localStream.getAudioTracks()[0];
+    if (audioTrack && savedMicVol !== 100) {
+      try { audioTrack.applyConstraints({ advanced: [{ gain: savedMicVol / 100 }] }); } catch(e) {}
+    }
     log('Camera ready');
     setupPTT();
   } catch (err) {
@@ -958,6 +964,16 @@ function stopFacesTimer() {
 ipcRenderer.on('faces-volume', (event, data) => {
   const video = document.querySelector(`#remote-faces video[data-peer-id="${data.peerId}"]`);
   if (video) video.volume = data.volume;
+});
+
+// Faces mic volume change listener (local mic)
+ipcRenderer.on('faces-mic-volume', (event, data) => {
+  const vol = Math.max(0, Math.min(1, data.volume));
+  localStorage.setItem('micVolume', Math.round(vol * 100));
+  const track = localStream ? localStream.getAudioTracks()[0] : null;
+  if (track) {
+    try { track.applyConstraints({ advanced: [{ gain: vol }] }); } catch(e) {}
+  }
 });
 
 // Panel action listener

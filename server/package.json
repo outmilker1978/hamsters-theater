@@ -1,7 +1,7 @@
 {
-  "name": "hamsters-theater-cloud",
+  "name": "tv-hamsters-cloud",
   "version": "1.0.0",
-  "description": "Hamsters Theater Cloud Signalling Server",
+  "description": "TV Hamsters Cloud Signalling Server",
   "main": "cloud.js",
   "scripts": {
     "start": "node cloud.js"

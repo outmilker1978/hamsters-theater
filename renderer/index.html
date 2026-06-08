@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hamsters Theater (v1.7.0)</title>
+  <title>TV Hamsters (v1.7.1)</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,9 +13,9 @@
     <div class="landing-box">
       <button id="helpBtn" class="help-btn" data-i18n-title="help.about" title="О программе">?</button>
       <div class="logo-area">
-        <img id="appIcon" src="../icon.png" alt="Hamsters Theater">
+        <img id="appIcon" src="../icon.png" alt="TV Hamsters">
         <div class="logo-text">
-          <h1>Hamsters Theater</h1>
+          <h1>TV Hamsters</h1>
           <span class="version" id="versionDisplay">v1.7.1</span>
         </div>
       </div>
@@ -92,9 +92,9 @@
     <div class="modal-content">
       <button id="closeHelpBtn" class="modal-close">&times;</button>
       <h2 data-i18n="help.about">О программе</h2>
-      <p class="modal-subtitle">Hamsters Theater <span class="modal-version">v1.7.1</span></p>
+      <p class="modal-subtitle">TV Hamsters <span class="modal-version">v1.7.1</span></p>
 
-      <p data-i18n-html="help.desc">Hamsters Theater — смотрите фильмы, сериалы и видео вместе, будто вы рядом. Один включает трансляцию экрана со звуком, остальные видят видео и слышат голоса всех участников. Можно обсуждать происходящее в реальном времени, хохотать и комментировать — как в настоящем кинотеатре, только онлайн.</p>
+      <p data-i18n-html="help.desc">TV Hamsters — смотрите фильмы, сериалы и видео вместе, будто вы рядом. Один включает трансляцию экрана со звуком, остальные видят видео и слышат голоса всех участников. Можно обсуждать происходящее в реальном времени, хохотать и комментировать — как в настоящем кинотеатре, только онлайн.</p>
       <p class="help-tip" data-i18n-html="help.killer_feature"><b>Рация (Push-to-Talk)</b> — нажми правой кнопкой мыши по микрофону, чтобы включить режим рации. Зажми <b>Пробел</b> или кнопку — говори. Отпусти — микрофон выключится. В обычном режиме микрофон работает постоянно.</p>
 
       <h3 data-i18n="help.how_title">Как это работает</h3>
@@ -138,7 +138,7 @@
       <button id="closeReleaseBtn" class="modal-close">&times;</button>
       <h2 data-i18n="help.release_notes">История версий</h2>
       <div class="release-list">
-        <div class="release-item"><span class="release-ver">1.7.1</span><span class="release-desc">Исправлены кнопки панели, добавлен PTT с панели (правая кнопка микрофона), исправлена кодировка окон в PowerShell, уменьшен размер окна (680×520), возвращены ползунки громкости, flex-wrap для 5 камер, модалка выбора окна — 3 колонки, авто-восстановление свёрнутых окон</span></div>
+        <div class="release-item"><span class="release-ver">1.7.1</span><span class="release-desc">Переименование в TV Hamsters. Исправление эха — микрофон регулируется через applyConstraints(gain) без потери echo cancellation. Увеличен размер окна (480×680). Ползунок громкости микрофона на панели лиц. Исправлены кнопки панели, PTT с панели, исправлена кодировка PowerShell, flex-wrap для 5 камер, модалка выбора окна — 3 колонки, авто-восстановление свёрнутых окон</span></div>
         <div class="release-item"><span class="release-ver">1.7.0</span><span class="release-desc">Нативный выбор окна (все окна, включая свёрнутые), главное окно сворачивается при трансляции, плавающая панель как в главном окне, отдельное окно камер участников с ползунками громкости</span></div>
         <div class="release-item"><span class="release-ver">1.6.1</span><span class="release-desc">Плавающая панель управления (только кнопки, как в главном окне), исправление рации, выбор окна с превью, подсказка о свёрнутых окнах, вход/выход без накопления, выход из PTT любой кнопкой</span></div>
         <div class="release-item"><span class="release-ver">1.6.0</span><span class="release-desc">Выбор окна при шаринге, компактный режим шарера, ползунки громкости, рация для всех (2 режима микрофона)</span></div>
@@ -190,7 +190,7 @@
   <div id="shortcutPromptModal" class="modal-overlay" style="display:none">
     <div class="modal-content" style="max-width:380px;text-align:center">
       <h3 data-i18n="shortcut.prompt_title">Ярлык на рабочий стол</h3>
-      <p data-i18n="shortcut.prompt_text" style="margin:12px 0;line-height:1.5">Создать ярлык Hamsters Theater на рабочем столе для быстрого запуска?</p>
+      <p data-i18n="shortcut.prompt_text" style="margin:12px 0;line-height:1.5">Создать ярлык TV Hamsters на рабочем столе для быстрого запуска?</p>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px">
         <button class="settings-btn" id="shortcutYes" data-i18n="shortcut.yes">Да, создать</button>
         <button class="settings-btn" id="shortcutNo" data-i18n="shortcut.no">Нет</button>

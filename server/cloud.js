@@ -3,7 +3,7 @@ const { Server } = require('socket.io');
 
 const server = http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Hamsters Theater Cloud Server\n');
+  res.end('TV Hamsters Cloud Server\n');
 });
 
 const io = new Server(server, { cors: { origin: '*' } });
@@ -66,5 +66,5 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
-  console.log('[Cloud] Hamsters Theater cloud server running on port', PORT);
+  console.log('[Cloud] TV Hamsters cloud server running on port', PORT);
 });
