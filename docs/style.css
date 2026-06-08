@@ -73,7 +73,8 @@ header {
 .header-divider {
   width: 1px;
   height: 18px;
-  background: rgba(139,92,246,0.3);
+  background: #b088f0;
+  opacity: 0.4;
 }
 
 .header-donate {
