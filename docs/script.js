@@ -253,7 +253,5 @@ fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases/late
         currentLang === 'ru' ? 'Версия ' + ver.slice(1) + ' · ' + sizeMB + ' МБ · Portable' : 'Version ' + ver.slice(1) + ' · ' + sizeMB + ' MB · Portable';
     }
     var body = data.body;
-    var html = body.replace(/\r\n/g, '<br>');
-    html = html.replace(/([\u{1F000}-\u{1FFFF}]|[\u2600-\u27BF]|[\u{2700}-\u{27BF}])/gu, '<span class="rn-icon">$1</span>');
-    document.getElementById('releaseBody').innerHTML = html;
+    document.getElementById('releaseBody').innerHTML = body.replace(/\r\n/g, '<br>');
   });

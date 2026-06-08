@@ -611,26 +611,14 @@ h2 {
   letter-spacing: 0.03em;
 }
 
-.release-notes ul {
-  padding-left: 20px;
-  margin: 8px 0;
-  list-style: none;
+.release-notes #releaseBody {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #aaa;
 }
 
-.release-notes li {
-  margin-bottom: 6px;
-  padding-left: 4px;
-}
-
-.release-notes li::marker {
-  color: #8b5cf6;
-}
-
-.release-notes .rn-icon {
-  display: inline;
-  font-size: 14px;
-  filter: grayscale(0.6) brightness(0.8) sepia(0.8) hue-rotate(230deg) saturate(4);
-  opacity: 0.9;
+.release-notes #releaseBody br + br {
+  display: none;
 }
 
 /* Подвал */
