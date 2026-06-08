@@ -29,6 +29,15 @@ header {
   justify-content: space-between;
 }
 
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo-link:hover {
+  opacity: 0.85;
+}
+
 .logo {
   display: flex;
   align-items: center;
