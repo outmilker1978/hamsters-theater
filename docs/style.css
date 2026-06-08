@@ -647,6 +647,15 @@ footer {
   margin-left: 6px;
 }
 
+.release-notes .rn-hdr {
+  display: block;
+  color: #b088f0;
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 12px;
+  margin-bottom: 2px;
+}
+
 .footer-links {
   display: flex;
   gap: 20px;

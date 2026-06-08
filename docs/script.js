@@ -192,7 +192,7 @@ function setLang(l) {
   // Обновить release notes при смене языка
   var rb = document.getElementById('releaseBody');
   if (rb && window._releaseBodyRU && window._releaseBodyEN) {
-    rb.innerHTML = (l === 'ru' ? window._releaseBodyRU : window._releaseBodyEN).replace(/\r\n/g, '<br>');
+    rb.innerHTML = (l === 'ru' ? window._releaseBodyRU : window._releaseBodyEN).replace(/\n/g, '<br>');
   }
   // Обновить текст кнопки скачивания, если есть данные о размере
   var btn = document.getElementById('downloadBtnText');
@@ -263,7 +263,23 @@ fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases/late
     }
     var bodyRU = data.body;
     var bodyEN = releaseNotesEN[data.tag_name] || bodyRU;
-    window._releaseBodyRU = bodyRU;
-    window._releaseBodyEN = bodyEN;
-    document.getElementById('releaseBody').innerHTML = (currentLang === 'en' ? bodyEN : bodyRU).replace(/\r\n/g, '<br>');
+    function fmtRN(text) {
+      text = text.replace(/[🏥🎬🔗💸🐛]/g, '').replace(/\u00A0/g, ' ').replace(/ +/g, ' ').trim();
+      text = text.replace(/\r\n/g, '\n');
+      var lines = text.split('\n');
+      var out = [];
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (!line) { out.push(''); continue; }
+        if (line.length < 65 && !line.endsWith('.') && !line.endsWith(')') && !line.endsWith(':') && line.indexOf('—') === -1) {
+          out.push('<span class="rn-hdr">' + line + '</span>');
+        } else {
+          out.push(line);
+        }
+      }
+      return out.join('\n');
+    }
+    window._releaseBodyRU = fmtRN(bodyRU);
+    window._releaseBodyEN = fmtRN(bodyEN);
+    document.getElementById('releaseBody').innerHTML = (currentLang === 'en' ? window._releaseBodyEN : window._releaseBodyRU).replace(/\n/g, '<br>');
   });
