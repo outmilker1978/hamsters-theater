@@ -204,7 +204,7 @@ function createWindow() {
     minHeight: 520,
     autoHideMenuBar: false,
     fullscreenable: true,
-    title: 'TV Hamsters (v1.7.1)',
+    title: 'TV Hamsters (v1.7.2)',
     icon: __dirname + '/icon.png',
     webPreferences: {
       nodeIntegration: true,
@@ -455,6 +455,40 @@ ipcMain.on('set-language', (event, lang) => {
 
 app.whenReady().then(() => {
   startSignalingServer();
+  // Register hamsters:// protocol
+  app.setAsDefaultProtocolClient('hamsters');
+  // Handle deep link from second instance (Windows)
+  const gotLock = app.requestSingleInstanceLock();
+  if (!gotLock) {
+    app.quit();
+    return;
+  }
+  app.on('second-instance', (event, argv) => {
+    const url = argv.find(a => a.startsWith('hamsters://'));
+    if (url) {
+      const wins = BrowserWindow.getAllWindows();
+      const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
+      if (mainWin) {
+        mainWin.webContents.send('deep-link', url);
+        if (mainWin.isMinimized()) mainWin.restore();
+        mainWin.focus();
+      }
+    } else {
+      const wins = BrowserWindow.getAllWindows();
+      const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
+      if (mainWin) {
+        if (mainWin.isMinimized()) mainWin.restore();
+        mainWin.focus();
+      }
+    }
+  });
+  // Handle deep link from argv (first instance launched via protocol)
+  const deepLinkUrl = process.argv.find(a => a.startsWith('hamsters://'));
+  if (deepLinkUrl) {
+    const wins = BrowserWindow.getAllWindows();
+    const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
+    if (mainWin) mainWin.webContents.send('deep-link', deepLinkUrl);
+  }
   session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
     const allowed = ['media', 'display-capture'];
     if (allowed.includes(permission)) return callback(true);

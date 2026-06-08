@@ -884,6 +884,18 @@ el('closeSettingsBtn').onclick = () => el('settingsModal').style.display = 'none
 el('settingsModal').onclick = (e) => { if (e.target === el('settingsModal')) el('settingsModal').style.display = 'none'; };
 ipcRenderer.on('show-settings', () => el('settingsModal').style.display = 'flex');
 
+// Deep link handler: hamsters://join?code=XXXX
+ipcRenderer.on('deep-link', (event, url) => {
+  try {
+    const params = new URL(url).searchParams;
+    const code = params.get('code');
+    if (code) {
+      el('roomCodeInput').value = code;
+      el('joinRoomBtn').click();
+    }
+  } catch(e) {}
+});
+
 // Settings - Window Mode
 document.querySelectorAll('[data-window]').forEach(btn => {
   btn.onclick = () => {

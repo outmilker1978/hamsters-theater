@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TV Hamsters (v1.7.1)</title>
+  <title>TV Hamsters (v1.7.2)</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
         <img id="appIcon" src="../icon.png" alt="TV Hamsters">
         <div class="logo-text">
           <h1>TV Hamsters</h1>
-          <span class="version" id="versionDisplay">v1.7.1</span>
+          <span class="version" id="versionDisplay">v1.7.2</span>
         </div>
       </div>
       <p class="subtitle" data-i18n="landing.subtitle">Смотрите видео вместе, будто вы рядом</p>
@@ -92,7 +92,7 @@
     <div class="modal-content">
       <button id="closeHelpBtn" class="modal-close">&times;</button>
       <h2 data-i18n="help.about">О программе</h2>
-      <p class="modal-subtitle">TV Hamsters <span class="modal-version">v1.7.1</span></p>
+      <p class="modal-subtitle">TV Hamsters <span class="modal-version">v1.7.2</span></p>
 
       <p data-i18n-html="help.desc">TV Hamsters — смотрите фильмы, сериалы и видео вместе, будто вы рядом. Один включает трансляцию экрана со звуком, остальные видят видео и слышат голоса всех участников. Можно обсуждать происходящее в реальном времени, хохотать и комментировать — как в настоящем кинотеатре, только онлайн.</p>
       <p class="help-tip" data-i18n-html="help.killer_feature"><b>Рация (Push-to-Talk)</b> — нажми правой кнопкой мыши по микрофону, чтобы включить режим рации. Зажми <b>Пробел</b> или кнопку — говори. Отпусти — микрофон выключится. В обычном режиме микрофон работает постоянно.</p>
@@ -112,6 +112,13 @@
         </div>
       </div>
 
+      <h3 data-i18n="help.scenarios_title">Чем заняться</h3>
+      <div class="help-scenarios">
+        <div class="help-scenario" data-i18n-html="help.scenario_cinema"><b>Кинотеатр на диване</b> — включили фильм, друзья смотрят и комментируют в прямом эфире.</div>
+        <div class="help-scenario" data-i18n-html="help.scenario_tutor"><b>Наставник онлайн</b> — показываете экран, ученик повторяет. Ремонт ПК, монтаж, настройка софта.</div>
+        <div class="help-scenario" data-i18n-html="help.scenario_party"><b>Праздник с теми, кто далеко</b> — день рождения, Новый год вместе, хоть вы и в разных городах.</div>
+      </div>
+
       <h3 data-i18n="help.buttons_title">Кнопки управления</h3>
       <div class="help-buttons">
         <div class="help-btn-row"><span class="help-btn-tag"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg> Камера</span><span data-i18n="help.btn_camera">включить / выключить камеру</span></div>
@@ -129,6 +136,9 @@
         <div class="help-team-row"><span class="help-team-role">AI-ассистент:</span> opencode (opencode.ai — тоже молодец)</div>
         <div class="help-team-row help-team-final">И вместе мы бригада "Ух!"... работаем до двух.... ночи)</div>
       </div>
+      <div class="help-donate">
+        <a href="https://boosty.to/outmilk" target="_blank" class="donate-link">Поддержать проект</a>
+      </div>
     </div>
   </div>
 
@@ -138,6 +148,7 @@
       <button id="closeReleaseBtn" class="modal-close">&times;</button>
       <h2 data-i18n="help.release_notes">История версий</h2>
       <div class="release-list">
+        <div class="release-item"><span class="release-ver">1.7.2</span><span class="release-desc">«Палата №» вместо «Код комнаты». Сценарии использования в модалке О программе. Deep-link протокол hamsters://. Ссылка на донаты (Boosty) в программе.</span></div>
         <div class="release-item"><span class="release-ver">1.7.1</span><span class="release-desc">Переименование в TV Hamsters. Исправление эха — микрофон регулируется через applyConstraints(gain) без потери echo cancellation. Увеличен размер окна (480×680). Ползунок громкости микрофона на панели лиц. Исправлены кнопки панели, PTT с панели, исправлена кодировка PowerShell, flex-wrap для 5 камер, модалка выбора окна — 3 колонки, авто-восстановление свёрнутых окон</span></div>
         <div class="release-item"><span class="release-ver">1.7.0</span><span class="release-desc">Нативный выбор окна (все окна, включая свёрнутые), главное окно сворачивается при трансляции, плавающая панель как в главном окне, отдельное окно камер участников с ползунками громкости</span></div>
         <div class="release-item"><span class="release-ver">1.6.1</span><span class="release-desc">Плавающая панель управления (только кнопки, как в главном окне), исправление рации, выбор окна с превью, подсказка о свёрнутых окнах, вход/выход без накопления, выход из PTT любой кнопкой</span></div>

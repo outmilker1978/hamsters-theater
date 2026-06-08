@@ -774,6 +774,18 @@ input, textarea, [contenteditable], .copyable {
   align-items: center;
   color: var(--accent);
 }
+.help-scenarios {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px 0 4px;
+}
+.help-scenario {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  padding: 4px 0;
+}
 .help-buttons {
   display: flex;
   flex-direction: column;
@@ -830,6 +842,23 @@ input, textarea, [contenteditable], .copyable {
 .help-team-thanks {
   color: var(--text-muted);
   font-size: 12px;
+}
+.help-donate {
+  text-align: center;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.donate-link {
+  color: var(--accent-light);
+  font-size: 13px;
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.donate-link:hover {
+  opacity: 1;
+  text-decoration: underline;
 }
 .help-tip {
   font-size: 12px;
