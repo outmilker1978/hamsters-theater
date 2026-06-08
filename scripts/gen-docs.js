@@ -267,7 +267,7 @@ const doc = new Document({
       // --- 10. Команда ---
       new Paragraph({ text: '10. О команде', heading: HeadingLevel.HEADING_1 }),
       new Paragraph({ text: '• Разработчик: Безумный Хомяк "Outmilker"', spacing: { after: 60 } }),
-      new Paragraph({ text: '• Идея: Хомимуми и Настя "Сеня" (За вдохновение, которое пришло ко мне ночью, пока вы не давали мне спокойненько спать...)', spacing: { after: 60 } }),
+      new Paragraph({ text: '• Идея: Хомимуми и Настя "Сеня" (Спасибо моим любимым хомячкам за вдохновение, которое пришло ко мне ночью, пока они не давали мне спокойненько спать...)', spacing: { after: 60 } }),
       new Paragraph({ text: '• Помощь в создании: Василька (огромное спасибо за помощь при разработке и тестированию)', spacing: { after: 60 } }),
       new Paragraph({ text: '• AI-ассистент: opencode (opencode.ai — тоже молодец)', spacing: { after: 60 } }),
       new Paragraph({ text: '• И вместе мы бригада "Ух!"... работаем до двух.... ночи)', spacing: { after: 60 } }),
