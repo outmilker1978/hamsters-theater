@@ -9,8 +9,9 @@ if (form) {
     fetch(form.action, { method: 'POST', body: data })
       .then(r => {
         if (r.ok) {
-          form.style.display = 'none';
+          form.reset();
           success.style.display = 'block';
+          setTimeout(() => { success.style.display = 'none'; }, 3000);
         }
       })
       .catch(() => {});
