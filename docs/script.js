@@ -1,9 +1,4 @@
 // Форма обратной связи
+const url = window.location.href.split('?')[0].split('#')[0];
 const formNext = document.getElementById('formNext');
-if (formNext) formNext.value = window.location.origin + '/?sent=ok';
-
-const params = new URLSearchParams(window.location.search);
-if (params.get('sent') === 'ok') {
-  const success = document.getElementById('formSuccess');
-  if (success) success.style.display = 'block';
-}
+if (formNext) formNext.value = url + '?sent=ok';
