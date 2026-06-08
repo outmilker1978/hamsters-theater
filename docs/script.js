@@ -190,6 +190,11 @@ function setLang(l) {
   if (btn && window._releaseSize) {
     btn.textContent = (l === 'ru' ? 'Скачать .exe (' + window._releaseSize + ' МБ)' : 'Download .exe (' + window._releaseSize + ' MB)');
   }
+  // Обновить версию в герое
+  var hv = document.getElementById('heroVersion');
+  if (hv && window._releaseVer && window._releaseSize) {
+    hv.textContent = (l === 'ru' ? 'Версия ' + window._releaseVer + ' · ' + window._releaseSize + ' МБ · Portable' : 'Version ' + window._releaseVer + ' · ' + window._releaseSize + ' MB · Portable');
+  }
 }
 
 // === Кнопки переключения ===
@@ -238,11 +243,17 @@ fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases/late
     if (asset) {
       document.getElementById('verTag').textContent = ver;
       document.getElementById('downloadLink').href = asset.browser_download_url;
+      document.getElementById('heroDownloadLink').href = asset.browser_download_url;
       var sizeMB = (asset.size / 1024 / 1024).toFixed(1);
       window._releaseSize = sizeMB;
+      window._releaseVer = ver.slice(1);
       document.getElementById('downloadBtnText').textContent =
         currentLang === 'ru' ? 'Скачать .exe (' + sizeMB + ' МБ)' : 'Download .exe (' + sizeMB + ' MB)';
+      document.getElementById('heroVersion').textContent =
+        currentLang === 'ru' ? 'Версия ' + ver.slice(1) + ' · ' + sizeMB + ' МБ · Portable' : 'Version ' + ver.slice(1) + ' · ' + sizeMB + ' MB · Portable';
     }
     var body = data.body;
-    document.getElementById('releaseBody').innerHTML = body.replace(/\r\n/g, '<br>');
+    var html = body.replace(/\r\n/g, '<br>');
+    html = html.replace(/([\u{1F000}-\u{1FFFF}]|[\u2600-\u27BF]|[\u{2700}-\u{27BF}])/gu, '<span class="rn-icon">$1</span>');
+    document.getElementById('releaseBody').innerHTML = html;
   });
