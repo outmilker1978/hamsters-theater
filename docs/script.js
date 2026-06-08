@@ -72,8 +72,9 @@ lang.ru = {
   'contact.success': '✓ Спасибо! Письмо отправлено. Мы ответим в ближайшее время.',
   'download.title': 'Скачать TV Hamsters',
   'download.sub': 'Windows · Portable · Русский и Английский',
-  'download.btn': 'Скачать .exe (77 МБ)',
+  'download.btn': 'Скачать .exe',
   'download.note': 'Никакой рекламы. Никаких следилок. Просто работает.',
+  'download.release_title': 'Что нового',
   'footer.issues': 'Сообщить о проблеме',
   'footer.contact': 'Написать нам',
 };
@@ -149,8 +150,9 @@ lang.en = {
   'contact.success': '✓ Thanks! Message sent. We\'ll get back to you soon.',
   'download.title': 'Download TV Hamsters',
   'download.sub': 'Windows · Portable · Russian & English',
-  'download.btn': 'Download .exe (77 MB)',
+  'download.btn': 'Download .exe',
   'download.note': 'No ads. No trackers. Just works.',
+  'download.release_title': 'What\'s new',
   'footer.issues': 'Report an issue',
   'footer.contact': 'Contact us',
 };
@@ -183,6 +185,11 @@ function setLang(l) {
   }
   // Сохранить
   try { localStorage.setItem('tvh_lang', l); } catch(e) {}
+  // Обновить текст кнопки скачивания, если есть данные о размере
+  var btn = document.getElementById('downloadBtnText');
+  if (btn && window._releaseSize) {
+    btn.textContent = (l === 'ru' ? 'Скачать .exe (' + window._releaseSize + ' МБ)' : 'Download .exe (' + window._releaseSize + ' MB)');
+  }
 }
 
 // === Кнопки переключения ===
@@ -221,3 +228,21 @@ document.getElementById('feedbackForm').addEventListener('submit', function(e) {
     }, 4000);
   });
 });
+
+// === GitHub Release ===
+fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases/latest')
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var ver = data.tag_name;
+    var asset = data.assets[0];
+    if (asset) {
+      document.getElementById('verTag').textContent = ver;
+      document.getElementById('downloadLink').href = asset.browser_download_url;
+      var sizeMB = (asset.size / 1024 / 1024).toFixed(1);
+      window._releaseSize = sizeMB;
+      document.getElementById('downloadBtnText').textContent =
+        currentLang === 'ru' ? 'Скачать .exe (' + sizeMB + ' МБ)' : 'Download .exe (' + sizeMB + ' MB)';
+    }
+    var body = data.body;
+    document.getElementById('releaseBody').innerHTML = body.replace(/\r\n/g, '<br>');
+  });

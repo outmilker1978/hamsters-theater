@@ -242,13 +242,17 @@
       <p class="section-sub" data-i18n="download.sub">Windows · Portable · Русский и Английский</p>
       <div class="download-card">
         <div class="download-version">
-          <span class="ver-tag">v1.7.1</span>
+          <span class="ver-tag" id="verTag">v1.7.1</span>
         </div>
-        <a href="https://github.com/outmilker1978/hamsters-theater/releases/download/v1.7.1/TV.Hamsters.1.7.1.exe" class="btn btn-primary btn-large">
+        <a id="downloadLink" href="https://github.com/outmilker1978/hamsters-theater/releases/download/v1.7.1/TV.Hamsters.1.7.1.exe" class="btn btn-primary btn-large">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="vertical-align:-3px;margin-right:6px"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-          <span data-i18n="download.btn">Скачать .exe (77 МБ)</span>
+          <span id="downloadBtnText">Скачать .exe (77 МБ)</span>
         </a>
         <p class="download-note" data-i18n="download.note">Никакой рекламы. Никаких следилок. Просто работает.</p>
+      </div>
+      <div class="release-notes" id="releaseNotes">
+        <h3 data-i18n="download.release_title">Что нового</h3>
+        <div id="releaseBody"></div>
       </div>
     </div>
   </section>
