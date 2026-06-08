@@ -212,6 +212,83 @@ h2 {
   line-height: 1.5;
 }
 
+/* Инструкция */
+.steps {
+  max-width: 640px;
+  margin: 48px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+}
+
+.step-card {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s;
+}
+
+.step-card:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(139,92,246,0.2);
+}
+
+.step-num {
+  min-width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.step-body h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.step-body p {
+  font-size: 14px;
+  color: #999;
+  line-height: 1.6;
+}
+
+.manual-note {
+  margin-top: 32px;
+  background: rgba(139,92,246,0.06);
+  border: 1px solid rgba(139,92,246,0.15);
+  border-radius: 16px;
+  padding: 24px 28px;
+  text-align: left;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.manual-note h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #b088f0;
+  margin-bottom: 6px;
+}
+
+.manual-note p {
+  font-size: 14px;
+  color: #999;
+  line-height: 1.6;
+}
+
 /* Команда */
 .team-grid {
   display: grid;
