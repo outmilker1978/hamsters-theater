@@ -39,7 +39,7 @@
 
 ## Скачать
 
-Бесплатно. Только Windows. Версия 1.7.1, 77 МБ.
+Бесплатно. Только Windows. Версия 1.7.4, 215 МБ.
 
 👉 [tvhamsters.outmilk.online](https://tvhamsters.outmilk.online/)
 

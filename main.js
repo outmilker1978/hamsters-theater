@@ -38,7 +38,11 @@ function removeUPnPMapping() {
 }
 
 function registerProtocol() {
-  const exePath = process.execPath;
+  // Portable mode: process.execPath may point to temp extraction.
+  // electron-builder sets PORTABLE_EXECUTABLE_FILE to the original exe path.
+  const exePath = process.env.PORTABLE_EXECUTABLE_FILE || process.argv[0] || process.execPath;
+  console.log('[Protocol] exePath:', exePath);
+  console.log('[Protocol] execPath:', process.execPath);
   const key = 'HKCU\\Software\\Classes\\hamsters';
   spawn('reg', ['add', key, '/ve', '/d', 'URL:TV Hamsters', '/f']);
   spawn('reg', ['add', key, '/v', 'URL Protocol', '/d', '', '/f']);
