@@ -3,6 +3,7 @@ const http = require('http');
 const os = require('os');
 const { Server } = require('socket.io');
 const natUpnp = require('nat-upnp');
+const { exec } = require('child_process');
 
 process.title = 'TV Hamsters';
 const CLOUD_SERVER_URL = 'https://tv-hamsters-bot.onrender.com';
@@ -33,6 +34,14 @@ function removeUPnPMapping() {
     upnpMapping.client.portUnmapping({ public: upnpMapping.port, protocol: 'TCP' }, () => {});
     upnpMapping = null;
   }
+}
+
+function registerProtocol() {
+  const exePath = process.execPath;
+  const key = 'HKCU\\Software\\Classes\\hamsters';
+  exec(`reg add "${key}" /ve /d "URL:TV Hamsters" /f`, () => {});
+  exec(`reg add "${key}" /v "URL Protocol" /d "" /f`, () => {});
+  exec(`reg add "${key}\\shell\\open\\command" /ve /d "\"${exePath}\" \"%1\"" /f`, () => {});
 }
 
 function startSignalingServer() {
@@ -460,9 +469,7 @@ ipcMain.on('set-language', (event, lang) => {
 
 app.whenReady().then(() => {
   startSignalingServer();
-  // Register hamsters:// protocol
-  app.setAsDefaultProtocolClient('hamsters');
-  // Handle deep link from second instance (Windows)
+  registerProtocol();
   const gotLock = app.requestSingleInstanceLock();
   if (!gotLock) {
     app.quit();
@@ -487,13 +494,6 @@ app.whenReady().then(() => {
       }
     }
   });
-  // Handle deep link from argv (first instance launched via protocol)
-  const deepLinkUrl = process.argv.find(a => a.startsWith('hamsters://'));
-  if (deepLinkUrl) {
-    const wins = BrowserWindow.getAllWindows();
-    const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
-    if (mainWin) mainWin.webContents.send('deep-link', deepLinkUrl);
-  }
   session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
     const allowed = ['media', 'display-capture'];
     if (allowed.includes(permission)) return callback(true);
@@ -514,6 +514,13 @@ app.whenReady().then(() => {
   });
 
   createWindow();
+
+  const deepLinkUrl = process.argv.find(a => a.startsWith('hamsters://'));
+  if (deepLinkUrl) {
+    const wins = BrowserWindow.getAllWindows();
+    const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
+    if (mainWin) mainWin.webContents.send('deep-link', deepLinkUrl);
+  }
 });
 
 app.on('window-all-closed', () => {
