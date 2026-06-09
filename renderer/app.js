@@ -220,7 +220,7 @@ el('joinRoomBtn').onclick = () => {
   socket.on('joined', async () => {
     mySocketId = socket.id;
     showRoom();
-    updateCamGrid();
+    el('roomCodeDisplay').textContent = t('room.code_label') + ' ' + roomId;
     await startCamera();
     pendingOffers.forEach(o => handleOffer(o));
     pendingOffers = [];
