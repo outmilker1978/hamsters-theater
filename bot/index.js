@@ -156,9 +156,10 @@ bot.on('message', (msg) => {
 console.log('Bot started');
 
 // Keep-alive: ping self every 10 minutes to prevent Render free-tier sleep
+const httpsKeepAlive = require('https');
 const SELF_URL = process.env.RENDER_EXTERNAL_URL || 'https://tv-hamsters-bot.onrender.com';
 setInterval(() => {
-  https.get(SELF_URL, (res) => {
+  httpsKeepAlive.get(SELF_URL, (res) => {
     console.log('Keep-alive ping, status:', res.statusCode);
   }).on('error', (err) => {
     console.log('Keep-alive error:', err.message);
