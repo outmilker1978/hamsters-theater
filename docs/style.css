@@ -44,6 +44,7 @@ header {
   gap: 10px;
   font-weight: 600;
   font-size: 18px;
+  white-space: nowrap;
 }
 
 .logo img {
@@ -740,4 +741,52 @@ footer {
   .features { grid-template-columns: 1fr; }
   .download-card { padding: 32px 20px; }
   .footer-inner { flex-direction: column; text-align: center; }
+}
+
+@media (max-width: 600px) {
+  header {
+    position: fixed;
+  }
+  .header-inner {
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    padding: 8px 12px;
+  }
+  .logo { font-size: 15px; gap: 8px; }
+  .logo img { width: 24px; height: 24px; }
+  .byline {
+    order: 3;
+    width: 100%;
+    font-size: 11px;
+    color: #777;
+    margin-left: 32px;
+    margin-top: -2px;
+  }
+  .header-right {
+    gap: 5px;
+  }
+  .header-divider {
+    width: 1px;
+    height: 14px;
+  }
+  .dh-link {
+    font-size: 10px;
+    padding: 1px 6px;
+  }
+  .lang-btn {
+    font-size: 11px;
+    padding: 3px 7px;
+  }
+}
+
+@media (max-width: 400px) {
+  .header-inner {
+    gap: 3px;
+    padding: 6px 10px;
+  }
+  .logo { font-size: 13px; gap: 6px; }
+  .logo img { width: 20px; height: 20px; }
+  .dh-link { font-size: 9px; padding: 1px 4px; }
+  .lang-btn { font-size: 10px; padding: 2px 5px; }
+  .byline { font-size: 10px; margin-left: 26px; }
 }
