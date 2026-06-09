@@ -131,14 +131,14 @@ bot.on('message', (msg) => {
 
   if (isGroup) {
     if (txt.match(groupKeywords)) {
-      sendRoom(msg.chat.id);
+      sendRoom(msg.chat.id).catch(() => {});
     }
     return;
   }
 
   // Private chat: menu buttons
   if (txt.includes('\u043A\u043E\u043C\u043D\u0430\u0442') || txt === '+') {
-    sendRoom(msg.chat.id);
+    sendRoom(msg.chat.id).catch(() => {});
     return;
   }
   if (txt.includes('\u043A\u0430\u043A') || txt.includes('\u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442')) return;
@@ -148,12 +148,16 @@ bot.on('message', (msg) => {
 
 console.log('Bot started');
 
+process.on('unhandledRejection', (err) => {
+  console.log('Unhandled rejection:', err?.message || err);
+});
+
 const httpsKeepAlive = require('https');
 const SELF_URL = process.env.RENDER_EXTERNAL_URL || 'https://tv-hamsters-bot.onrender.com';
 setInterval(() => {
   httpsKeepAlive.get(SELF_URL, (res) => {
     console.log('Keep-alive ping, status:', res.statusCode);
   }).on('error', (err) => {
-    console.log('Keep-alive error:', err.message);
+    console.log('Keep-alive error:', err?.message || err);
   });
 }, 10 * 60 * 1000);
