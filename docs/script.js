@@ -5,7 +5,7 @@ lang.ru = {
   'page.title': 'TV Hamsters — смотрите видео вместе',
   'hero.title': 'Смотрите видео вместе,<br>будто вы рядом',
   'hero.sub': 'Трансляция экрана со звуком, голосовой чат, видеозвонок и рация —<br>всё в одной программе. Бесплатно.',
-  'hero.download': 'Скачать для Windows',
+  'hero.download': 'Windows (десктоп)',
   'hero.learn': 'Узнать больше',
   'hero.version': 'Версия 1.7.1 · 77 МБ · Portable',
   'hero.channel': 'Telegram-канал',
@@ -75,7 +75,7 @@ lang.ru = {
   'contact.success': '✓ Спасибо! Письмо отправлено. Мы ответим в ближайшее время.',
   'download.title': 'Скачать TV Hamsters',
   'download.sub': 'Выберите способ подключения',
-  'download.btn': 'Скачать .exe',
+  'download.btn': 'Windows (десктоп)',
   'download.note': 'Никакой рекламы. Никаких следилок. Просто работает.',
   'download.platforms_title': 'Дополнительно',
   'download.tg_channel': 'Telegram-канал',
@@ -97,7 +97,7 @@ lang.en = {
   'page.title': 'TV Hamsters — watch videos together',
   'hero.title': 'Watch videos together,<br>like you\'re in the same room',
   'hero.sub': 'Screen sharing with sound, voice chat, video call and push-to-talk —<br>all in one app. Free.',
-  'hero.download': 'Download for Windows',
+  'hero.download': 'Windows (desktop)',
   'hero.learn': 'Learn more',
   'hero.version': 'Version 1.7.1 · 77 MB · Portable',
   'hero.channel': 'Telegram channel',
@@ -167,7 +167,7 @@ lang.en = {
   'contact.success': '✓ Thanks! Message sent. We\'ll get back to you soon.',
   'download.title': 'Download TV Hamsters',
   'download.sub': 'Choose how to connect',
-  'download.btn': 'Download .exe',
+  'download.btn': 'Windows (desktop)',
   'download.note': 'No ads. No trackers. Just works.',
   'download.platforms_title': 'Other ways',
   'download.tg_channel': 'Telegram channel',
@@ -225,7 +225,7 @@ function setLang(l) {
   // Обновить текст кнопки скачивания, если есть данные о размере
   var btn = document.getElementById('downloadBtnText');
   if (btn && window._releaseSize) {
-    btn.textContent = (l === 'ru' ? 'Скачать .exe (' + window._releaseSize + ' МБ)' : 'Download .exe (' + window._releaseSize + ' MB)');
+    btn.textContent = (l === 'ru' ? 'Windows (' + window._releaseSize + ' МБ)' : 'Windows (' + window._releaseSize + ' MB)');
   }
   // Обновить версию в герое
   var hv = document.getElementById('heroVersion');
@@ -296,7 +296,7 @@ fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases/late
       window._releaseSize = sizeMB;
       window._releaseVer = ver.slice(1);
       document.getElementById('downloadBtnText').textContent =
-        currentLang === 'ru' ? 'Скачать .exe (' + sizeMB + ' МБ)' : 'Download .exe (' + sizeMB + ' MB)';
+        currentLang === 'ru' ? 'Windows (' + sizeMB + ' МБ)' : 'Windows (' + sizeMB + ' MB)';
       document.getElementById('heroVersion').textContent =
         currentLang === 'ru' ? 'Версия ' + ver.slice(1) + ' · ' + sizeMB + ' МБ · Portable' : 'Version ' + ver.slice(1) + ' · ' + sizeMB + ' MB · Portable';
     }
