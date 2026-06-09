@@ -244,13 +244,31 @@ h1 {
 }
 
 .pf-card-win {
-  border-color: rgba(124,58,237,0.25);
-  background: rgba(124,58,237,0.04);
+  border-color: rgba(124,58,237,0.3);
+  background: rgba(124,58,237,0.06);
 }
 
 .pf-card-win:hover {
-  border-color: rgba(124,58,237,0.4);
-  background: rgba(124,58,237,0.08);
+  border-color: rgba(124,58,237,0.5);
+  background: rgba(124,58,237,0.12);
+}
+
+.pf-action-win {
+  color: #fff !important;
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9) !important;
+}
+
+.pf-card-win:hover .pf-action-win {
+  background: linear-gradient(135deg, #9d71f8, #7c3aed) !important;
+}
+
+.hero-dl-card {
+  margin-bottom: 14px;
+}
+
+.hero-dl-card .pf-card {
+  max-width: 380px;
+  margin: 0 auto;
 }
 
 .pf-card-disabled {
