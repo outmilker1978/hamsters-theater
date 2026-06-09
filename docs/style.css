@@ -243,6 +243,16 @@ h1 {
   border-color: rgba(139,92,246,0.25);
 }
 
+.pf-card-win {
+  border-color: rgba(124,58,237,0.25);
+  background: rgba(124,58,237,0.04);
+}
+
+.pf-card-win:hover {
+  border-color: rgba(124,58,237,0.4);
+  background: rgba(124,58,237,0.08);
+}
+
 .pf-card-disabled {
   opacity: 0.5;
   cursor: default;

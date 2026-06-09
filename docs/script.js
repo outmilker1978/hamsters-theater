@@ -5,9 +5,10 @@ lang.ru = {
   'page.title': 'TV Hamsters — смотрите видео вместе',
   'hero.title': 'Смотрите видео вместе,<br>будто вы рядом',
   'hero.sub': 'Трансляция экрана со звуком, голосовой чат, видеозвонок и рация —<br>всё в одной программе. Бесплатно.',
-  'hero.download': 'Windows (десктоп)',
+  'hero.download': 'Скачать для Windows',
   'hero.win_title': 'Windows (десктоп)',
   'hero.win_desc': 'Совместный просмотр + голос',
+  'hero.win_btn': 'Скачать',
   'hero.learn': 'Узнать больше',
   'hero.version': 'Версия 1.7.1 · 77 МБ · Portable',
   'hero.channel': 'Telegram-канал',
@@ -105,9 +106,10 @@ lang.en = {
   'page.title': 'TV Hamsters — watch videos together',
   'hero.title': 'Watch videos together,<br>like you\'re in the same room',
   'hero.sub': 'Screen sharing with sound, voice chat, video call and push-to-talk —<br>all in one app. Free.',
-  'hero.download': 'Windows (desktop)',
+  'hero.download': 'Download for Windows',
   'hero.win_title': 'Windows (desktop)',
   'hero.win_desc': 'Watch together + voice',
+  'hero.win_btn': 'Download',
   'hero.learn': 'Learn more',
   'hero.version': 'Version 1.7.1 · 77 MB · Portable',
   'hero.channel': 'Telegram channel',
@@ -248,11 +250,6 @@ function setLang(l) {
   if (hv && window._releaseVer && window._releaseSize) {
     hv.textContent = (l === 'ru' ? 'Версия ' + window._releaseVer + ' · ' + window._releaseSize + ' МБ · Portable' : 'Version ' + window._releaseVer + ' · ' + window._releaseSize + ' MB · Portable');
   }
-  // Обновить размер на карточке Windows
-  var hs = document.getElementById('heroSize');
-  if (hs && window._releaseSize) {
-    hs.textContent = window._releaseSize + ' МБ';
-  }
 }
 
 // === Кнопки переключения ===
@@ -320,8 +317,6 @@ fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases/late
         currentLang === 'ru' ? 'Windows (' + sizeMB + ' МБ)' : 'Windows (' + sizeMB + ' MB)';
       document.getElementById('heroVersion').textContent =
         currentLang === 'ru' ? 'Версия ' + ver.slice(1) + ' · ' + sizeMB + ' МБ · Portable' : 'Version ' + ver.slice(1) + ' · ' + sizeMB + ' MB · Portable';
-      var hs = document.getElementById('heroSize');
-      if (hs) hs.textContent = sizeMB + ' МБ';
     }
     var bodyRU = data.body;
     var bodyEN = releaseNotesEN[data.tag_name] || bodyRU;
