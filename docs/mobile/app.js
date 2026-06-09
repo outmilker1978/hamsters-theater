@@ -68,8 +68,8 @@ function connectAndDo(action) {
   });
   socket.on('peer-joined', (peerId) => { if (localStream) createOfferToPeer(peerId); else pendingPeers.push(peerId); });
   socket.on('offer', (data) => { if (localStream) handleOffer(data); else pendingOffers.push(data); });
-  socket.on('answer', (data) => { const pc = peers[data.from]?.pc; if (pc) pc.setRemoteDescription(new RTCSessionDescription(data.sdp)).catch(() => {}); });
-  socket.on('ice-candidate', (data) => { const pc = peers[data.from]?.pc; if (pc && data.candidate) pc.addIceCandidate(new RTCIceCandidate(data.candidate)).catch(() => {}); });
+  socket.on('answer', (data) => { const pc = peers[data.from]?.pc; if (pc) pc.setRemoteDescription(new RTCSessionDescription(data.sdp)).catch(e => log('answer sd err: ' + e.message)); });
+  socket.on('ice-candidate', (data) => { const pc = peers[data.from]?.pc; if (pc && data.candidate) pc.addIceCandidate(new RTCIceCandidate(data.candidate)).catch(e => log('ice err: ' + e.message)); });
   socket.on('peer-disconnected', removePeer);
 }
 
@@ -108,19 +108,20 @@ function createPC(peerId) {
     }
     if (e.streams[0]) v.srcObject = e.streams[0];
   };
-  pc.onconnectionstatechange = () => { if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') removePeer(peerId); };
+  pc.onconnectionstatechange = () => { log('pc state ' + peerId + ': ' + pc.connectionState); if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') removePeer(peerId); };
   return pc;
 }
 
 function createOfferToPeer(peerId) {
   const pc = createPC(peerId);
-  pc.createOffer().then(o => { pc.setLocalDescription(o); socket.emit('offer', { to: peerId, sdp: o }); }).catch(() => {});
+  pc.createOffer().then(o => { pc.setLocalDescription(o); socket.emit('offer', { to: peerId, sdp: o, type: 'video' }); }).catch(e => log('offer err: ' + e.message));
 }
 
 function handleOffer(data) {
-  const pc = createPC(data.from);
-  pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
-  pc.createAnswer().then(a => { pc.setLocalDescription(a); socket.emit('answer', { to: data.from, sdp: a }); }).catch(() => {});
+  const p = createPC(data.from);
+  p.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(() => {
+    return p.createAnswer();
+  }).then(a => { p.setLocalDescription(a); socket.emit('answer', { to: data.from, sdp: a }); }).catch(e => log('answer err: ' + e.message));
 }
 
 function removePeer(peerId) {
