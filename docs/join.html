@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TV Hamsters — вход в палату</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png">
+  <style>
+    body { font-family: -apple-system, sans-serif; text-align: center; padding: 40px 20px; background: #f5f0ff; color: #333; }
+    h1 { font-size: 24px; margin-bottom: 10px; }
+    p { font-size: 16px; line-height: 1.5; }
+    .code { font-size: 48px; font-weight: bold; color: #7c5cbf; margin: 20px 0; }
+    .btn { display: inline-block; background: #7c5cbf; color: #fff; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-size: 18px; margin-top: 20px; }
+    .fallback { margin-top: 30px; font-size: 14px; color: #888; }
+    .fallback input { width: 100%; max-width: 300px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; text-align: center; }
+  </style>
+</head>
+<body>
+  <h1>TV Hamsters</h1>
+  <p>Вход в палату <span class="code" id="roomCode">--</span></p>
+  <a class="btn" id="joinLink" href="#">Открыть программу</a>
+  <div class="fallback">
+    <p>Если программа не открылась:</p>
+    <p>1. Скачай и запусти TV Hamsters</p>
+    <p>2. Скопируй код и вставь в программу:</p>
+    <input type="text" id="copyCode" readonly onclick="this.select(); document.execCommand('copy');">
+  </div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code') || '----';
+    document.getElementById('roomCode').textContent = code;
+    document.getElementById('joinLink').href = 'hamsters://join?code=' + code;
+    document.getElementById('copyCode').value = code;
+  </script>
+</body>
+</html>
