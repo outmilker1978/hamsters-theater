@@ -8,36 +8,44 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="/icon256.png">
 <title>TV Hamsters</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 <div id="landing">
-  <div class="logo">🐹 TV Hamsters</div>
-  <input type="text" id="roomCodeInput" placeholder="&#x2764; Код комнаты" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off">
-  <button id="joinRoomBtn">Войти в комнату</button>
-  <button id="createRoomBtn">+ Создать комнату</button>
+  <div class="brand">
+    <img src="/icon.png" alt="" class="brand-icon">
+    <span class="brand-name">TV Hamsters</span>
+  </div>
+  <p class="brand-sub">Смотрите видео вместе</p>
+  <div class="code-section">
+    <input type="text" id="roomCodeInput" placeholder="Код комнаты" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off">
+    <button id="joinRoomBtn" class="btn-primary">Войти в комнату</button>
+  </div>
+  <div class="divider"><span>или</span></div>
+  <button id="createRoomBtn" class="btn-secondary">+ Создать новую комнату</button>
   <div id="error"></div>
 </div>
 
 <div id="room">
   <div id="roomHeader">
-    <span id="roomCode"></span>
+    <div class="header-left">
+      <span class="room-label">Палата</span>
+      <span id="roomCode"></span>
+    </div>
     <button id="leaveBtn">Выйти</button>
   </div>
   <div id="faces">
-    <div class="face-wrapper">
-      <video id="localVideo" autoplay muted playsinline></video>
-    </div>
+    <video id="localVideo" autoplay muted playsinline></video>
     <div id="peerList"></div>
     <div id="screenshareBadge">Кто-то делится экраном</div>
   </div>
   <div id="controls">
-    <button id="camBtn">📷</button>
-    <button id="micBtn">🎤</button>
+    <button id="camBtn" class="ctrl-btn">📷</button>
+    <button id="micBtn" class="ctrl-btn">🎤</button>
   </div>
 </div>
 
-<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-<script src="app.js?v=1"></script>
+<script src="socket.io.min.js"></script>
+<script src="app.js?v=2"></script>
 </body>
 </html>
