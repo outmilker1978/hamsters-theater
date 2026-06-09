@@ -42,11 +42,11 @@ const menuKeyboard = {
 
 function createRoom() {
   return new Promise((resolve, reject) => {
-    const socket = io(CLOUD_SERVER, { transports: ['websocket'], timeout: 25000 });
+    const socket = io(CLOUD_SERVER, { transports: ['websocket', 'polling'], timeout: 20000 });
     socket.on('connect', () => { socket.emit('create-room'); });
     socket.on('room-created', (id) => { socket.disconnect(); resolve(id); });
     socket.on('connect_error', (err) => { reject(err); });
-    setTimeout(() => { socket.disconnect(); reject(new Error('timeout')); }, 25000);
+    setTimeout(() => { socket.disconnect(); reject(new Error('timeout')); }, 20000);
   });
 }
 
