@@ -3,6 +3,7 @@ name: Release to Telegram
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   notify:
@@ -10,9 +11,9 @@ jobs:
     steps:
       - name: Send to Telegram
         env:
-          TAG: ${{ github.event.release.tag_name }}
-          URL: ${{ github.event.release.html_url }}
+          TAG: ${{ github.event.release.tag_name || 'v1.7.4 (manual)' }}
+          URL: ${{ github.event.release.html_url || 'https://github.com/outmilker1978/hamsters-theater/releases/tag/v1.7.4' }}
         run: |
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
             -H "Content-Type: application/json" \
-            -d "{\"chat_id\":\"@tvhamsters\",\"parse_mode\":\"HTML\",\"text\":\"🐹 <b>${TAG}</b> вышел!\\n\\nСкачать: ${URL}\\nСайт: https://tvhamsters.outmilk.online\"}"
+            -d "$(printf '{"chat_id":"@tvhamsters","parse_mode":"HTML","text":"\xF0\x9F\x90\xB9 <b>%s</b> вышел!\n\nСкачать: %s\nСайт: https://tvhamsters.outmilk.online"}' "$TAG" "$URL")"
