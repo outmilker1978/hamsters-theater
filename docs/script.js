@@ -5,9 +5,7 @@ lang.ru = {
   'page.title': 'TV Hamsters — смотрите видео вместе',
   'hero.title': 'Смотрите видео вместе,<br>будто вы рядом',
   'hero.sub': 'Трансляция экрана со звуком, голосовой чат, видеозвонок и рация —<br>всё в одной программе. Бесплатно.',
-  'hero.download': 'Скачать',
-  'hero.win_title': 'Windows',
-  'hero.win_desc': 'Десктопное приложение',
+  'hero.download': 'Windows (десктоп)',
   'hero.win_btn': 'Скачать',
   'hero.learn': 'Узнать больше',
   'hero.version': 'Версия 1.7.1 · 77 МБ · Portable',
@@ -106,9 +104,7 @@ lang.en = {
   'page.title': 'TV Hamsters — watch videos together',
   'hero.title': 'Watch videos together,<br>like you\'re in the same room',
   'hero.sub': 'Screen sharing with sound, voice chat, video call and push-to-talk —<br>all in one app. Free.',
-  'hero.download': 'Download',
-  'hero.win_title': 'Windows',
-  'hero.win_desc': 'Desktop app',
+  'hero.download': 'Windows (desktop)',
   'hero.win_btn': 'Download',
   'hero.learn': 'Learn more',
   'hero.version': 'Version 1.7.1 · 77 MB · Portable',
@@ -245,6 +241,10 @@ function setLang(l) {
   if (btn && window._releaseSize) {
     btn.textContent = (l === 'ru' ? 'Windows (' + window._releaseSize + ' МБ)' : 'Windows (' + window._releaseSize + ' MB)');
   }
+  var hbtn = document.getElementById('heroBtnText');
+  if (hbtn && window._releaseSize) {
+    hbtn.textContent = (l === 'ru' ? 'Windows (' + window._releaseSize + ' МБ)' : 'Windows (' + window._releaseSize + ' MB)');
+  }
   // Обновить версию в герое
   var hv = document.getElementById('heroVersion');
   if (hv && window._releaseVer && window._releaseSize) {
@@ -307,14 +307,17 @@ fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases/late
     var ver = data.tag_name;
     var asset = data.assets[0];
     if (asset) {
-      document.getElementById('verTag').textContent = ver;
+      var tagText = ver;
+      document.getElementById('verTag').textContent = tagText;
+      document.getElementById('heroVerTag').textContent = tagText;
       document.getElementById('downloadLink').href = asset.browser_download_url;
       document.getElementById('heroDownloadLink').href = asset.browser_download_url;
       var sizeMB = (asset.size / 1024 / 1024).toFixed(1);
       window._releaseSize = sizeMB;
       window._releaseVer = ver.slice(1);
-      document.getElementById('downloadBtnText').textContent =
-        currentLang === 'ru' ? 'Windows (' + sizeMB + ' МБ)' : 'Windows (' + sizeMB + ' MB)';
+      var btnText = (currentLang === 'ru' ? 'Windows (' + sizeMB + ' МБ)' : 'Windows (' + sizeMB + ' MB)');
+      document.getElementById('downloadBtnText').textContent = btnText;
+      document.getElementById('heroBtnText').textContent = btnText;
       document.getElementById('heroVersion').textContent =
         currentLang === 'ru' ? 'Версия ' + ver.slice(1) + ' · ' + sizeMB + ' МБ · Portable' : 'Version ' + ver.slice(1) + ' · ' + sizeMB + ' MB · Portable';
     }
