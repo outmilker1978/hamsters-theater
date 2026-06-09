@@ -39,14 +39,19 @@ function connect() {
 function createRoom() {
   isHost = true;
   connect();
-  socket.on('connect', () => { log('Creating room'); socket.emit('create-room'); }, { once: true });
+  connectOnce(socket, 'connect', () => { log('Creating room'); socket.emit('create-room'); });
 }
 
 function joinRoom(code) {
   isHost = false;
   roomId = code;
   connect();
-  socket.on('connect', () => { log('Joining room'); socket.emit('join-room', code); }, { once: true });
+  connectOnce(socket, 'connect', () => { log('Joining room'); socket.emit('join-room', code); });
+}
+
+function connectOnce(sock, ev, fn) {
+  if (sock.connected) { fn(); return; }
+  sock.once(ev, fn);
 }
 
 function onRoomCreated(id) {
