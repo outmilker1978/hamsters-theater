@@ -68,7 +68,8 @@ header {
 }
 
 .header-nav {
-  margin-right: 2px;
+  display: flex;
+  align-items: center;
 }
 
 .header-nav a {
@@ -76,7 +77,7 @@ header {
   font-weight: 500;
   color: #aa52dd;
   text-decoration: none;
-  padding: 2px 8px;
+  padding: 4px 8px;
   border-radius: 5px;
   line-height: 1.4;
   border: 1px solid rgba(255,255,255,0.06);
