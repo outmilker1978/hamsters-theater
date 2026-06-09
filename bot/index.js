@@ -79,7 +79,7 @@ bot.onText(/\/start/, onStart);
 
 bot.onText(/\/room|^\+\s|\u043A\u043E\u043C\u043D\u0430\u0442\u0443$/i, async (msg) => {
   if (msg.text && msg.text.startsWith('/')) {
-  } else if (msg.text && !msg.text.includes('\u041A\u043E\u043C\u043D\u0430\u0442\u0443')) {
+  } else if (msg.text && !msg.text.toLowerCase().includes('\u043A\u043E\u043C\u043D\u0430\u0442\u0443')) {
     return;
   }
   const chatId = msg.chat.id;
