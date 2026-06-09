@@ -11,13 +11,9 @@ jobs:
     steps:
       - name: Send to Telegram
         run: |
-          echo "=== Инфо о чате @tvhamsters ==="
-          INFO=$(curl -s "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/getChat?chat_id=@tvhamsters")
-          echo "$INFO"
-          echo ""
-          echo "=== Пробуем отправить в канал ==="
+          echo "=== Пробуем отправить по числовому ID -1003813372615 ==="
           RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-            -d chat_id="@tvhamsters" \
+            -d chat_id="-1003813372615" \
             -d text="test")
           HTTP_CODE=$(echo "$RESPONSE" | tail -1)
           BODY=$(echo "$RESPONSE" | head -n -1)
