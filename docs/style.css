@@ -1031,20 +1031,15 @@ footer {
     font-size: 10px;
     color: #777;
   }
-  .header-nav a {
-    font-size: 10px;
-    padding: 1px 6px;
+  .header-nav a,
+  .dh-link,
+  .lang-btn {
+    font-size: 9px;
+    padding: 2px 6px;
+    line-height: 1.4;
   }
   .header-divider {
     display: none;
-  }
-  .dh-link {
-    font-size: 9px;
-    padding: 1px 5px;
-  }
-  .lang-btn {
-    font-size: 10px;
-    padding: 2px 6px;
   }
   .hero-platforms {
     max-width: 360px;
@@ -1073,8 +1068,11 @@ footer {
   }
   .logo { font-size: 12px; gap: 4px; }
   .logo img { width: 18px; height: 18px; }
-  .header-nav a { font-size: 8px; padding: 1px 3px; }
-  .dh-link { font-size: 8px; padding: 1px 3px; }
-  .lang-btn { font-size: 9px; padding: 1px 4px; }
+  .header-nav a,
+  .dh-link,
+  .lang-btn {
+    font-size: 8px;
+    padding: 1px 4px;
+  }
   .byline { font-size: 9px; }
 }
