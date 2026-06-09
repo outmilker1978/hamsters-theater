@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="blog.title">TV Hamsters — Новости и релизы</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .blog-list {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .blog-card {
+      background: #1e1e24;
+      border: 1px solid #2e2e38;
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+    }
+    .blog-card h2 {
+      font-size: 22px;
+      color: #c4b5fd;
+      margin: 0 0 6px 0;
+    }
+    .blog-card .blog-date {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 14px;
+    }
+    .blog-card .blog-body {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #ddd;
+    }
+    .blog-card .blog-body span.rn-h1 {
+      display: block;
+      font-size: 18px;
+      font-weight: 700;
+      color: #c4b5fd;
+      margin-top: 14px;
+    }
+    .blog-card .blog-body span.rn-h2 {
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      color: #a78bfa;
+      margin-top: 12px;
+    }
+    .blog-card .blog-body span.rn-p {
+      display: block;
+      margin-top: 6px;
+    }
+    .blog-card .blog-download {
+      margin-top: 16px;
+    }
+    .blog-card .blog-download a {
+      display: inline-block;
+      background: #7c3aed;
+      color: #fff;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 22px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background .15s;
+    }
+    .blog-card .blog-download a:hover {
+      background: #6d28d9;
+    }
+    .blog-title {
+      color: #c4b5fd;
+    }
+    .blog-loading {
+      text-align: center;
+      color: #888;
+      font-size: 16px;
+      padding: 60px 0;
+    }
+    @media (max-width: 600px) {
+      .blog-card { padding: 20px 18px; }
+      .blog-card h2 { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <div class="logo">
+          <img src="https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png" alt="TV Hamsters">
+          <span>TV Hamsters</span>
+        </div>
+      </a>
+      <span class="byline">by Outmilk</span>
+      <div class="header-right">
+        <div class="header-donate">
+          <a class="dh-link" href="https://boosty.to/outmilker" target="_blank" title="Boosty">Boosty</a>
+          <a class="dh-link" href="https://pay.cloudtips.ru/p/8485a55c" target="_blank" title="CloudTips">CloudTips</a>
+        </div>
+        <div class="header-divider"></div>
+        <div class="lang-switch">
+          <button class="lang-btn active" data-lang="ru">RU</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="section-inner">
+      <h1 class="blog-title" data-i18n="blog.title">Новости и релизы</h1>
+      <p class="section-sub" data-i18n="blog.sub">Все обновления программы TV Hamsters</p>
+      <div class="blog-list" id="blogList">
+        <div class="blog-loading" data-i18n="blog.loading">Загрузка...</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span>TV Hamsters</span>
+        <span class="footer-by">by Outmilk</span>
+      </div>
+      <div class="footer-links">
+        <a href="/" data-i18n="blog.back">На главную</a>
+        <a href="https://github.com/outmilker1978/hamsters-theater/issues" target="_blank" data-i18n="footer.issues">Сообщить о проблеме</a>
+        <a href="https://boosty.to/outmilker" target="_blank" class="donate-footer-link">Boosty</a>
+        <a href="https://pay.cloudtips.ru/p/8485a55c" target="_blank" class="donate-footer-link">CloudTips</a>
+      </div>
+      <div class="footer-copy">© 2026 Outmilker</div>
+    </div>
+  </footer>
+
+  <script>
+    var lang = {};
+    lang.ru = {
+      'blog.title': 'Новости и релизы',
+      'blog.sub': 'Все обновления программы TV Hamsters',
+      'blog.loading': 'Загрузка...',
+      'blog.back': 'На главную',
+      'footer.issues': 'Сообщить о проблеме',
+    };
+    lang.en = {
+      'blog.title': 'News & Releases',
+      'blog.sub': 'All TV Hamsters updates',
+      'blog.loading': 'Loading...',
+      'blog.back': 'Back to main',
+      'footer.issues': 'Report an issue',
+    };
+
+    var releaseNotesEN = {};
+    releaseNotesEN['v1.7.2'] = 'TV Hamsters v1.7.2\n\nWhat\'s new\n\nWard No. Instead of boring "Room code: 1234" now "Ward No. 1234". Because hamsters gather in a ward, not in some "room".\nScenarios in the "About" modal Added a "Things to do" section with real use cases: home cinema, remote mentorship, connecting with those far away.\nDeep-link hamsters:// Registered the hamsters:// protocol. Now you can send friends links like hamsters://join?code=XXXX — the app will open and connect automatically. Handy for a future Telegram bot.\nDonations Two support buttons: Boosty and CloudTips — open in your system browser, not inside the app. We\'d appreciate any support for the project.\n\nFixes\n\nDonation links now open in the system browser (previously opened inside Electron, breaking auth).\nDesktop shortcut prompt now shows for the new version.';
+
+    function fmtRN(text) {
+      text = text.replace(/[🏥🎬🔗💸🐛]/g, '').replace(/\u00A0/g, ' ').replace(/ +/g, ' ').trim();
+      text = text.replace(/\r\n/g, '\n');
+      var lines = text.split('\n').filter(Boolean);
+      var out = [];
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim().replace(/:$/, '');
+        if (/^TV Hamsters v/i.test(line)) {
+          out.push('<span class="rn-h1">' + line + '</span>');
+        } else if (/^(Что нового|What'?s new|Исправления|Fixes)/i.test(line)) {
+          out.push('<span class="rn-h2">' + line + '</span>');
+        } else {
+          out.push('<span class="rn-p">' + line + '</span>');
+        }
+      }
+      return out.join('\n');
+    }
+
+    var currentLang = 'ru';
+    function setLang(l) {
+      currentLang = l;
+      var els = document.querySelectorAll('[data-i18n]');
+      for (var i = 0; i < els.length; i++) {
+        var key = els[i].getAttribute('data-i18n');
+        if (lang[l][key] !== undefined) {
+          els[i].innerHTML = lang[l][key];
+        }
+      }
+      var btns = document.querySelectorAll('.lang-btn');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.toggle('active', btns[i].getAttribute('data-lang') === l);
+      }
+      try { localStorage.setItem('tvh_lang', l); } catch(e) {}
+    }
+
+    var langBtns = document.querySelectorAll('.lang-btn');
+    for (var i = 0; i < langBtns.length; i++) {
+      langBtns[i].addEventListener('click', function() {
+        setLang(this.getAttribute('data-lang'));
+      });
+    }
+
+    try {
+      var saved = localStorage.getItem('tvh_lang');
+      if (saved && (saved === 'ru' || saved === 'en')) setLang(saved);
+    } catch(e) {}
+
+    fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases?per_page=20')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var html = '';
+        for (var i = 0; i < data.length; i++) {
+          var rel = data[i];
+          var ver = rel.tag_name;
+          var date = rel.published_at ? rel.published_at.slice(0, 10) : '';
+          var asset = rel.assets && rel.assets[0];
+          var downloadUrl = asset ? asset.browser_download_url : '';
+          var body = rel.body || '';
+          var bodyEN = releaseNotesEN[ver] || body;
+          var displayBody = currentLang === 'en' ? fmtRN(bodyEN) : fmtRN(body);
+          var sizeMB = asset ? (asset.size / 1024 / 1024).toFixed(1) : '';
+
+          html += '<div class="blog-card">';
+          html += '<h2>' + ver + '</h2>';
+          if (date) html += '<div class="blog-date">' + date + '</div>';
+          if (body) html += '<div class="blog-body">' + displayBody + '</div>';
+          if (downloadUrl) {
+            html += '<div class="blog-download"><a href="' + downloadUrl + '">' +
+              (currentLang === 'ru'
+                ? 'Скачать .exe' + (sizeMB ? ' (' + sizeMB + ' МБ)' : '')
+                : 'Download .exe' + (sizeMB ? ' (' + sizeMB + ' MB)' : '')) +
+              '</a></div>';
+          }
+          html += '</div>';
+        }
+        document.getElementById('blogList').innerHTML = html;
+      });
+  </script>
+</body>
+</html>

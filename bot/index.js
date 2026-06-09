@@ -79,7 +79,12 @@ const menuKeyboard = {
 };
 
 function createRoom() {
-  return String(Math.floor(1000 + Math.random() * 9000));
+  let code;
+  do {
+    code = String(Math.floor(1000 + Math.random() * 9000));
+  } while (rooms[code]);
+  rooms[code] = [];
+  return code;
 }
 
 async function sendRoom(chatId) {

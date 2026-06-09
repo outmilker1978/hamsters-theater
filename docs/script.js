@@ -75,6 +75,7 @@ lang.ru = {
   'download.btn': 'Скачать .exe',
   'download.note': 'Никакой рекламы. Никаких следилок. Просто работает.',
   'download.release_title': 'Что нового',
+  'nav.blog': 'Блог',
   'footer.issues': 'Сообщить о проблеме',
   'footer.contact': 'Написать нам',
 };
@@ -153,6 +154,7 @@ lang.en = {
   'download.btn': 'Download .exe',
   'download.note': 'No ads. No trackers. Just works.',
   'download.release_title': 'What\'s new',
+  'nav.blog': 'Blog',
   'footer.issues': 'Report an issue',
   'footer.contact': 'Contact us',
 };
