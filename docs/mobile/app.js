@@ -1,5 +1,19 @@
 const CLOUD = 'https://tv-hamsters-bot.onrender.com';
-const RTC = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+const RTC = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun2.l.google.com:19302' },
+    { urls: 'stun:stun3.l.google.com:19302' },
+    { urls: 'stun:stun4.l.google.com:19302' },
+    { urls: 'stun:stun.cloudflare.com:3478' },
+    {
+      urls: 'turn:relay.metered.ca:80',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    }
+  ]
+};
 const MEDIA = { video: { facingMode: 'user', width: { ideal: 320 }, height: { ideal: 240 } }, audio: { echoCancellation: true, noiseSuppression: true } };
 
 let socket, localStream, roomId, isHost = false;
@@ -9,6 +23,7 @@ let connecting = false;
 
 const $ = id => document.getElementById(id);
 
+function toast(msg) { const t = $('statusToast'); if (t) { t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); } }
 function show(msg) { const e = $('error'); if (e) e.textContent = msg; }
 function log(m) { console.log('[M]', m); }
 
@@ -23,39 +38,32 @@ function stopMedia() {
 }
 
 function connectAndDo(action) {
-  if (connecting) { log('Already connecting, skipping'); return; }
-  if (socket && socket.connected) { log('Already connected, doing action'); action(); return; }
+  if (connecting) { log('Already connecting'); return; }
+  if (socket && socket.connected) { action(); return; }
   connecting = true;
   if (socket) { socket.disconnect(); socket = null; }
-  show('Подключаюсь к серверу...');
-  socket = io(CLOUD, {
-    transports: ['websocket', 'polling'],
-    timeout: 15000,
-    reconnection: true,
-    reconnectionAttempts: 3
-  });
+  toast('Подключаюсь к серверу...');
+  socket = io(CLOUD, { transports: ['websocket', 'polling'], timeout: 15000, reconnection: true, reconnectionAttempts: 3 });
   socket.on('connect', () => {
     connecting = false;
     log('Connected, id=' + socket.id);
-    show('Подключено, вхожу в комнату...');
+    toast('Подключено, вхожу в комнату...');
     action();
   });
   socket.on('connect_error', (err) => {
     log('connect_error: ' + err.message);
-    show('Ошибка подключения: ' + err.message);
+    toast('Ошибка: ' + err.message);
     connecting = false;
   });
   socket.on('disconnect', (reason) => {
     log('disconnect: ' + reason);
-    if (reason !== 'io client disconnect') {
-      show('Потеря связи с сервером');
-    }
+    if (reason !== 'io client disconnect') toast('Потеря связи с сервером');
   });
-  socket.on('error-msg', (msg) => { show(msg); });
+  socket.on('error-msg', (msg) => { toast(msg); show(msg); });
   socket.on('room-created', (id) => {
     roomId = id;
     showRoom();
-    startMedia().then(s => { localStream = s; $('localVideo').srcObject = s; }).catch(() => show('Нет доступа к камере'));
+    startMedia().then(s => { localStream = s; $('localVideo').srcObject = s; }).catch(() => toast('Камера не доступна'));
   });
   socket.on('joined', async () => {
     showRoom();
@@ -64,13 +72,17 @@ function connectAndDo(action) {
       $('localVideo').srcObject = localStream;
       pendingOffers.forEach(o => handleOffer(o)); pendingOffers = [];
       pendingPeers.forEach(p => createPC(p)); pendingPeers = [];
-    } catch(e) { show('Нет доступа к камере'); }
+    } catch(e) { toast('Камера не доступна'); }
   });
   socket.on('peer-joined', (peerId) => { if (localStream) createOfferToPeer(peerId); else pendingPeers.push(peerId); });
   socket.on('offer', (data) => { if (localStream) handleOffer(data); else pendingOffers.push(data); });
   socket.on('answer', (data) => { const pc = peers[data.from]?.pc; if (pc) pc.setRemoteDescription(new RTCSessionDescription(data.sdp)).catch(e => log('answer sd err: ' + e.message)); });
   socket.on('ice-candidate', (data) => { const pc = peers[data.from]?.pc; if (pc && data.candidate) pc.addIceCandidate(new RTCIceCandidate(data.candidate)).catch(e => log('ice err: ' + e.message)); });
   socket.on('peer-disconnected', removePeer);
+  socket.on('signal', (d) => {
+    if (d.type === 'screen-started') toast('Кто-то делится экраном');
+    if (d.type === 'screen-stopped') toast('Трансляция завершена');
+  });
 }
 
 function showRoom() {
@@ -106,9 +118,13 @@ function createPC(peerId) {
       $('peerList').appendChild(w);
       v = w.querySelector('video');
     }
-    if (e.streams[0]) v.srcObject = e.streams[0];
+    if (e.streams[0] && v.srcObject !== e.streams[0]) v.srcObject = e.streams[0];
   };
-  pc.onconnectionstatechange = () => { log('pc state ' + peerId + ': ' + pc.connectionState); if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') removePeer(peerId); };
+  pc.onconnectionstatechange = () => {
+    log('pc ' + peerId + ': ' + pc.connectionState);
+    if (pc.connectionState === 'connected') toast('Хомячок подключился');
+    if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') removePeer(peerId);
+  };
   return pc;
 }
 
@@ -119,9 +135,9 @@ function createOfferToPeer(peerId) {
 
 function handleOffer(data) {
   const p = createPC(data.from);
-  p.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(() => {
-    return p.createAnswer();
-  }).then(a => { p.setLocalDescription(a); socket.emit('answer', { to: data.from, sdp: a }); }).catch(e => log('answer err: ' + e.message));
+  p.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(() => p.createAnswer())
+    .then(a => { p.setLocalDescription(a); socket.emit('answer', { to: data.from, sdp: a }); })
+    .catch(e => log('answer err: ' + e.message));
 }
 
 function removePeer(peerId) {
@@ -142,15 +158,17 @@ $('leaveBtn').onclick = leaveRoom;
 $('camBtn').onclick = () => {
   camOn = !camOn;
   if (localStream) localStream.getVideoTracks().forEach(t => t.enabled = camOn);
-  $('camBtn').textContent = camOn ? '📷' : '📷🚫';
+  $('camBtn').textContent = camOn ? '📷' : '📷';
+  $('camBtn').classList.toggle('off', !camOn);
 };
 $('micBtn').onclick = () => {
   micOn = !micOn;
   if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = micOn);
-  $('micBtn').textContent = micOn ? '🎤' : '🎤🚫';
+  $('micBtn').textContent = micOn ? '🎤' : '🎤';
+  $('micBtn').classList.toggle('off', !micOn);
 };
 
-// Auto-join from URL
+// Auto-join from URL - fires immediately
 (function() {
   try {
     const p = new URLSearchParams(location.search);
@@ -159,7 +177,7 @@ $('micBtn').onclick = () => {
       $('roomCodeInput').value = c;
       roomId = c;
       show('Подключаюсь...');
-      setTimeout(() => connectAndDo(() => socket.emit('join-room', c)), 500);
+      connectAndDo(() => socket.emit('join-room', c));
     }
   } catch(e) { console.error(e); }
 })();
