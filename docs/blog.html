@@ -68,9 +68,6 @@
     .blog-card .blog-download a:hover {
       background: #6d28d9;
     }
-    .blog-title {
-      color: #c4b5fd;
-    }
     .blog-loading {
       text-align: center;
       color: #888;
@@ -187,6 +184,8 @@
         btns[i].classList.toggle('active', btns[i].getAttribute('data-lang') === l);
       }
       try { localStorage.setItem('tvh_lang', l); } catch(e) {}
+      var t = document.querySelector('.blog-title');
+      if (t) t.style.color = '#aa52dd';
     }
 
     var langBtns = document.querySelectorAll('.lang-btn');
