@@ -3,9 +3,10 @@ const http = require('http');
 const os = require('os');
 const { Server } = require('socket.io');
 const natUpnp = require('nat-upnp');
-const { exec } = require('child_process');
+const { exec, spawn } = require('child_process');
 
 process.title = 'TV Hamsters';
+const APP_VERSION = require('./package.json').version;
 const CLOUD_SERVER_URL = 'https://tv-hamsters-bot.onrender.com';
 let signalingServer = null;
 let upnpMapping = null;
@@ -39,9 +40,9 @@ function removeUPnPMapping() {
 function registerProtocol() {
   const exePath = process.execPath;
   const key = 'HKCU\\Software\\Classes\\hamsters';
-  exec(`reg add "${key}" /ve /d "URL:TV Hamsters" /f`, () => {});
-  exec(`reg add "${key}" /v "URL Protocol" /d "" /f`, () => {});
-  exec(`reg add "${key}\\shell\\open\\command" /ve /d "\"${exePath}\" \"%1\"" /f`, () => {});
+  spawn('reg', ['add', key, '/ve', '/d', 'URL:TV Hamsters', '/f']);
+  spawn('reg', ['add', key, '/v', 'URL Protocol', '/d', '', '/f']);
+  spawn('reg', ['add', key + '\\shell\\open\\command', '/ve', '/d', '"' + exePath + '" "%1"', '/f']);
 }
 
 function startSignalingServer() {
@@ -213,7 +214,7 @@ function createWindow() {
     minHeight: 520,
     autoHideMenuBar: false,
     fullscreenable: true,
-    title: 'TV Hamsters (v1.7.2)',
+    title: 'TV Hamsters (v' + APP_VERSION + ')',
     icon: __dirname + '/icon.png',
     webPreferences: {
       nodeIntegration: true,
