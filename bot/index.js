@@ -42,12 +42,27 @@ const menuKeyboard = {
 
 function createRoom() {
   return new Promise((resolve, reject) => {
+    const reqTimeout = setTimeout(() => { socket.disconnect(); reject(new Error('timeout')); }, 20000);
     const socket = io(CLOUD_SERVER, { transports: ['websocket', 'polling'], timeout: 20000 });
     socket.on('connect', () => { socket.emit('create-room'); });
-    socket.on('room-created', (id) => { socket.disconnect(); resolve(id); });
-    socket.on('connect_error', (err) => { reject(err); });
-    setTimeout(() => { socket.disconnect(); reject(new Error('timeout')); }, 20000);
+    socket.on('room-created', (id) => { clearTimeout(reqTimeout); socket.disconnect(); resolve(id); });
+    socket.on('connect_error', (err) => { clearTimeout(reqTimeout); socket.disconnect(); reject(err); });
   });
+}
+
+async function createRoomWithRetry(retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    try {
+    const code = await createRoomWithRetry(3);
+      return code;
+    } catch (e) {
+      if (i < retries - 1) {
+        await new Promise(r => setTimeout(r, 5000));
+      } else {
+        throw e;
+      }
+    }
+  }
 }
 
 function onStart(msg) {
@@ -91,8 +106,7 @@ bot.onText(/\/room|^\+\s|\u043A\u043E\u043C\u043D\u0430\u0442\u0443$/i, async (m
     );
   } catch (e) {
     await bot.editMessageText(
-      '\u041D\u0435 \u043F\u043E\u043B\u0443\u0447\u0438\u043B\u043E\u0441\u044C \u0441\u043E\u0437\u0434\u0430\u0442\u044C \u043A\u043E\u043C\u043D\u0430\u0442\u0443.\n'
-      + '\u041E\u0431\u043B\u0430\u0447\u043D\u044B\u0439 \u0441\u0435\u0440\u0432\u0435\u0440 \u043F\u0440\u043E\u0441\u044B\u043F\u0430\u0435\u0442\u0441\u044F... \u043F\u043E\u043F\u0440\u043E\u0431\u0443\u0439 \u0435\u0449\u0451 \u0440\u0430\u0437\u043E\u043A \u0447\u0435\u0440\u0435\u0437 5 \u0441\u0435\u043A\u0443\u043D\u0434.',
+      '\u041D\u0435 \u043F\u043E\u043B\u0443\u0447\u0438\u043B\u043E\u0441\u044C \u0441\u043E\u0437\u0434\u0430\u0442\u044C \u043A\u043E\u043C\u043D\u0430\u0442\u0443 \u0441\u0435\u0439\u0447\u0430\u0441. \u041F\u043E\u043F\u0440\u043E\u0431\u0443\u0439 \u0447\u0435\u0440\u0435\u0437 \u043C\u0438\u043D\u0443\u0442\u0443.',
       { chat_id: chatId, message_id: sent.message_id }
     );
   }

@@ -68,3 +68,14 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
   console.log('[Cloud] TV Hamsters cloud server running on port', PORT);
 });
+
+// Keep-alive: ping self every 10 minutes to prevent Render free-tier sleep
+const https = require('https');
+const SELF_URL = process.env.RENDER_EXTERNAL_URL || ('https://hamsters-theater-cloud.onrender.com');
+setInterval(() => {
+  https.get(SELF_URL, (res) => {
+    console.log('[Cloud] keep-alive ping, status:', res.statusCode);
+  }).on('error', (err) => {
+    console.log('[Cloud] keep-alive error:', err.message);
+  });
+}, 10 * 60 * 1000);
