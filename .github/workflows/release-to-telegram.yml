@@ -9,21 +9,18 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Send to Telegram
-        env:
-          TAG: ${{ github.event.release.tag_name || 'v1.7.4' }}
-          URL: ${{ github.event.release.html_url || 'https://github.com/outmilker1978/hamsters-theater/releases/tag/v1.7.4' }}
+      - name: Check bot chats
         run: |
-          echo "Testing Telegram bot..."
-          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+          echo "=== Какие чаты видит бот ==="
+          RESPONSE=$(curl -s "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/getUpdates")
+          echo "$RESPONSE"
+          echo ""
+          echo "=== Пробуем отправить сообщение ==="
+          RESPONSE2=$(curl -s -w "\n%{http_code}" -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
             -d chat_id="@tvhamsters" \
-            -d parse_mode="HTML" \
-            --data-urlencode "text=🐹 <b>${TAG}</b> вышел!
-
-          Скачать: ${URL}
-          Сайт: https://tvhamsters.outmilk.online")
-          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
-          BODY=$(echo "$RESPONSE" | head -n -1)
+            -d text="test")
+          HTTP_CODE=$(echo "$RESPONSE2" | tail -1)
+          BODY2=$(echo "$RESPONSE2" | head -n -1)
           echo "HTTP $HTTP_CODE"
-          echo "Response: $BODY"
+          echo "Response: $BODY2"
           if [ "$HTTP_CODE" != "200" ]; then exit 1; fi
