@@ -14,6 +14,10 @@ jobs:
           TAG: ${{ github.event.release.tag_name || 'v1.7.4 (manual)' }}
           URL: ${{ github.event.release.html_url || 'https://github.com/outmilker1978/hamsters-theater/releases/tag/v1.7.4' }}
         run: |
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
             -H "Content-Type: application/json" \
-            -d "$(printf '{"chat_id":"@tvhamsters","parse_mode":"HTML","text":"\xF0\x9F\x90\xB9 <b>%s</b> вышел!\n\nСкачать: %s\nСайт: https://tvhamsters.outmilk.online"}' "$TAG" "$URL")"
+            -d "$(printf '{"chat_id":"@tvhamsters","parse_mode":"HTML","text":"\xF0\x9F\x90\xB9 <b>%s</b> вышел!\n\nСкачать: %s\nСайт: https://tvhamsters.outmilk.online"}' "$TAG" "$URL")")
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | head -n -1)
+          echo "HTTP $HTTP_CODE: $BODY"
+          if [ "$HTTP_CODE" != "200" ]; then exit 1; fi
