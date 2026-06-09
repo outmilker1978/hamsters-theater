@@ -141,9 +141,28 @@
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code') || '';
     document.getElementById('roomCode').textContent = code || '--';
-    document.getElementById('openBtn').onclick = function() {
+    const btn = document.getElementById('openBtn');
+    btn.onclick = function() {
       window.location.href = 'hamsters://join?code=' + code;
+      pollLocalServer();
     };
+    function pollLocalServer() {
+      let attempts = 0;
+      const iv = setInterval(() => {
+        attempts++;
+        fetch('http://localhost:32456/ping', { mode: 'cors' })
+          .then(r => { if (r.ok) { clearInterval(iv); sendCode(); } })
+          .catch(() => { if (attempts > 60) clearInterval(iv); });
+      }, 500);
+    }
+    function sendCode() {
+      fetch('http://localhost:32456/join?code=' + encodeURIComponent(code), { mode: 'cors' })
+        .then(() => {
+          btn.textContent = '✅ Подключаюсь…';
+          btn.disabled = true;
+        })
+        .catch(() => {});
+    }
   </script>
 </body>
 </html>

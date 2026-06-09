@@ -12,6 +12,7 @@ let signalingServer = null;
 let upnpMapping = null;
 let pendingScreenSourceId = null;
 let upnpStatus = 'проверка...';
+let mainWindow = null;
 
 function addUPnPMapping(port) {
   setTimeout(() => {
@@ -47,6 +48,35 @@ function registerProtocol() {
   spawn('reg', ['add', key, '/ve', '/d', 'URL:TV Hamsters', '/f']);
   spawn('reg', ['add', key, '/v', 'URL Protocol', '/d', '', '/f']);
   spawn('reg', ['add', key + '\\shell\\open\\command', '/ve', '/d', '"' + exePath + '" "%1"', '/f']);
+}
+
+let pendingDeepLinkCode = null;
+let deepLinkServer = null;
+
+function startDeepLinkServer() {
+  const dls = http.createServer((req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
+    const url = new URL(req.url, 'http://localhost');
+    if (url.pathname === '/ping') { res.writeHead(200); res.end('ok'); return; }
+    if (url.pathname === '/join') {
+      const code = url.searchParams.get('code');
+      if (code) {
+        pendingDeepLinkCode = code;
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          mainWindow.webContents.send('deep-link', 'hamsters://join?code=' + code);
+        }
+      }
+      res.writeHead(200); res.end('ok');
+      return;
+    }
+    res.writeHead(404); res.end();
+  });
+  dls.listen(32456, () => console.log('[DeepLink] Server on port 32456'));
+  dls.on('error', () => {}); // port busy, ignore
+  deepLinkServer = dls;
+  return dls;
 }
 
 function startSignalingServer() {
@@ -226,6 +256,8 @@ function createWindow() {
     }
   });
 
+  mainWindow = win;
+
   win.loadFile('renderer/index.html');
 
   win.on('close', () => {
@@ -237,6 +269,17 @@ function createWindow() {
     if (input.key === 'F12') win.webContents.toggleDevTools();
     if (input.key === 'F11') win.setFullScreen(!win.isFullScreen());
     if (input.key === 'Escape' && win.isFullScreen()) win.setFullScreen(false);
+  });
+
+  win.webContents.on('did-finish-load', () => {
+    const deepLinkUrl = process.argv.find(a => a.startsWith('hamsters://'));
+    if (deepLinkUrl) {
+      win.webContents.send('deep-link', deepLinkUrl);
+    }
+    if (pendingDeepLinkCode) {
+      win.webContents.send('deep-link', 'hamsters://join?code=' + pendingDeepLinkCode);
+      pendingDeepLinkCode = null;
+    }
   });
 
   rebuildMenus(win);
@@ -475,6 +518,7 @@ ipcMain.on('set-language', (event, lang) => {
 app.whenReady().then(() => {
   startSignalingServer();
   registerProtocol();
+  startDeepLinkServer();
   const gotLock = app.requestSingleInstanceLock();
   if (!gotLock) {
     app.quit();
@@ -482,21 +526,12 @@ app.whenReady().then(() => {
   }
   app.on('second-instance', (event, argv) => {
     const url = argv.find(a => a.startsWith('hamsters://'));
-    if (url) {
-      const wins = BrowserWindow.getAllWindows();
-      const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
-      if (mainWin) {
-        mainWin.webContents.send('deep-link', url);
-        if (mainWin.isMinimized()) mainWin.restore();
-        mainWin.focus();
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      if (url) {
+        mainWindow.webContents.send('deep-link', url);
       }
-    } else {
-      const wins = BrowserWindow.getAllWindows();
-      const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
-      if (mainWin) {
-        if (mainWin.isMinimized()) mainWin.restore();
-        mainWin.focus();
-      }
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
     }
   });
   session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
@@ -519,13 +554,6 @@ app.whenReady().then(() => {
   });
 
   createWindow();
-
-  const deepLinkUrl = process.argv.find(a => a.startsWith('hamsters://'));
-  if (deepLinkUrl) {
-    const wins = BrowserWindow.getAllWindows();
-    const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
-    if (mainWin) mainWin.webContents.send('deep-link', deepLinkUrl);
-  }
 });
 
 app.on('window-all-closed', () => {
@@ -537,4 +565,5 @@ app.on('will-quit', () => {
   if (facesWindow) { facesWindow.close(); facesWindow = null; }
   removeUPnPMapping();
   if (signalingServer) { signalingServer.close(); signalingServer = null; }
+  if (deepLinkServer) { deepLinkServer.close(); deepLinkServer = null; }
 });
