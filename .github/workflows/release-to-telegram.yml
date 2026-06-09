@@ -11,13 +11,19 @@ jobs:
     steps:
       - name: Send to Telegram
         env:
-          TAG: ${{ github.event.release.tag_name || 'v1.7.4 (manual)' }}
+          TAG: ${{ github.event.release.tag_name || 'v1.7.4' }}
           URL: ${{ github.event.release.html_url || 'https://github.com/outmilker1978/hamsters-theater/releases/tag/v1.7.4' }}
         run: |
+          echo "Testing Telegram bot..."
           RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-            -H "Content-Type: application/json" \
-            -d "$(printf '{"chat_id":"@tvhamsters","parse_mode":"HTML","text":"\xF0\x9F\x90\xB9 <b>%s</b> вышел!\n\nСкачать: %s\nСайт: https://tvhamsters.outmilk.online"}' "$TAG" "$URL")")
+            -d chat_id="@tvhamsters" \
+            -d parse_mode="HTML" \
+            --data-urlencode "text=🐹 <b>${TAG}</b> вышел!
+
+          Скачать: ${URL}
+          Сайт: https://tvhamsters.outmilk.online")
           HTTP_CODE=$(echo "$RESPONSE" | tail -1)
           BODY=$(echo "$RESPONSE" | head -n -1)
-          echo "HTTP $HTTP_CODE: $BODY"
+          echo "HTTP $HTTP_CODE"
+          echo "Response: $BODY"
           if [ "$HTTP_CODE" != "200" ]; then exit 1; fi
