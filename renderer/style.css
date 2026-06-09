@@ -384,6 +384,34 @@ input, textarea, [contenteditable], .copyable {
   z-index: 10;
   max-width: 340px;
 }
+#faces.faces-full {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 80px;
+  max-width: none;
+  background: #0a080c;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  gap: 16px;
+}
+#faces.faces-full #remote-faces {
+  display: contents;
+}
+#faces.faces-full .face-wrapper {
+  width: 320px;
+  height: 240px;
+  flex: 0 1 auto;
+}
+#faces.faces-full #localFace {
+  width: 320px;
+  height: 240px;
+  flex: 0 1 auto;
+}
+#faces.faces-full .volume-slider {
+  display: none;
+}
 
 .face-wrapper {
   position: relative;

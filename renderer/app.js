@@ -31,6 +31,7 @@ let localAddress = 'localhost:3000';
 let sharingScreen = false;
 let screenStream = null;
 let sharerId = null;
+let isCamGridActive = false;
 let pttMode = false;
 let pttActive = false;
 let prevMicOn = true;
@@ -196,6 +197,7 @@ el('createRoomBtn').onclick = () => {
     const connectInfo = serverLabel + '\n' + t('room.code_label') + ' ' + id;
     ipcRenderer.invoke('copy-clipboard', connectInfo).then(() => showCopyToast()).catch(() => {});
     showRoom();
+    updateCamGrid();
     await startCamera();
     if (pendingPeers.length) {
       pendingPeers.forEach(pid => createOfferToPeer(pid));
@@ -218,6 +220,7 @@ el('joinRoomBtn').onclick = () => {
   socket.on('joined', async () => {
     mySocketId = socket.id;
     showRoom();
+    updateCamGrid();
     await startCamera();
     pendingOffers.forEach(o => handleOffer(o));
     pendingOffers = [];
@@ -372,6 +375,7 @@ function createScreenPC(peerId) {
         el('screenshareVideo').srcObject = null;
         el('screenshareVideo').style.display = 'none';
         el('screenshare-placeholder').style.display = 'block';
+        updateCamGrid();
       }
       if (peers[peerId]) peers[peerId].screenPC = null;
     }
@@ -502,6 +506,7 @@ function handleSignal(data) {
     sharerId = data.from;
     el('shareScreenBtn').disabled = true;
     updateControlTooltips();
+    updateCamGrid();
   }
   if (data.type === 'screen-stopped') {
     sharerId = null;
@@ -513,6 +518,7 @@ function handleSignal(data) {
     if (peers[data.from]) {
       if (peers[data.from].screenPC) { peers[data.from].screenPC.close(); peers[data.from].screenPC = null; }
     }
+    updateCamGrid();
   }
   if (data.type === 'request-offer') {
     if (localStream) createOfferToPeer(data.from);
@@ -592,6 +598,7 @@ el('sourcePickerModal').onclick = (e) => { if (e.target === el('sourcePickerModa
 async function doStartScreenShare(stream) {
   screenStream = stream;
   sharingScreen = true;
+  updateCamGrid();
   el('screenshareVideo').style.display = 'block';
   el('screenshare-placeholder').style.display = 'none';
   el('screenshareVideo').srcObject = stream;
@@ -627,6 +634,7 @@ function createScreenOffer(peerId, stream) {
 
 function stopScreenShare() {
   sharingScreen = false;
+  updateCamGrid();
   if (screenStream) { screenStream.getTracks().forEach(t => t.stop()); screenStream = null; }
   for (const peerId of Object.keys(peers)) {
     if (peers[peerId].screenPC) { peers[peerId].screenPC.close(); peers[peerId].screenPC = null; }
@@ -762,6 +770,14 @@ function stopPTT() {
   updateMicButtonUI();
 }
 
+function updateCamGrid() {
+  const showGrid = !sharerId && !sharingScreen && el('room').style.display !== 'none';
+  if (showGrid === isCamGridActive) return;
+  isCamGridActive = showGrid;
+  el('faces').classList.toggle('faces-full', showGrid);
+  el('screenshare-placeholder').style.display = showGrid ? 'none' : 'block';
+}
+
 // --- Remove Peer ---
 function removePeer(peerId) {
   log('removePeer: ' + peerId);
@@ -776,6 +792,7 @@ function removePeer(peerId) {
       el('screenshareVideo').srcObject = null;
       el('screenshareVideo').style.display = 'none';
       el('screenshare-placeholder').style.display = 'block';
+      updateCamGrid();
     }
     delete peers[peerId];
   }
@@ -797,6 +814,8 @@ function cleanupCall() {
   if (facesContainer) facesContainer.innerHTML = '';
   sharingScreen = false;
   sharerId = null;
+  isCamGridActive = false;
+  el('faces').classList.remove('faces-full');
   if (screenStream) { screenStream.getTracks().forEach(t => t.stop()); screenStream = null; }
   el('screenshareVideo').srcObject = null;
   el('screenshareVideo').style.display = 'none';
