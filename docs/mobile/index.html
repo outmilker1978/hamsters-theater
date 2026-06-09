@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#7c3aed">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="/icon256.png">
+<title>TV Hamsters</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="landing">
+  <div class="logo">🐹 TV Hamsters</div>
+  <input type="text" id="roomCodeInput" placeholder="&#x2764; Код комнаты" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off">
+  <button id="joinRoomBtn">Войти в комнату</button>
+  <button id="createRoomBtn">+ Создать комнату</button>
+  <div id="error"></div>
+</div>
+
+<div id="room">
+  <div id="roomHeader">
+    <span id="roomCode"></span>
+    <button id="leaveBtn">Выйти</button>
+  </div>
+  <div id="faces">
+    <div class="face-wrapper">
+      <video id="localVideo" autoplay muted playsinline></video>
+    </div>
+    <div id="peerList"></div>
+    <div id="screenshareBadge">Кто-то делится экраном</div>
+  </div>
+  <div id="controls">
+    <button id="camBtn">📷</button>
+    <button id="micBtn">🎤</button>
+  </div>
+</div>
+
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+<script src="app.js?v=1"></script>
+</body>
+</html>

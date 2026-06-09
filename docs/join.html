@@ -138,8 +138,12 @@
     </div>
   </div>
   <script>
+    const isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) && !/Windows|Mac|Linux/i.test(navigator.userAgent);
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code') || '';
+    if (isMobile && code) {
+      window.location.replace('/mobile/?code=' + code);
+    }
     document.getElementById('roomCode').textContent = code || '--';
     const btn = document.getElementById('openBtn');
     btn.onclick = function() {
