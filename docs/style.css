@@ -264,6 +264,11 @@ h1 {
   color: #a78bfa;
 }
 
+.pf-icon-win {
+  color: #7c3aed;
+  background: rgba(124,58,237,0.1);
+}
+
 .pf-info {
   flex: 1;
   min-width: 0;
@@ -306,6 +311,16 @@ h1 {
   white-space: nowrap;
   padding: 3px 8px;
   border-radius: 5px;
+  background: rgba(255,255,255,0.04);
+}
+
+.pf-size {
+  font-size: 11px;
+  font-weight: 500;
+  color: #888;
+  white-space: nowrap;
+  padding: 5px 12px;
+  border-radius: 6px;
   background: rgba(255,255,255,0.04);
 }
 
