@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TV Hamsters — вход</title>
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png">
+  <script>if(/Mobi|Android|iPhone|iPad|iPod|webOS|Telegram/i.test(navigator.userAgent)){var c=new URLSearchParams(location.search).get('code');if(c)location.href='/mobile/?code='+encodeURIComponent(c);}</script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -138,7 +139,8 @@
     </div>
   </div>
   <script>
-    const isMobile = /Mobi|Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent);
+    console.log('UA:', navigator.userAgent);
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod|webOS|Telegram/i.test(navigator.userAgent);
     const params = new URLSearchParams(location.search);
     const code = params.get('code') || '';
     document.getElementById('roomCode').textContent = code || '--';
