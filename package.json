@@ -24,13 +24,24 @@
   "build": {
     "appId": "com.tvhamsters.app",
     "productName": "TV Hamsters",
+    "compression": "maximum",
     "directories": {
       "output": "dist"
     },
-    "includeSubNodeModules": true,
+    "includeSubNodeModules": false,
+    "files": [
+      "**/*",
+      "!node_modules/electron-builder${/*}",
+      "!node_modules/app-builder-bin${/*}",
+      "!node_modules/7zip-bin${/*}",
+      "!node_modules/electron${/*}"
+    ],
     "win": {
       "target": "portable",
       "icon": "icon.ico"
+    },
+    "portable": {
+      "artifactName": "TV.Hamsters.${version}.exe"
     }
   }
 }

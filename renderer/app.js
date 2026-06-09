@@ -1,7 +1,7 @@
 const { io } = require('socket.io-client');
 const { ipcRenderer } = require('electron');
 
-let CLOUD_SERVER_URL = 'https://hamsters-theater-cloud.onrender.com';
+let CLOUD_SERVER_URL = 'https://tv-hamsters-bot.onrender.com';
 let isCloudMode = true;
 
 function getServerUrl() {
@@ -222,6 +222,7 @@ el('joinRoomBtn').onclick = () => {
     showRoom();
     el('roomCodeDisplay').textContent = t('room.code_label') + ' ' + roomId;
     await startCamera();
+    updateCamGrid();
     pendingOffers.forEach(o => handleOffer(o));
     pendingOffers = [];
     if (pendingPeers.length) {

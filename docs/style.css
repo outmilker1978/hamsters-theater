@@ -722,6 +722,16 @@ h2 {
   gap: 20px;
 }
 
+.hero-dl-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-top: 20px;
+  flex-direction: row;
+  gap: 12px;
+}
+
 .download-version {
   position: static;
 }
@@ -1048,9 +1058,14 @@ footer {
   .hero-platforms {
     max-width: 360px;
   }
-  .pf-card {
+  .pf-card,
+  .hero-dl-card {
     padding: 8px 12px;
     gap: 10px;
+  }
+  .hero-dl-card .ver-tag {
+    font-size: 11px;
+    padding: 3px 10px;
   }
   .pf-icon {
     width: 32px;
