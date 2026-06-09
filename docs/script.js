@@ -29,7 +29,7 @@ lang.ru = {
   'uses.item3_title': 'Стрим игры своей тусовке',
   'uses.item3_desc': 'Проходишь Dark Souls, а друзья подсказывают и угарают над каждой смертью. Без Twitch, без задержек — только свои и только для своих.',
   'uses.item4_title': 'Наставник онлайн',
-  'uses.item4_desc': 'Показываешь на экране как делать — ученик повторяет. И наоборот: смотришь экран ученика и голосом направляешь. Ремонт ПК, монтаж видео, настройка софта, <a class="easter-link" href="tg://resolve?domain=happy_spanish">испанский язык</a> — учи удалённо.',
+  'uses.item4_desc': 'Показываешь на экране как делать — ученик повторяет. И наоборот: смотришь экран ученика и голосом направляешь. Ремонт ПК, монтаж видео, настройка софта, <a class="easter-link" href="https://t.me/happy_spanish">испанский язык</a> — учи удалённо.',
   'uses.item5_title': 'Праздник с теми, кто далеко',
   'uses.item5_desc': 'День рождения, Новый год, пятница — задувайте свечи, чокайтесь виртуально и смотрите на реакцию именинника в реальном времени. До 5 человек в комнате — самая душевная компания.',
   'uses.item6_title': 'Бухать онлайн',
@@ -107,7 +107,7 @@ lang.en = {
   'uses.item3_title': 'Stream your game to your crew',
   'uses.item3_desc': 'Playing Dark Souls while friends cheer and laugh at every death. No Twitch, no lag — just your people, for your people.',
   'uses.item4_title': 'Remote mentorship',
-  'uses.item4_desc': 'Show your screen — the student follows along. Or watch their screen and guide them with voice. PC repair, video editing, software setup, <a class="easter-link" href="tg://resolve?domain=happy_spanish">Spanish language</a> — teach remotely.',
+  'uses.item4_desc': 'Show your screen — the student follows along. Or watch their screen and guide them with voice. PC repair, video editing, software setup, <a class="easter-link" href="https://t.me/happy_spanish">Spanish language</a> — teach remotely.',
   'uses.item5_title': 'Celebrate with those far away',
   'uses.item5_desc': 'Birthday, New Year, Friday night — blow out candles, clink glasses virtually, and watch the birthday person\'s reaction in real time. Up to 5 people — the coziest company.',
   'uses.item6_title': 'Booze & Chill',
@@ -223,6 +223,17 @@ try {
 } catch(e) {}
 
 // === Форма ===
+// === Easter egg: Telegram deep-link с fallback ===
+document.addEventListener('click', function(e) {
+  var el = e.target.closest('.easter-link');
+  if (el) {
+    e.preventDefault();
+    var fallback = el.getAttribute('href');
+    window.location.href = 'tg://resolve?domain=happy_spanish';
+    setTimeout(function() { window.location.href = fallback; }, 600);
+  }
+});
+
 document.getElementById('feedbackForm').addEventListener('submit', function(e) {
   e.preventDefault();
   fetch('https://formsubmit.co/ajax/f454d2a1c6f1ddb50020834507d9c29a', {
