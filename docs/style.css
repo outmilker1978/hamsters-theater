@@ -382,6 +382,17 @@ h2 {
   border-color: rgba(139,92,246,0.2);
 }
 
+.easter-link {
+  color: #b088f0;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(139,92,246,0.3);
+  transition: all 0.2s;
+}
+.easter-link:hover {
+  color: #c9a8ff;
+  border-bottom-color: #8b5cf6;
+}
+
 .step-num {
   min-width: 40px;
   height: 40px;
