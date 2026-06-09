@@ -786,6 +786,15 @@ input, textarea, [contenteditable], .copyable {
   line-height: 1.5;
   padding: 4px 0;
 }
+.easter-link {
+  color: #b088f0;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(139,92,246,0.3);
+  transition: all 0.2s;
+}
+.easter-link:hover {
+  color: #c9a8ff;
+}
 .help-buttons {
   display: flex;
   flex-direction: column;
