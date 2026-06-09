@@ -209,6 +209,45 @@ h1 {
 .hero-version {
   font-size: 13px;
   color: #666;
+  margin-bottom: 24px;
+}
+
+.hero-platforms {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-plink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #a78bfa;
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: rgba(167,139,250,0.07);
+  transition: background .15s;
+}
+
+.hero-plink:hover {
+  background: rgba(167,139,250,0.15);
+}
+
+.hero-plink svg {
+  opacity: 0.8;
+}
+
+.hero-plink-disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.hero-plink-disabled:hover {
+  background: rgba(167,139,250,0.07);
 }
 
 /* Кнопки */
@@ -932,6 +971,13 @@ footer {
   .lang-btn {
     font-size: 11px;
     padding: 3px 7px;
+  }
+  .hero-platforms {
+    gap: 5px;
+  }
+  .hero-plink {
+    font-size: 11px;
+    padding: 4px 8px;
   }
 }
 
