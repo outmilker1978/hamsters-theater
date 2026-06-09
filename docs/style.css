@@ -27,6 +27,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
 }
 
 .logo-link {
@@ -1017,6 +1018,13 @@ footer {
   .header-inner {
     padding: 8px 12px;
   }
+  .header-right {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    gap: 4px;
+  }
   .logo { font-size: 14px; gap: 5px; }
   .logo img { width: 22px; height: 22px; }
   .byline {
@@ -1026,12 +1034,6 @@ footer {
   .header-nav a {
     font-size: 10px;
     padding: 1px 6px;
-  }
-  .logo {
-    gap: 6px;
-  }
-  .header-right {
-    gap: 4px;
   }
   .header-divider {
     display: none;
