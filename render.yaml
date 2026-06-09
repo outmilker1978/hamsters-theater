@@ -9,3 +9,14 @@ services:
     envVars:
       - key: TELEGRAM_TOKEN
         sync: false
+
+  - type: web
+    name: hamsters-theater-cloud
+    runtime: node
+    repo: https://github.com/outmilker1978/hamsters-theater
+    branch: master
+    buildCommand: cd server && npm install
+    startCommand: node cloud.js
+    envVars:
+      - key: RENDER_EXTERNAL_URL
+        value: https://hamsters-theater-cloud.onrender.com
