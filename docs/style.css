@@ -214,40 +214,95 @@ h1 {
 
 .hero-platforms {
   display: flex;
+  flex-direction: column;
   gap: 8px;
-  justify-content: center;
-  flex-wrap: wrap;
+  max-width: 440px;
+  margin: 0 auto;
 }
 
-.hero-plink {
-  display: inline-flex;
+.pf-card {
+  display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  font-weight: 500;
-  color: #a78bfa;
+  gap: 12px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 10px 14px;
   text-decoration: none;
-  padding: 5px 10px;
-  border-radius: 6px;
-  background: rgba(167,139,250,0.07);
-  transition: background .15s;
+  color: inherit;
+  transition: all .2s;
 }
 
-.hero-plink:hover {
-  background: rgba(167,139,250,0.15);
+.pf-card:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(139,92,246,0.25);
 }
 
-.hero-plink svg {
-  opacity: 0.8;
-}
-
-.hero-plink-disabled {
-  opacity: 0.45;
+.pf-card-disabled {
+  opacity: 0.5;
   cursor: default;
 }
 
-.hero-plink-disabled:hover {
-  background: rgba(167,139,250,0.07);
+.pf-card-disabled:hover {
+  background: rgba(255,255,255,0.02);
+  border-color: rgba(255,255,255,0.06);
+}
+
+.pf-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: #1e1e24;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #a78bfa;
+}
+
+.pf-info {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.pf-name {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e8e8ed;
+}
+
+.pf-desc {
+  display: block;
+  font-size: 11px;
+  color: #888;
+  margin-top: 1px;
+}
+
+.pf-action {
+  font-size: 12px;
+  font-weight: 600;
+  color: #a78bfa;
+  white-space: nowrap;
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: rgba(167,139,250,0.1);
+  transition: background .15s;
+}
+
+.pf-card:hover .pf-action {
+  background: rgba(167,139,250,0.2);
+}
+
+.pf-badge {
+  font-size: 10px;
+  font-weight: 500;
+  color: #666;
+  white-space: nowrap;
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: rgba(255,255,255,0.04);
 }
 
 /* Кнопки */
@@ -973,11 +1028,22 @@ footer {
     padding: 3px 7px;
   }
   .hero-platforms {
-    gap: 5px;
+    max-width: 360px;
   }
-  .hero-plink {
+  .pf-card {
+    padding: 8px 12px;
+    gap: 10px;
+  }
+  .pf-icon {
+    width: 32px;
+    height: 32px;
+  }
+  .pf-name {
+    font-size: 12px;
+  }
+  .pf-action {
     font-size: 11px;
-    padding: 4px 8px;
+    padding: 4px 10px;
   }
 }
 
