@@ -5,10 +5,12 @@ const MEDIA = { video: { facingMode: 'user', width: { ideal: 320 }, height: { id
 let socket, localStream, roomId, isHost = false;
 let peers = {}, pendingOffers = [], pendingPeers = [];
 let micOn = true, camOn = true;
+let connecting = false;
 
 const $ = id => document.getElementById(id);
 
 function show(msg) { const e = $('error'); if (e) e.textContent = msg; }
+function log(m) { console.log('[M]', m); }
 
 function startMedia() {
   return navigator.mediaDevices.getUserMedia(MEDIA).catch(() => {
@@ -16,51 +18,59 @@ function startMedia() {
   });
 }
 
-function connectOnce(sock, ev, fn) {
-  if (sock.connected) { fn(); return; }
-  sock.once(ev, fn);
+function stopMedia() {
+  if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
 }
 
-function connect(roomCb) {
-  if (socket) socket.disconnect();
-  socket = io(CLOUD, { transports: ['websocket', 'polling'], timeout: 10000 });
-  socket.on('connect', () => { console.log('Connected'); if (roomCb) roomCb(); });
-  socket.on('disconnect', () => { show('Потеря связи с сервером'); setTimeout(() => { if (!socket || !socket.connected) connect(roomCb); }, 3000); });
-  socket.on('error-msg', show);
-  socket.on('room-created', onRoomCreated);
-  socket.on('joined', onJoined);
+function connectAndDo(action) {
+  if (connecting) { log('Already connecting, skipping'); return; }
+  if (socket && socket.connected) { log('Already connected, doing action'); action(); return; }
+  connecting = true;
+  if (socket) { socket.disconnect(); socket = null; }
+  show('Подключаюсь к серверу...');
+  socket = io(CLOUD, {
+    transports: ['websocket', 'polling'],
+    timeout: 15000,
+    reconnection: true,
+    reconnectionAttempts: 3
+  });
+  socket.on('connect', () => {
+    connecting = false;
+    log('Connected, id=' + socket.id);
+    show('Подключено, вхожу в комнату...');
+    action();
+  });
+  socket.on('connect_error', (err) => {
+    log('connect_error: ' + err.message);
+    show('Ошибка подключения: ' + err.message);
+    connecting = false;
+  });
+  socket.on('disconnect', (reason) => {
+    log('disconnect: ' + reason);
+    if (reason !== 'io client disconnect') {
+      show('Потеря связи с сервером');
+    }
+  });
+  socket.on('error-msg', (msg) => { show(msg); });
+  socket.on('room-created', (id) => {
+    roomId = id;
+    showRoom();
+    startMedia().then(s => { localStream = s; $('localVideo').srcObject = s; }).catch(() => show('Нет доступа к камере'));
+  });
+  socket.on('joined', async () => {
+    showRoom();
+    try {
+      localStream = await startMedia();
+      $('localVideo').srcObject = localStream;
+      pendingOffers.forEach(o => handleOffer(o)); pendingOffers = [];
+      pendingPeers.forEach(p => createPC(p)); pendingPeers = [];
+    } catch(e) { show('Нет доступа к камере'); }
+  });
   socket.on('peer-joined', (peerId) => { if (localStream) createOfferToPeer(peerId); else pendingPeers.push(peerId); });
   socket.on('offer', (data) => { if (localStream) handleOffer(data); else pendingOffers.push(data); });
   socket.on('answer', (data) => { const pc = peers[data.from]?.pc; if (pc) pc.setRemoteDescription(new RTCSessionDescription(data.sdp)).catch(() => {}); });
   socket.on('ice-candidate', (data) => { const pc = peers[data.from]?.pc; if (pc && data.candidate) pc.addIceCandidate(new RTCIceCandidate(data.candidate)).catch(() => {}); });
   socket.on('peer-disconnected', removePeer);
-}
-
-function createRoom() {
-  isHost = true;
-  connect(() => socket.emit('create-room'));
-}
-
-function joinRoom(code) {
-  isHost = false;
-  roomId = code;
-  connect(() => socket.emit('join-room', code));
-}
-
-function onRoomCreated(id) {
-  roomId = id;
-  showRoom();
-  startMedia().then(s => { localStream = s; $('localVideo').srcObject = s; }).catch(() => show('Нет доступа к камере'));
-}
-
-async function onJoined() {
-  showRoom();
-  try {
-    localStream = await startMedia();
-    $('localVideo').srcObject = localStream;
-    pendingOffers.forEach(o => handleOffer(o)); pendingOffers = [];
-    pendingPeers.forEach(p => createPC(p)); pendingPeers = [];
-  } catch(e) { show('Нет доступа к камере'); }
 }
 
 function showRoom() {
@@ -70,10 +80,11 @@ function showRoom() {
 }
 
 function leaveRoom() {
-  if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
+  stopMedia();
   for (const pid of Object.keys(peers)) { if (peers[pid].pc) peers[pid].pc.close(); }
   peers = {}; pendingOffers = []; pendingPeers = [];
   if (socket) { socket.disconnect(); socket = null; }
+  connecting = false;
   $('room').style.display = 'none';
   $('landing').style.display = 'flex';
   $('roomCodeInput').value = '';
@@ -118,12 +129,13 @@ function removePeer(peerId) {
   if (el) { const w = el.closest('.remote-peer'); if (w) w.remove(); }
 }
 
-$('createRoomBtn').onclick = () => { show(''); createRoom(); };
+$('createRoomBtn').onclick = () => { show(''); connectAndDo(() => socket.emit('create-room')); };
 $('joinRoomBtn').onclick = () => {
   show('');
   const code = $('roomCodeInput').value.trim();
   if (!code) { show('Введите код комнаты'); return; }
-  joinRoom(code);
+  roomId = code;
+  connectAndDo(() => socket.emit('join-room', code));
 };
 $('leaveBtn').onclick = leaveRoom;
 $('camBtn').onclick = () => {
@@ -144,8 +156,9 @@ $('micBtn').onclick = () => {
     const c = p.get('code');
     if (c) {
       $('roomCodeInput').value = c;
+      roomId = c;
       show('Подключаюсь...');
-      setTimeout(() => joinRoom(c), 300);
+      setTimeout(() => connectAndDo(() => socket.emit('join-room', c)), 500);
     }
   } catch(e) { console.error(e); }
 })();
