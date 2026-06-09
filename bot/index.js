@@ -3,7 +3,7 @@ dns.setServers(['1.1.1.1', '8.8.8.8']);
 const { io } = require('socket.io-client');
 const http = require('http');
 
-const token = process.env.TELEGRAM_TOKEN || '8776055170:AAE04MU921tF1wteiHPERxotIL8l69W9eow';
+const token = '8776055170:AAE04MU921tF1wteiHPERxotIL8l69W9eow';
 const CLOUD_SERVER = 'https://hamsters-theater-cloud.onrender.com';
 const PORT = process.env.PORT || 3001;
 const DL_URL = 'https://tvhamsters.outmilk.online';
