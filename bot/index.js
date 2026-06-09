@@ -1,15 +1,55 @@
 const dns = require('dns');
 dns.setServers(['1.1.1.1', '8.8.8.8']);
 const http = require('http');
+const { Server } = require('socket.io');
 
 const token = '8776055170:AAE04MU921tF1wteiHPERxotIL8l69W9eow';
 const PORT = process.env.PORT || 3001;
 const DL_URL = 'https://tvhamsters.outmilk.online';
 
-http.createServer((req, res) => {
+const server = http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('TV Hamsters Bot OK');
-}).listen(PORT, () => console.log('Health server on port', PORT));
+  res.end('TV Hamsters OK');
+});
+server.listen(PORT, () => console.log('Server on port', PORT));
+
+// WebSocket signaling for the desktop app
+const io = new Server(server, { cors: { origin: '*' } });
+const rooms = {};
+io.on('connection', (socket) => {
+  console.log('[Signal] connected:', socket.id);
+  socket.on('create-room', () => {
+    const roomId = String(Math.floor(1000 + Math.random() * 9000));
+    rooms[roomId] = [socket.id];
+    socket.join(roomId);
+    socket.emit('room-created', roomId);
+  });
+  socket.on('join-room', (roomId) => {
+    if (!rooms[roomId]) { socket.emit('error-msg', 'Комната не найдена'); return; }
+    if (rooms[roomId].length >= 5) { socket.emit('error-msg', 'Комната уже заполнена'); return; }
+    rooms[roomId].push(socket.id);
+    socket.join(roomId);
+    socket.emit('joined', roomId);
+    socket.emit('room-users', rooms[roomId].filter(id => id !== socket.id));
+    socket.to(roomId).emit('user-joined', socket.id);
+    socket.to(roomId).emit('peer-joined', socket.id);
+  });
+  socket.on('offer', (data) => { socket.to(data.to).emit('offer', { from: socket.id, sdp: data.sdp, type: data.type }); });
+  socket.on('answer', (data) => { socket.to(data.to).emit('answer', { from: socket.id, sdp: data.sdp, type: data.type }); });
+  socket.on('ice-candidate', (data) => { socket.to(data.to).emit('ice-candidate', { from: socket.id, candidate: data.candidate, type: data.type }); });
+  socket.on('signal', (data) => { socket.to(data.to).emit('signal', { from: socket.id, type: data.signalType, hasAudio: data.hasAudio }); });
+  socket.on('disconnect', () => {
+    for (const roomId in rooms) {
+      const idx = rooms[roomId].indexOf(socket.id);
+      if (idx !== -1) {
+        rooms[roomId].splice(idx, 1);
+        socket.to(roomId).emit('peer-disconnected', socket.id);
+        if (rooms[roomId].length === 0) delete rooms[roomId];
+        break;
+      }
+    }
+  });
+});
 
 const proxy = process.env.HTTP_PROXY || process.env.HTTPS_PROXY || '';
 const botOpts = { polling: true };

@@ -1048,7 +1048,7 @@ setupPTT();
 
 // First-launch shortcut prompt (shows once per version)
 (function() {
-  const ver = '1.7.2';
+  const ver = '1.7.3';
   if (localStorage.getItem('shortcutPrompted') === ver) return;
   const modal = document.getElementById('shortcutPromptModal');
   if (!modal) return;

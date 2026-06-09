@@ -5,7 +5,7 @@ const { Server } = require('socket.io');
 const natUpnp = require('nat-upnp');
 
 process.title = 'TV Hamsters';
-const CLOUD_SERVER_URL = 'https://hamsters-theater-cloud.onrender.com';
+const CLOUD_SERVER_URL = 'https://tv-hamsters-bot.onrender.com';
 let signalingServer = null;
 let upnpMapping = null;
 let pendingScreenSourceId = null;
