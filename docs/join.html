@@ -9,22 +9,23 @@
     body { font-family: -apple-system, sans-serif; text-align: center; padding: 60px 20px; background: #f5f0ff; color: #333; }
     h1 { font-size: 24px; margin-bottom: 10px; }
     .code { font-size: 48px; font-weight: bold; color: #7c5cbf; margin: 20px 0; }
-    p { font-size: 16px; line-height: 1.5; }
-    .btn { display: inline-block; background: #7c5cbf; color: #fff; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-size: 18px; margin: 20px 0; }
+    p { font-size: 16px; line-height: 1.5; color: #555; }
+    .btn { display: inline-block; background: #7c5cbf; color: #fff; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-size: 20px; margin: 20px 0; cursor: pointer; border: none; }
     .btn:hover { background: #6a4da8; }
   </style>
 </head>
 <body>
   <h1>TV Hamsters</h1>
-  <p>Подключаюсь к палате <span class="code" id="roomCode">--</span></p>
-  <p>Если программа не открылась — <a id="dlLink" href="#">скачайте её</a> и введите код вручную.</p>
-  <p style="font-size:14px;color:#888;">После установки просто нажмите на ссылку ещё раз.</p>
+  <p>Палата <span class="code" id="roomCode">--</span></p>
+  <button class="btn" id="openBtn">🐹 Открыть программу</button>
+  <p>Если программа не открылась — <a href="/" id="dlLink">скачайте её</a>, запустите и нажмите на кнопку ещё раз.</p>
   <script>
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code') || '';
     document.getElementById('roomCode').textContent = code || '--';
-    document.getElementById('dlLink').href = '/';
-    window.location.replace('hamsters://join?code=' + code);
+    document.getElementById('openBtn').onclick = function() {
+      window.location.href = 'hamsters://join?code=' + code;
+    };
   </script>
 </body>
 </html>
