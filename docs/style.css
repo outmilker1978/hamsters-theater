@@ -695,7 +695,9 @@ footer {
 
 .footer-links {
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  justify-content: center;
 }
 
 .footer-links a {
@@ -709,9 +711,19 @@ footer {
   color: #b088f0;
 }
 
+.donate-footer-link {
+  color: #b088f0 !important;
+  font-weight: 600;
+}
+.donate-footer-link:hover {
+  color: #d4b8ff !important;
+}
+
 .footer-copy {
   font-size: 13px;
   color: #555;
+  text-align: center;
+  width: 100%;
 }
 
 /* Анимация */
