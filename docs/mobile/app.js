@@ -341,7 +341,7 @@ $('fullscreenBtn').onclick = () => {
   $('room').classList.toggle('fullscreen');
   $('controls').classList.toggle('overlay');
   if (fs) {
-    try { document.body.requestFullscreen(); } catch(e) { try { document.documentElement.requestFullscreen(); } catch(e2) {} }
+    try { $('room').requestFullscreen(); } catch(e) { try { document.documentElement.requestFullscreen(); } catch(e2) {} }
   } else if (document.fullscreenElement) {
     try { document.exitFullscreen(); } catch(e) {}
     $('controls').classList.remove('overlay', 'auto-hide');
@@ -360,6 +360,22 @@ function showControls() {
 $('faces').addEventListener('touchstart', showControls);
 $('screenContainer').addEventListener('touchstart', showControls);
 $('controls').addEventListener('touchstart', (e) => { e.stopPropagation(); showControls(); });
+
+// PWA Install
+let installPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  installPrompt = e;
+  $('installBtn').style.display = '';
+});
+$('installBtn').onclick = async () => {
+  if (!installPrompt) return;
+  installPrompt.prompt();
+  const result = await installPrompt.userChoice;
+  installPrompt = null;
+  $('installBtn').style.display = 'none';
+};
+window.addEventListener('appinstalled', () => { $('installBtn').style.display = 'none'; });
 
 (function() {
   try {
