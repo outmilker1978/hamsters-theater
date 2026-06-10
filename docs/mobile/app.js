@@ -341,7 +341,7 @@ $('fullscreenBtn').onclick = () => {
   $('room').classList.toggle('fullscreen');
   $('controls').classList.toggle('overlay');
   if (fs) {
-    try { document.documentElement.requestFullscreen(); } catch(e) {}
+    try { document.body.requestFullscreen(); } catch(e) { try { document.documentElement.requestFullscreen(); } catch(e2) {} }
   } else if (document.fullscreenElement) {
     try { document.exitFullscreen(); } catch(e) {}
     $('controls').classList.remove('overlay', 'auto-hide');
