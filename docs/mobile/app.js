@@ -344,10 +344,10 @@ $('fullscreenBtn').onclick = () => {
     const standalone = window.navigator.standalone ||
       ['standalone','fullscreen','minimal-ui'].some(m => window.matchMedia(`(display-mode: ${m})`).matches);
     if (!standalone) {
-      try { $('room').requestFullscreen(); } catch(e) { try { document.documentElement.requestFullscreen(); } catch(e2) {} }
+      document.documentElement.requestFullscreen().catch(() => {});
     }
   } else if (document.fullscreenElement) {
-    try { document.exitFullscreen(); } catch(e) {}
+    document.exitFullscreen().catch(() => {});
     $('controls').classList.remove('overlay', 'auto-hide');
   }
 };
