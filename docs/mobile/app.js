@@ -341,10 +341,17 @@ $('fullscreenBtn').onclick = () => {
   $('controls').classList.toggle('overlay', fs);
   if (fs) {
     try { document.documentElement.requestFullscreen(); } catch(e) {}
+    setTimeout(() => {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+        setTimeout(() => document.documentElement.requestFullscreen(), 100);
+      }
+    }, 500);
   } else {
     try { document.exitFullscreen(); } catch(e) {}
   }
 };
+document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('fullscreenchange', () => {
   if (!document.fullscreenElement) {
     $('room').classList.remove('fullscreen');
