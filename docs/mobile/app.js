@@ -258,9 +258,20 @@ $('camBtn').onclick = () => {
 };
 const MIC_ICON = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>';
 const PTT_ICON = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h.01M10 12h.01M14 12h.01M18 12h.01"/><line x1="6" y1="16" x2="18" y2="16"/><path d="M6 6V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"/></svg>';
-let pttMode = false, lastTap = 0, tapTimer = null, savedMic = true;
+let pttMode = false, lastTap = 0, tapTimer = null, savedMic = true, pttTouchStart = 0;
 $('micBtn').addEventListener('pointerup', (e) => {
-  if (e.pointerType === 'touch' && pttMode) return;
+  if (e.pointerType === 'touch' && pttMode) {
+    if (Date.now() - pttTouchStart < 250) {
+      pttMode = false; pttTouchStart = 0;
+      $('micBtn').classList.remove('ptt-mode', 'ptt-active');
+      $('micBtn').innerHTML = MIC_ICON;
+      micOn = savedMic;
+      if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = micOn);
+      $('micBtn').classList.toggle('on', micOn);
+      $('micBtn').classList.toggle('off', !micOn);
+    }
+    return;
+  }
   const now = Date.now();
   if (now - lastTap < 350) {
     lastTap = 0; clearTimeout(tapTimer);
@@ -292,6 +303,7 @@ $('micBtn').addEventListener('pointerup', (e) => {
 });
 $('micBtn').addEventListener('pointerdown', (e) => {
   if (!pttMode || e.pointerType !== 'touch') return;
+  pttTouchStart = Date.now();
   if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = true);
   $('micBtn').classList.remove('off'); $('micBtn').classList.add('ptt-active');
 });
