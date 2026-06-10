@@ -383,13 +383,13 @@ body {
 /* Landing bottom links */
 .landing-links {
   display: flex;
+  justify-content: center;
   gap: 8px;
   width: 100%;
   max-width: 300px;
   margin-top: 12px;
 }
 .landing-card {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
