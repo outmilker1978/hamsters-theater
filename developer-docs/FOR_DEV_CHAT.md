@@ -12,7 +12,7 @@
 - URL: `https://tvhamsters.outmilk.online/`
 
 **Боты:**
-- @tv_hamsters_bot — комнаты, токен `8436143691:...` лежит в GitHub Secret `TELEGRAM_BOT_TOKEN`
+- @tv_hamsters_bot — комнаты, токен `8776055170:AAE04...` лежит в GitHub Secret `TELEGRAM_BOT_TOKEN`
 - @tvhamsters — канал, ID `-1003813372615`, пустой
 - @tvhamsters_release_bot — назначение неизвестно, токен неизвестен
 
@@ -37,6 +37,4 @@
 - Вероятно: в админы добавлен другой бот (@tvhamsters_release_bot?) или нужен новый бот для канала
 
 **Что нужно доделать:**
-1. Починить канал (добавить бота в админы или создать нового)
-2. Дописать workflow: при релизе постить в канал
-3. GitHub API rate limit для release notes (кешировать)
+1. GitHub API rate limit для release notes (кешировать)

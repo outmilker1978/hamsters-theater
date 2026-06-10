@@ -93,7 +93,7 @@ docs/
 |----------|----------|
 | **Username** | `@tv_hamsters_bot` |
 | **Отображаемое имя** | TV Hamsters Bot |
-| **Токен** | `8436143691:AAGoIli9sD4Y84Iy0gOOT3N6jsMmYLpL5vs` |
+| **Токен** | `8776055170:AAE04MU921tF1wteiHPERxotIL8l69W9eow` |
 | **Где хранится токен** | GitHub Secret `TELEGRAM_BOT_TOKEN` |
 | **Назначение** | Создание комнат для просмотра из чата Telegram |
 | **Ссылка** | `t.me/tv_hamsters_bot` |
@@ -173,25 +173,7 @@ docs/
 | **Назначение** | Автоматически постить о новом релизе в Telegram-канал |
 | **Статус** | НЕ РАБОТАЕТ (бот не в канале) |
 
-**Текущее состояние workflow (на момент передачи):**
-```yaml
-name: Release to Telegram
-on:
-  release:
-    types: [published]
-  workflow_dispatch:
-jobs:
-  notify:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send to Telegram
-        run: |
-          echo "=== Кто админы в канале ==="
-          ADMINS=$(curl -s "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/getChatAdministrators?chat_id=-1003813372615")
-          echo "$ADMINS"
-```
-
-**Проблема:** После исправления пустого секрета, workflow всё ещё не может отправить сообщение, так как бот не является участником/админом канала. Текущая версия workflow — диагностическая (показывает админов). Требуется переписать на отправку форматированного сообщения о релизе.
+**Исправлено:** Workflow переписан на отправку сообщения (см. `.github/workflows/release-to-telegram.yml`). GitHub Secret обновлён на актуальный токен. ✅
 
 ---
 
@@ -234,9 +216,10 @@ GET https://api.github.com/repos/outmilker1978/hamsters-theater/releases/latest
 
 ### P1 (важно)
 - **Сайт и GitHub Releases:** rate limit API GitHub. Нужно кешировать данные или использовать GitHub Actions для генерации статического JSON
-- **Мобильный клиент:** страница `docs/mobile/` — заглушка "Soon", нет реализации
+- **Мобильный клиент:** ✅ работает (PWA в `docs/mobile/`). Создание/вход в комнату, камера, микрофон, P2P WebRTC. См. `docs/mobile/app.js`
 
 ### P2 (среднее)
+- **`server/` — мёртвый код:** `cloud.js` и `index.js` из старого облачного сервера. Больше не деплоятся. Всё работает через `bot/index.js` на Render. Удалить или архивировать
 - **Статья на Дзен:** черновик сохранён (`docs/article_dzen.md`), но не опубликован (требуется верификация телефона)
 - **Сборка .exe:** winCodeSign extraction fails на Windows (symlink issue) — не критично для portable-сборки
 
@@ -321,7 +304,7 @@ hamsters-theater/
 | Secrets: токен бота | `TELEGRAM_BOT_TOKEN` = `8436143691:AAGoIli9sD4Y84Iy0gOOT3N6jsMmYLpL5vs` |
 | Канал Telegram | https://t.me/tvhamsters |
 | Бот комнат | https://t.me/tv_hamsters_bot |
-| Cloud-сервер | https://hamsters-theater-cloud.onrender.com |
+| Cloud-сервер | https://tv-hamsters-bot.onrender.com (совмещён с Telegram-ботом) |
 | CloudTips | https://pay.cloudtips.ru/p/8485a55c |
 | Boosty | https://boosty.to/outmilker |
 | Yandex.Metrica | Счётчик 109746304 |
