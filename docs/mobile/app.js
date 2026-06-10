@@ -339,22 +339,7 @@ $('toggleCamsBtn').onclick = () => {
 $('fullscreenBtn').onclick = () => {
   const fs = $('room').classList.toggle('fullscreen');
   $('controls').classList.toggle('overlay', fs);
-  if (fs && !document.fullscreenElement) {
-    try { document.documentElement.requestFullscreen(); } catch(e) {}
-    setTimeout(() => {
-      try { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); } catch(e) {}
-    }, 200);
-  } else if (!fs && document.fullscreenElement) {
-    try { document.exitFullscreen(); } catch(e) {}
-  }
 };
-document.addEventListener('fullscreenchange', () => {
-  if (!document.fullscreenElement) {
-    $('room').classList.remove('fullscreen');
-    $('controls').classList.remove('overlay');
-    $('controls').classList.remove('auto-hide');
-  }
-});
 document.addEventListener('contextmenu', e => e.preventDefault());
 let hideTimer;
 function showControls() {
