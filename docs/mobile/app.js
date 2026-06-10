@@ -105,7 +105,6 @@ function connectAndDo(action) {
       camsVisible = true;
       $('toggleCamsBtn').classList.remove('off');
       $('toggleCamsBtn').classList.remove('screen-only');
-      $('fullscreenBtn').classList.remove('screen-only');
       toast('Кто-то делится экраном');
     }
     if (d.type === 'request-offer') { if (localStream) createOfferToPeer(d.from); }
@@ -118,7 +117,6 @@ function connectAndDo(action) {
       $('room').classList.remove('fullscreen');
       $('controls').classList.remove('overlay');
       $('toggleCamsBtn').classList.add('screen-only');
-      $('fullscreenBtn').classList.add('screen-only');
       $('peerList').style.display = '';
       $('localVideo').style.display = '';
       for (const pid of Object.keys(peers)) {
@@ -167,7 +165,6 @@ function leaveRoom() {
   $('room').classList.remove('fullscreen');
   $('controls').classList.remove('overlay');
   $('toggleCamsBtn').classList.add('screen-only');
-  $('fullscreenBtn').classList.add('screen-only');
   if ($('screenVideo')) $('screenVideo').srcObject = null;
 }
 
