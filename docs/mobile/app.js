@@ -341,7 +341,16 @@ $('fullscreenBtn').onclick = () => {
   $('room').classList.toggle('fullscreen');
   $('controls').classList.toggle('overlay');
   if (fs) {
-    try { $('room').requestFullscreen(); } catch(e) { try { document.documentElement.requestFullscreen(); } catch(e2) {} }
+    if (!window.matchMedia('(display-mode: standalone)').matches && !window.navigator.standalone) {
+      try { $('room').requestFullscreen({ navigationUI: 'hide' }); } catch(e) { try { document.documentElement.requestFullscreen(); } catch(e2) {} }
+      setTimeout(() => {
+        if (document.fullscreenElement) {
+          document.exitFullscreen().then(() => {
+            try { $('room').requestFullscreen({ navigationUI: 'hide' }); } catch(e) {}
+          }).catch(() => {});
+        }
+      }, 800);
+    }
   } else if (document.fullscreenElement) {
     try { document.exitFullscreen(); } catch(e) {}
     $('controls').classList.remove('overlay', 'auto-hide');
