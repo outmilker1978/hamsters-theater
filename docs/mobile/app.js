@@ -341,7 +341,9 @@ $('fullscreenBtn').onclick = () => {
   $('room').classList.toggle('fullscreen');
   $('controls').classList.toggle('overlay');
   if (fs) {
-    if (!window.matchMedia('(display-mode: standalone)').matches && !window.navigator.standalone) {
+    const standalone = window.navigator.standalone ||
+      ['standalone','fullscreen','minimal-ui'].some(m => window.matchMedia(`(display-mode: ${m})`).matches);
+    if (!standalone) {
       try { $('room').requestFullscreen({ navigationUI: 'hide' }); } catch(e) { try { document.documentElement.requestFullscreen(); } catch(e2) {} }
       setTimeout(() => {
         if (document.fullscreenElement) {
@@ -349,7 +351,7 @@ $('fullscreenBtn').onclick = () => {
             try { $('room').requestFullscreen({ navigationUI: 'hide' }); } catch(e) {}
           }).catch(() => {});
         }
-      }, 800);
+      }, 150);
     }
   } else if (document.fullscreenElement) {
     try { document.exitFullscreen(); } catch(e) {}
