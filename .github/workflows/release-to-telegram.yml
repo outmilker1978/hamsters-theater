@@ -11,12 +11,6 @@ jobs:
     steps:
       - name: Send to Telegram
         run: |
-          echo "=== Пробуем отправить по числовому ID -1003813372615 ==="
-          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-            -d chat_id="-1003813372615" \
-            -d text="test")
-          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
-          BODY=$(echo "$RESPONSE" | head -n -1)
-          echo "HTTP $HTTP_CODE"
-          echo "Response: $BODY"
-          if [ "$HTTP_CODE" != "200" ]; then exit 1; fi
+          echo "=== Кто админы в канале ==="
+          ADMINS=$(curl -s "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/getChatAdministrators?chat_id=-1003813372615")
+          echo "$ADMINS"
