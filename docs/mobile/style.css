@@ -337,8 +337,8 @@ body {
 .ctrl-btn:active { opacity: 0.7; }
 .ctrl-btn.on { box-shadow: inset 0 0 0 2px #7c3aed; }
 .ctrl-btn.off { box-shadow: inset 0 0 0 2px #7f1d1d; color: #ef9a9a; }
-.ctrl-btn.ptt-mode { box-shadow: 0 0 0 2px #c285e4; }
-.ctrl-btn.ptt-active { box-shadow: 0 0 12px rgba(34,197,94,0.5), inset 0 0 0 2px #22c55e; color: #22c55e; }
+.ctrl-btn.ptt-mode { opacity: 0.5; box-shadow: inset 0 0 0 2px #7f1d1d; color: #7f1d1d; }
+.ctrl-btn.ptt-active { box-shadow: 0 0 16px rgba(34,197,94,0.6), inset 0 0 0 2px #22c55e; color: #22c55e; }
 .ctrl-btn svg { display: block; }
 
 /* Connection status toast */
