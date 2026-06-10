@@ -101,6 +101,7 @@ function connectAndDo(action) {
       sharerId = d.from;
       $('screenContainer').style.display = 'block';
       $('faces').classList.add('screen-mode');
+      $('peerList').insertBefore($('localVideo'), $('peerList').firstChild);
       camsVisible = true;
       $('toggleCamsBtn').classList.remove('off');
       $('toggleCamsBtn').classList.remove('screen-only');
@@ -113,6 +114,7 @@ function connectAndDo(action) {
       $('screenContainer').style.display = 'none';
       if ($('screenVideo')) $('screenVideo').srcObject = null;
       $('faces').classList.remove('screen-mode');
+      $('faces').insertBefore($('localVideo'), $('screenContainer'));
       $('room').classList.remove('fullscreen');
       $('controls').classList.remove('overlay');
       $('toggleCamsBtn').classList.add('screen-only');
@@ -132,6 +134,10 @@ function showRoom() {
   $('room').style.display = 'flex';
   $('roomCode').textContent = 'Палата № ' + roomId;
   updatePeerCount();
+  $('camBtn').classList.add('on');
+  $('micBtn').classList.add('on');
+  $('camBtn').classList.remove('off');
+  $('micBtn').classList.remove('off');
 }
 function updatePeerCount() {
   const count = Object.keys(peers).length + 1;
@@ -157,6 +163,7 @@ function leaveRoom() {
   $('localVideo').style.display = '';
   $('screenContainer').style.display = 'none';
   $('faces').classList.remove('screen-mode');
+  if ($('localVideo').parentNode === $('peerList')) $('faces').insertBefore($('localVideo'), $('screenContainer'));
   $('room').classList.remove('fullscreen');
   $('controls').classList.remove('overlay');
   $('toggleCamsBtn').classList.add('screen-only');
@@ -237,6 +244,7 @@ function removePeer(peerId) {
 }
 
 $('createRoomBtn').onclick = () => { show(''); connectAndDo(() => socket.emit('create-room')); };
+$('roomCodeInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('joinRoomBtn').click(); });
 $('joinRoomBtn').onclick = () => {
   show('');
   const code = $('roomCodeInput').value.trim();
@@ -248,22 +256,30 @@ $('leaveBtn').onclick = leaveRoom;
 $('camBtn').onclick = () => {
   camOn = !camOn;
   if (localStream) localStream.getVideoTracks().forEach(t => t.enabled = camOn);
+  $('camBtn').classList.toggle('on', camOn);
   $('camBtn').classList.toggle('off', !camOn);
 };
-let pttMode = false, lastTap = 0, tapTimer = null, savedMic = true;
+const MIC_ICON = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>';
+const PTT_ICON = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h.01M10 12h.01M14 12h.01M18 12h.01"/><line x1="6" y1="16" x2="18" y2="16"/><path d="M6 6V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"/></svg>';
+let pttMode = false, lastTap = 0, tapTimer = null, savedMic = true, lastTouchEnd = 0;
+$('micBtn').addEventListener('touchend', () => { lastTouchEnd = Date.now(); });
 $('micBtn').addEventListener('click', () => {
+  if (Date.now() - lastTouchEnd < 200) return;
   const now = Date.now();
   if (now - lastTap < 350) {
     lastTap = 0; clearTimeout(tapTimer);
     pttMode = !pttMode;
     $('micBtn').classList.toggle('ptt-mode', pttMode);
     if (pttMode) {
+      $('micBtn').innerHTML = PTT_ICON;
       savedMic = micOn; micOn = false;
       if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = false);
-      $('micBtn').classList.add('off');
+      $('micBtn').classList.add('off'); $('micBtn').classList.remove('on');
     } else {
+      $('micBtn').innerHTML = MIC_ICON;
       micOn = savedMic;
       if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = micOn);
+      $('micBtn').classList.toggle('on', micOn);
       $('micBtn').classList.toggle('off', !micOn);
     }
     return;
@@ -273,6 +289,7 @@ $('micBtn').addEventListener('click', () => {
     if (pttMode) { lastTap = 0; return; }
     micOn = !micOn;
     if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = micOn);
+    $('micBtn').classList.toggle('on', micOn);
     $('micBtn').classList.toggle('off', !micOn);
     lastTap = 0;
   }, 350);

@@ -216,6 +216,7 @@ el('createRoomBtn').onclick = () => {
   });
 };
 
+el('roomCodeInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') el('joinRoomBtn').click(); });
 el('joinRoomBtn').onclick = () => {
   showError('');
   const code = el('roomCodeInput').value.trim();
