@@ -153,7 +153,7 @@ body {
 }
 #room.fullscreen #faces.screen-mode #peerList #localVideo,
 #room.fullscreen #faces.screen-mode #peerList .remote-peer {
-  width: 80px; height: 60px;
+  width: 72px; height: 72px;
   flex-shrink: 0;
   border-radius: 6px;
 }
@@ -186,7 +186,7 @@ body {
   }
   #room.fullscreen #faces.screen-mode #peerList #localVideo,
   #room.fullscreen #faces.screen-mode #peerList .remote-peer {
-    width: 90px; height: 67px;
+    width: 76px; height: 76px;
   }
 }
 
@@ -218,14 +218,20 @@ body {
   overflow-y: auto;
   position: relative;
 }
+#localVideo, .remote-peer video {
+  width: 100%; height: 100%;
+  border-radius: 10px;
+  background: #000;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 1/1;
+}
 #localVideo {
   width: calc(50% - 2px);
   max-height: 40%;
   border-radius: 10px;
   background: #000;
   transform: scaleX(-1);
-  object-fit: cover;
-  aspect-ratio: 4/3;
   order: 99;
 }
 #peerList {
@@ -240,24 +246,7 @@ body {
   background: #151218;
   border-radius: 10px;
   overflow: hidden;
-  aspect-ratio: 4/3;
-}
-.remote-peer video {
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-  background: #000;
-  display: block;
-  object-fit: cover;
-}
-.peer-label {
-  position: absolute;
-  bottom: 4px; left: 4px;
-  background: rgba(0,0,0,0.6);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 10px;
-  color: #c285e4;
+  aspect-ratio: 1/1;
 }
 
 /* Screen share */
@@ -310,14 +299,12 @@ body {
 #faces.screen-mode #peerList::-webkit-scrollbar { display: none; }
 #faces.screen-mode #peerList #localVideo,
 #faces.screen-mode #peerList .remote-peer {
-  width: 72px; height: 54px;
+  width: 68px; height: 68px;
   flex-shrink: 0;
   border-radius: 6px;
 }
 #faces.screen-mode #peerList .remote-peer video { border-radius: 6px; }
-#faces.screen-mode #peerList .peer-label { font-size: 9px; padding: 1px 4px; }
-#faces.screen-mode #peerList #localVideo { order: 99; }
-#faces.screen-mode #peerList #localVideo { transform: scaleX(-1); }
+#faces.screen-mode #peerList #localVideo { order: 99; transform: scaleX(-1); }
 
 /* Controls bar — logo-purple icons on dark background */
 #controls {
