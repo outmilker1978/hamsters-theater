@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="/icon256.png">
 <title>TV Hamsters</title>
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 <div id="landing">
@@ -29,25 +29,29 @@
 <div id="room">
   <div id="roomHeader">
     <div class="header-left">
-      <span class="room-label">Палата</span>
       <span id="roomCode"></span>
+      <span id="roomPeers" class="room-peers"></span>
     </div>
     <button id="leaveBtn">Выйти</button>
   </div>
   <div id="faces">
     <video id="localVideo" autoplay muted playsinline></video>
     <div id="screenContainer"><video id="screenVideo" autoplay playsinline></video><button id="scrFsBtn">⛶</button></div>
-    <button id="thumbToggle" class="screen-only">🙎</button>
+    <button id="thumbToggle" class="screen-only" title="Показать/скрыть камеры">🙎</button>
     <div id="peerList"></div>
   </div>
   <div id="controls">
-    <button id="camBtn" class="ctrl-btn">📷</button>
-    <button id="micBtn" class="ctrl-btn">🎤</button>
+    <button id="camBtn" class="ctrl-btn" title="Камера">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+    </button>
+    <button id="micBtn" class="ctrl-btn" title="Микрофон">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+    </button>
   </div>
-  <div id="statusToast" style="display:none"></div>
+  <div id="statusToast"></div>
 </div>
 
 <script src="socket.io.min.js"></script>
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>

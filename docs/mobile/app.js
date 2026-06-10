@@ -76,6 +76,7 @@ function connectAndDo(action) {
       pendingPeers.forEach(p => createPC(p)); pendingPeers = [];
     } catch(e) { toast('Камера не доступна'); }
   });
+  socket.on('room-users', (users) => { users.forEach(pid => { if (localStream) createOfferToPeer(pid); else pendingPeers.push(pid); }); });
   socket.on('peer-joined', (peerId) => { if (localStream) createOfferToPeer(peerId); else pendingPeers.push(peerId); });
   socket.on('offer', (data) => {
     if (data.type === 'screen') { handleScreenOffer(data); return; }
@@ -101,7 +102,7 @@ function connectAndDo(action) {
       $('screenContainer').style.display = 'block';
       $('faces').classList.add('screen-mode');
       camsVisible = true;
-      $('thumbToggle').classList.remove('hidden');
+      $('thumbToggle').classList.remove('cams-hidden');
       toast('Кто-то делится экраном');
     }
     if (d.type === 'request-offer' && localStream) createOfferToPeer(d.from);
@@ -110,8 +111,10 @@ function connectAndDo(action) {
       $('screenContainer').style.display = 'none';
       if ($('screenVideo')) $('screenVideo').srcObject = null;
       $('faces').classList.remove('screen-mode');
-      $('peerList').style.display = 'flex';
-      $('localVideo').style.display = 'block';
+      $('room').classList.remove('fullscreen');
+      $('controls').classList.remove('overlay');
+      $('peerList').style.display = '';
+      $('localVideo').style.display = '';
       for (const pid of Object.keys(peers)) {
         if (peers[pid].screenPC) { peers[pid].screenPC.close(); delete peers[pid].screenPC; }
       }
@@ -123,7 +126,13 @@ function connectAndDo(action) {
 function showRoom() {
   $('landing').style.display = 'none';
   $('room').style.display = 'flex';
-  $('roomCode').textContent = roomId;
+  $('roomCode').textContent = 'Палата № ' + roomId;
+  updatePeerCount();
+}
+function updatePeerCount() {
+  const count = Object.keys(peers).length + 1;
+  const el = $('roomPeers');
+  if (el) el.textContent = count + ' хомяк' + (count % 10 === 1 && count % 100 !== 11 ? '' : count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 10 || count % 100 >= 20) ? 'а' : 'ов');
 }
 
 function leaveRoom() {
@@ -140,10 +149,12 @@ function leaveRoom() {
   $('landing').style.display = 'flex';
   $('roomCodeInput').value = '';
   $('peerList').innerHTML = '';
-  $('peerList').style.display = 'flex';
-  $('localVideo').style.display = 'block';
+  $('peerList').style.display = '';
+  $('localVideo').style.display = '';
   $('screenContainer').style.display = 'none';
   $('faces').classList.remove('screen-mode');
+  $('room').classList.remove('fullscreen');
+  $('controls').classList.remove('overlay');
   if ($('screenVideo')) $('screenVideo').srcObject = null;
 }
 
@@ -151,6 +162,7 @@ function createPC(peerId) {
   if (peers[peerId]) return peers[peerId].pc;
   const pc = new RTCPeerConnection(RTC);
   peers[peerId] = { pc };
+  updatePeerCount();
   if (localStream) localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
   pc.onicecandidate = (e) => { if (e.candidate) socket.emit('ice-candidate', { to: peerId, candidate: e.candidate }); };
   pc.ontrack = (e) => {
@@ -212,6 +224,7 @@ function removePeer(peerId) {
     if (p.pc) p.pc.close();
     if (p.screenPC) p.screenPC.close();
     delete peers[peerId];
+    updatePeerCount();
   }
   const el = document.getElementById('v_' + peerId);
   if (el) { const w = el.closest('.remote-peer'); if (w) w.remove(); }
@@ -238,13 +251,14 @@ $('micBtn').onclick = () => {
 };
 $('thumbToggle').onclick = () => {
   camsVisible = !camsVisible;
-  $('peerList').style.display = camsVisible ? 'flex' : 'none';
-  $('localVideo').style.display = camsVisible ? 'block' : 'none';
-  $('thumbToggle').classList.toggle('hidden', !camsVisible);
+  $('peerList').style.display = camsVisible ? '' : 'none';
+  $('localVideo').style.display = camsVisible ? '' : 'none';
+  $('thumbToggle').classList.toggle('cams-hidden', !camsVisible);
 };
 $('scrFsBtn').onclick = () => {
-  const v = $('screenVideo');
-  if (v) { if (v.requestFullscreen) v.requestFullscreen(); else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen(); }
+  $('room').classList.toggle('fullscreen');
+  $('scrFsBtn').textContent = $('room').classList.contains('fullscreen') ? '✕' : '⛶';
+  $('controls').classList.toggle('overlay', $('room').classList.contains('fullscreen'));
 };
 
 (function() {
