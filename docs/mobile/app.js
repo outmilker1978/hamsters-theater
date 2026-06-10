@@ -76,7 +76,7 @@ function connectAndDo(action) {
       pendingPeers.forEach(p => createPC(p)); pendingPeers = [];
     } catch(e) { toast('Камера не доступна'); }
   });
-  socket.on('room-users', (users) => { users.forEach(pid => { if (localStream) createOfferToPeer(pid); else pendingPeers.push(pid); }); });
+  socket.on('room-users', (users) => { users.forEach(pid => { if (localStream) createPC(pid); else pendingPeers.push(pid); }); });
   socket.on('peer-joined', (peerId) => { if (localStream) createOfferToPeer(peerId); else pendingPeers.push(peerId); });
   socket.on('offer', (data) => {
     if (data.type === 'screen') { handleScreenOffer(data); return; }
