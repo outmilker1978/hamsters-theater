@@ -20,6 +20,7 @@ let socket, localStream, roomId, isHost = false;
 let peers = {}, pendingOffers = [], pendingPeers = [];
 let micOn = true, camOn = true;
 let connecting = false;
+let sharerId = null;
 
 const $ = id => document.getElementById(id);
 
@@ -75,32 +76,65 @@ function connectAndDo(action) {
     } catch(e) { toast('Камера не доступна'); }
   });
   socket.on('peer-joined', (peerId) => { if (localStream) createOfferToPeer(peerId); else pendingPeers.push(peerId); });
-  socket.on('offer', (data) => { if (localStream) handleOffer(data); else pendingOffers.push(data); });
-  socket.on('answer', (data) => { const pc = peers[data.from]?.pc; if (pc) pc.setRemoteDescription(new RTCSessionDescription(data.sdp)).catch(e => log('answer sd err: ' + e.message)); });
-  socket.on('ice-candidate', (data) => { const pc = peers[data.from]?.pc; if (pc && data.candidate) pc.addIceCandidate(new RTCIceCandidate(data.candidate)).catch(e => log('ice err: ' + e.message)); });
+  socket.on('offer', (data) => {
+    if (data.type === 'screen') { handleScreenOffer(data); return; }
+    if (localStream) handleOffer(data); else pendingOffers.push(data);
+  });
+  socket.on('answer', (data) => {
+    if (data.type === 'screen') {
+      const pc = peers[data.from]?.screenPC;
+      if (pc) pc.setRemoteDescription(new RTCSessionDescription(data.sdp)).catch(e => log('screen ans err: ' + e.message));
+      return;
+    }
+    const pc = peers[data.from]?.pc;
+    if (pc) pc.setRemoteDescription(new RTCSessionDescription(data.sdp)).catch(e => log('answer sd err: ' + e.message));
+  });
+  socket.on('ice-candidate', (data) => {
+    const pc = data.type === 'screen' ? peers[data.from]?.screenPC : peers[data.from]?.pc;
+    if (pc && data.candidate) pc.addIceCandidate(new RTCIceCandidate(data.candidate)).catch(e => log('ice err: ' + e.message));
+  });
   socket.on('peer-disconnected', removePeer);
   socket.on('signal', (d) => {
-    if (d.type === 'screen-started') toast('Кто-то делится экраном');
-    if (d.type === 'screen-stopped') toast('Трансляция завершена');
+    if (d.type === 'screen-started') {
+      sharerId = d.from;
+      $('screenContainer').style.display = 'block';
+      toast('Кто-то делится экраном');
+    }
+    if (d.type === 'request-offer' && localStream) createOfferToPeer(d.from);
+    if (d.type === 'screen-stopped') {
+      sharerId = null;
+      $('screenContainer').style.display = 'none';
+      if ($('screenVideo')) $('screenVideo').srcObject = null;
+      for (const pid of Object.keys(peers)) {
+        if (peers[pid].screenPC) { peers[pid].screenPC.close(); delete peers[pid].screenPC; }
+      }
+      toast('Трансляция завершена');
+    }
   });
 }
 
 function showRoom() {
   $('landing').style.display = 'none';
   $('room').style.display = 'flex';
-  $('roomCode').textContent = 'Палата № ' + roomId;
+  $('roomCode').textContent = roomId;
 }
 
 function leaveRoom() {
   stopMedia();
-  for (const pid of Object.keys(peers)) { if (peers[pid].pc) peers[pid].pc.close(); }
+  for (const pid of Object.keys(peers)) {
+    if (peers[pid].pc) peers[pid].pc.close();
+    if (peers[pid].screenPC) peers[pid].screenPC.close();
+  }
   peers = {}; pendingOffers = []; pendingPeers = [];
   if (socket) { socket.disconnect(); socket = null; }
   connecting = false;
+  sharerId = null;
   $('room').style.display = 'none';
   $('landing').style.display = 'flex';
   $('roomCodeInput').value = '';
   $('peerList').innerHTML = '';
+  $('screenContainer').style.display = 'none';
+  if ($('screenVideo')) $('screenVideo').srcObject = null;
 }
 
 function createPC(peerId) {
@@ -128,6 +162,21 @@ function createPC(peerId) {
   return pc;
 }
 
+function createScreenPC(peerId) {
+  if (peers[peerId] && peers[peerId].screenPC) return peers[peerId].screenPC;
+  const pc = new RTCPeerConnection(RTC);
+  if (!peers[peerId]) peers[peerId] = {};
+  peers[peerId].screenPC = pc;
+  pc.onicecandidate = (e) => { if (e.candidate) socket.emit('ice-candidate', { to: peerId, candidate: e.candidate, type: 'screen' }); };
+  pc.ontrack = (e) => {
+    const sv = $('screenVideo');
+    if (sv && e.streams[0]) sv.srcObject = e.streams[0];
+    $('screenContainer').style.display = 'block';
+  };
+  pc.onconnectionstatechange = () => { log('screenPC ' + peerId + ': ' + pc.connectionState); };
+  return pc;
+}
+
 function createOfferToPeer(peerId) {
   const pc = createPC(peerId);
   pc.createOffer().then(o => { pc.setLocalDescription(o); socket.emit('offer', { to: peerId, sdp: o, type: 'video' }); }).catch(e => log('offer err: ' + e.message));
@@ -136,12 +185,24 @@ function createOfferToPeer(peerId) {
 function handleOffer(data) {
   const p = createPC(data.from);
   p.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(() => p.createAnswer())
-    .then(a => { p.setLocalDescription(a); socket.emit('answer', { to: data.from, sdp: a }); })
+    .then(a => { p.setLocalDescription(a); socket.emit('answer', { to: data.from, sdp: a, type: 'camera' }); })
     .catch(e => log('answer err: ' + e.message));
 }
 
+function handleScreenOffer(data) {
+  const pc = createScreenPC(data.from);
+  pc.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(() => pc.createAnswer())
+    .then(a => { pc.setLocalDescription(a); socket.emit('answer', { to: data.from, sdp: a, type: 'screen' }); })
+    .catch(e => log('screen ans err: ' + e.message));
+}
+
 function removePeer(peerId) {
-  if (peers[peerId]) { if (peers[peerId].pc) peers[peerId].pc.close(); delete peers[peerId]; }
+  const p = peers[peerId];
+  if (p) {
+    if (p.pc) p.pc.close();
+    if (p.screenPC) p.screenPC.close();
+    delete peers[peerId];
+  }
   const el = document.getElementById('v_' + peerId);
   if (el) { const w = el.closest('.remote-peer'); if (w) w.remove(); }
 }
@@ -158,17 +219,14 @@ $('leaveBtn').onclick = leaveRoom;
 $('camBtn').onclick = () => {
   camOn = !camOn;
   if (localStream) localStream.getVideoTracks().forEach(t => t.enabled = camOn);
-  $('camBtn').textContent = camOn ? '📷' : '📷';
   $('camBtn').classList.toggle('off', !camOn);
 };
 $('micBtn').onclick = () => {
   micOn = !micOn;
   if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = micOn);
-  $('micBtn').textContent = micOn ? '🎤' : '🎤';
   $('micBtn').classList.toggle('off', !micOn);
 };
 
-// Auto-join from URL - fires immediately
 (function() {
   try {
     const p = new URLSearchParams(location.search);

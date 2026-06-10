@@ -170,6 +170,21 @@ body {
   color: #c285e4;
 }
 
+/* Screen share */
+#screenContainer {
+  display: none;
+  width: 100%;
+  background: #000;
+  border-radius: 10px;
+  overflow: hidden;
+}
+#screenVideo {
+  width: 100%;
+  display: block;
+  background: #000;
+  aspect-ratio: 16/9;
+}
+
 /* Controls bar */
 #controls {
   display: flex;

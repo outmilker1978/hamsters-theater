@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="/icon256.png">
 <title>TV Hamsters</title>
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 <div id="landing">
@@ -36,6 +36,7 @@
   </div>
   <div id="faces">
     <video id="localVideo" autoplay muted playsinline></video>
+    <div id="screenContainer"><video id="screenVideo" autoplay playsinline></video></div>
     <div id="peerList"></div>
     <div id="screenshareBadge">Кто-то делится экраном</div>
   </div>
@@ -47,6 +48,6 @@
 </div>
 
 <script src="socket.io.min.js"></script>
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>
