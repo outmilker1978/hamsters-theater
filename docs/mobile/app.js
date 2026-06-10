@@ -370,7 +370,7 @@ let installPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   installPrompt = e;
-  $('installBtn').style.display = '';
+  $('installBtn').style.display = 'flex';
 });
 $('installBtn').onclick = async () => {
   if (!installPrompt) return;
