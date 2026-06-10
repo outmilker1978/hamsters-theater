@@ -340,7 +340,16 @@ $('fullscreenBtn').onclick = () => {
   $('room').classList.toggle('fullscreen');
   $('controls').classList.toggle('overlay');
 };
-document.addEventListener('contextmenu', e => e.preventDefault());
+$('shareBtn').onclick = () => {
+  if (!roomId) return;
+  const url = `https://tvhamsters.outmilk.online/mobile/?code=${roomId}`;
+  const text = `Присоединяйся ко мне в TV Hamsters! 🐹\nКод комнаты: ${roomId}\nСсылка: ${url}`;
+  if (navigator.share) {
+    navigator.share({ title: 'TV Hamsters', text: text, url: url }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(url).then(() => toast('Ссылка скопирована')).catch(() => {});
+  }
+};
 document.addEventListener('contextmenu', e => e.preventDefault());
 let hideTimer;
 function showControls() {

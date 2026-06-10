@@ -1075,7 +1075,7 @@ input, textarea, [contenteditable], .copyable {
   appearance: none;
   width: 4px;
   height: 60px;
-  background: var(--border);
+  background: rgba(194,133,228,0.2);
   border-radius: 2px;
   outline: none;
   cursor: pointer;
@@ -1085,11 +1085,13 @@ input, textarea, [contenteditable], .copyable {
   right: 4px;
   top: 50%;
   transform: translateY(-50%);
-  opacity: 0;
-  transition: opacity 0.2s;
+  opacity: 0.6;
+  transition: opacity 0.2s, width 0.2s, background 0.2s;
 }
 .face-wrapper:hover .volume-slider {
   opacity: 1;
+  width: 6px;
+  background: rgba(194,133,228,0.4);
 }
 .volume-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
