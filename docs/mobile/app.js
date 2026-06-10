@@ -355,20 +355,12 @@ $('screenContainer').addEventListener('touchstart', showControls);
 $('controls').addEventListener('touchstart', (e) => { e.stopPropagation(); showControls(); });
 
 // PWA Install
-let installPrompt = null;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  installPrompt = e;
-  $('installBtn').style.display = 'flex';
-});
 $('installBtn').onclick = async () => {
   if (!installPrompt) return;
-  installPrompt.prompt();
-  const result = await installPrompt.userChoice;
+  await installPrompt.prompt();
   installPrompt = null;
   $('installBtn').style.display = 'none';
 };
-window.addEventListener('appinstalled', () => { $('installBtn').style.display = 'none'; });
 
 (function() {
   try {

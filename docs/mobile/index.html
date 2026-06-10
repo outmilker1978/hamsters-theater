@@ -69,6 +69,17 @@
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
 }
+let installPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  installPrompt = e;
+  const btn = document.getElementById('installBtn');
+  if (btn) btn.style.display = 'flex';
+});
+window.addEventListener('appinstalled', () => {
+  const btn = document.getElementById('installBtn');
+  if (btn) btn.style.display = 'none';
+});
 </script>
 <script src="app.js?v=13"></script>
 </body>
