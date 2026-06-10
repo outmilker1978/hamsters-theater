@@ -218,20 +218,13 @@ body {
   overflow-y: auto;
   position: relative;
 }
-#localVideo, .remote-peer video {
-  width: 100%; height: 100%;
-  border-radius: 10px;
-  background: #000;
-  display: block;
-  object-fit: cover;
-  aspect-ratio: 1/1;
-}
 #localVideo {
   width: calc(50% - 2px);
-  max-height: 40%;
+  aspect-ratio: 1/1;
   border-radius: 10px;
   background: #000;
   transform: scaleX(-1);
+  object-fit: cover;
   order: 99;
 }
 #peerList {
@@ -242,11 +235,21 @@ body {
 }
 .remote-peer {
   width: calc(50% - 2px);
+  aspect-ratio: 1/1;
   position: relative;
   background: #151218;
   border-radius: 10px;
   overflow: hidden;
-  aspect-ratio: 1/1;
+}
+.remote-peer video {
+  width: 100%; height: 100%;
+  display: block;
+  object-fit: cover;
+  background: #000;
+}
+
+@media (orientation: landscape) {
+  #localVideo, .remote-peer { width: calc(33% - 4px); }
 }
 
 /* Screen share */
