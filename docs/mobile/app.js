@@ -341,13 +341,7 @@ $('fullscreenBtn').onclick = () => {
   $('controls').classList.toggle('overlay', fs);
   if (fs) {
     try { document.documentElement.requestFullscreen(); } catch(e) {}
-    setTimeout(() => {
-      if (document.fullscreenElement) {
-        document.exitFullscreen().then(() => {
-          document.documentElement.requestFullscreen();
-        }).catch(() => {});
-      }
-    }, 1000);
+    window.scrollTo(0, 1);
   } else if (document.fullscreenElement) {
     try { document.exitFullscreen(); } catch(e) {}
   }

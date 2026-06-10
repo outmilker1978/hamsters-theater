@@ -120,6 +120,7 @@ body {
 }
 
 /* Fullscreen mode */
+#room.fullscreen { position: fixed; inset: 0; z-index: 9999; }
 #room.fullscreen #roomHeader { display: none; }
 #room.fullscreen #faces.screen-mode {
   position: fixed;
