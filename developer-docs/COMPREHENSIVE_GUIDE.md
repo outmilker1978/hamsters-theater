@@ -19,7 +19,7 @@
 | Сайт | `tvhamsters.outmilk.online` (GitHub Pages, кастомный домен) |
 | Владелец | Outmilk (outmilker1978 на GitHub) |
 | email | outmilker@gmail.com |
-| Текущая версия | 1.7.4 |
+| Текущая версия | 1.7.5 |
 | Модель | Freemium (Free 5 users → Pro 20 → Business 100+) |
 | Аналитика | Yandex.Metrica (счётчик 109746304) |
 
