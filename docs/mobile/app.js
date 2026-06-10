@@ -344,14 +344,7 @@ $('fullscreenBtn').onclick = () => {
     const standalone = window.navigator.standalone ||
       ['standalone','fullscreen','minimal-ui'].some(m => window.matchMedia(`(display-mode: ${m})`).matches);
     if (!standalone) {
-      try { $('room').requestFullscreen({ navigationUI: 'hide' }); } catch(e) { try { document.documentElement.requestFullscreen(); } catch(e2) {} }
-      setTimeout(() => {
-        if (document.fullscreenElement) {
-          document.exitFullscreen().then(() => {
-            try { $('room').requestFullscreen({ navigationUI: 'hide' }); } catch(e) {}
-          }).catch(() => {});
-        }
-      }, 150);
+      try { $('room').requestFullscreen(); } catch(e) { try { document.documentElement.requestFullscreen(); } catch(e2) {} }
     }
   } else if (document.fullscreenElement) {
     try { document.exitFullscreen(); } catch(e) {}
