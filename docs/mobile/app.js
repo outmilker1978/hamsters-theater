@@ -337,19 +337,8 @@ $('toggleCamsBtn').onclick = () => {
   $('toggleCamsBtn').classList.toggle('off', !camsVisible);
 };
 $('fullscreenBtn').onclick = () => {
-  const fs = !$('room').classList.contains('fullscreen');
   $('room').classList.toggle('fullscreen');
   $('controls').classList.toggle('overlay');
-  if (fs) {
-    const standalone = window.navigator.standalone ||
-      ['standalone','fullscreen','minimal-ui'].some(m => window.matchMedia(`(display-mode: ${m})`).matches);
-    if (!standalone) {
-      document.documentElement.requestFullscreen().catch(() => {});
-    }
-  } else if (document.fullscreenElement) {
-    document.exitFullscreen().catch(() => {});
-    $('controls').classList.remove('overlay', 'auto-hide');
-  }
 };
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('contextmenu', e => e.preventDefault());
