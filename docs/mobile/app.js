@@ -371,6 +371,17 @@ $('installBtn').onclick = async () => {
   $('installBtn').style.display = 'none';
 };
 
+// Help modal
+$('helpBtn').onclick = () => $('helpModal').style.display = 'flex';
+$('closeHelpBtn').onclick = () => $('helpModal').style.display = 'none';
+$('helpModal').onclick = (e) => { if (e.target === $('helpModal')) $('helpModal').style.display = 'none'; };
+$('donateLinkBoosty').onclick = () => {
+  window.open('https://boosty.to/outmilker', '_blank');
+};
+$('donateLinkCloud').onclick = () => {
+  window.open('https://pay.cloudtips.ru/p/8485a55c', '_blank');
+};
+
 (function() {
   try {
     const p = new URLSearchParams(location.search);

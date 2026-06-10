@@ -881,30 +881,55 @@ input, textarea, [contenteditable], .copyable {
   font-size: 12px;
 }
 .help-donate {
-  text-align: center;
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  gap: 12px;
+  margin-top: 12px;
 }
-.donate-link {
-  color: var(--accent-light);
-  font-size: 13px;
-  text-decoration: none;
-  opacity: 0.7;
-  transition: opacity 0.2s;
+.donate-card {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
   cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s, box-shadow 0.2s;
 }
-.donate-link:hover {
-  opacity: 1;
-  text-decoration: underline;
+.donate-card:hover {
+  border-color: var(--accent);
+  background: rgba(124, 58, 237, 0.08);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
 }
-.donate-sep {
-  color: var(--border);
-  font-size: 13px;
-  align-self: center;
+.donate-card:active {
+  transform: scale(0.98);
+}
+.donate-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(124, 58, 237, 0.15);
+  color: var(--accent-light);
+  flex-shrink: 0;
+}
+.donate-card-text {
+  display: flex;
+  flex-direction: column;
+}
+.donate-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.donate-card-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 2px;
 }
 .help-tip {
   font-size: 12px;

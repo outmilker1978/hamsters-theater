@@ -1,4 +1,4 @@
-const { app, BrowserWindow, session, ipcMain, Menu, clipboard, globalShortcut, desktopCapturer } = require('electron');
+const { app, BrowserWindow, session, ipcMain, Menu, clipboard, globalShortcut, desktopCapturer, shell } = require('electron');
 const http = require('http');
 const os = require('os');
 const { Server } = require('socket.io');
@@ -188,12 +188,16 @@ const MENU_STR = {
     file: 'Файл', quit: 'Выход',
     settings: 'Настройки', modes: 'Режимы', fullscreen: 'Полный экран', devtools: 'Инструменты разработчика',
     help: 'Помощь', releaseNotes: 'История версий', about: 'О программе',
+    supportBoosty: 'Помочь Хомяку создателю через Boosty',
+    supportCloud: 'Помочь Хомяку создателю через CloudTips',
     ctxCopy: 'Копировать', ctxPaste: 'Вставить',
   },
   en: {
     file: 'File', quit: 'Quit',
     settings: 'Settings', modes: 'Modes', fullscreen: 'Full Screen', devtools: 'Developer Tools',
     help: 'Help', releaseNotes: 'Release Notes', about: 'About',
+    supportBoosty: 'Поддержать Хомяка создателя через Boosty',
+    supportCloud: 'Поддержать Хомяка создателя через CloudTips',
     ctxCopy: 'Copy', ctxPaste: 'Paste',
   }
 };
@@ -222,6 +226,9 @@ function rebuildMenus(win) {
       submenu: [
         { label: s.releaseNotes, click: () => win.webContents.send('show-release-notes') },
         { label: s.about, click: () => win.webContents.send('show-help') },
+        { type: 'separator' },
+        { label: s.supportBoosty, click: () => { win.webContents.send('close-all-modals'); shell.openExternal('https://boosty.to/outmilker'); } },
+        { label: s.supportCloud, click: () => { win.webContents.send('close-all-modals'); shell.openExternal('https://pay.cloudtips.ru/p/8485a55c'); } },
       ]
     }
   ]);

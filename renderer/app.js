@@ -900,18 +900,24 @@ window.addEventListener('mousedown', (e) => {
 }, true);
 
 // --- Modals ---
-el('helpBtn').onclick = () => el('helpModal').style.display = 'flex';
+function closeAllModals() {
+  ['helpModal', 'releaseNotesModal', 'settingsModal', 'shortcutPromptModal'].forEach(id => {
+    const m = el(id); if (m) m.style.display = 'none';
+  });
+}
+el('helpBtn').onclick = () => { closeAllModals(); el('helpModal').style.display = 'flex'; };
 el('closeHelpBtn').onclick = () => el('helpModal').style.display = 'none';
 el('helpModal').onclick = (e) => { if (e.target === el('helpModal')) el('helpModal').style.display = 'none'; };
-ipcRenderer.on('show-help', () => el('helpModal').style.display = 'flex');
+ipcRenderer.on('show-help', () => { closeAllModals(); el('helpModal').style.display = 'flex'; });
 
 el('closeReleaseBtn').onclick = () => el('releaseNotesModal').style.display = 'none';
 el('releaseNotesModal').onclick = (e) => { if (e.target === el('releaseNotesModal')) el('releaseNotesModal').style.display = 'none'; };
-ipcRenderer.on('show-release-notes', () => el('releaseNotesModal').style.display = 'flex');
+ipcRenderer.on('show-release-notes', () => { closeAllModals(); el('releaseNotesModal').style.display = 'flex'; });
 
 el('closeSettingsBtn').onclick = () => el('settingsModal').style.display = 'none';
 el('settingsModal').onclick = (e) => { if (e.target === el('settingsModal')) el('settingsModal').style.display = 'none'; };
-ipcRenderer.on('show-settings', () => el('settingsModal').style.display = 'flex');
+ipcRenderer.on('show-settings', () => { closeAllModals(); el('settingsModal').style.display = 'flex'; });
+ipcRenderer.on('close-all-modals', closeAllModals);
 
 // Deep link handler: hamsters://join?code=XXXX
 ipcRenderer.on('deep-link', (event, url) => {
@@ -1077,7 +1083,7 @@ setupPTT();
 
 // First-launch shortcut prompt (shows once per version)
 (function() {
-  const ver = '1.7.4';
+  const ver = '1.7.5';
   // Set version in UI
   const verEls = document.querySelectorAll('#versionDisplay, .modal-version, title');
   verEls.forEach(el => {
