@@ -177,6 +177,7 @@ body {
   background: #000;
   border-radius: 10px;
   overflow: hidden;
+  position: relative;
 }
 #screenVideo {
   width: 100%;
@@ -184,6 +185,75 @@ body {
   background: #000;
   aspect-ratio: 16/9;
 }
+#scrFsBtn {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 5;
+}
+.screen-only { display: none; }
+
+/* Screen mode: screen big + cam thumbnails */
+#faces.screen-mode {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: stretch;
+}
+#faces.screen-mode #screenContainer {
+  flex: 1;
+  width: 100%;
+  max-height: 65vh;
+  display: block;
+  border-radius: 0;
+}
+#faces.screen-mode #screenVideo {
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+#faces.screen-mode #thumbToggle {
+  display: block;
+  align-self: center;
+  background: #2e2638;
+  color: #c285e4;
+  border: none;
+  border-radius: 50%;
+  width: 36px; height: 36px;
+  font-size: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin: 2px 0;
+}
+#faces.screen-mode #thumbToggle.hidden { opacity: 0.5; background: #7f1d1d; }
+#faces.screen-mode #localVideo {
+  width: 72px; height: 54px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  max-height: none;
+}
+#faces.screen-mode #peerList {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 4px;
+  width: 100%;
+  padding: 2px 4px;
+  scrollbar-width: none;
+}
+#faces.screen-mode #peerList::-webkit-scrollbar { display: none; }
+#faces.screen-mode .remote-peer {
+  width: 72px; height: 54px;
+  flex-shrink: 0;
+  border-radius: 6px;
+}
+#faces.screen-mode .remote-peer video { border-radius: 6px; }
+#faces.screen-mode .peer-label { font-size: 9px; padding: 1px 4px; }
 
 /* Controls bar */
 #controls {

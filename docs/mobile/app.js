@@ -21,6 +21,7 @@ let peers = {}, pendingOffers = [], pendingPeers = [];
 let micOn = true, camOn = true;
 let connecting = false;
 let sharerId = null;
+let camsVisible = true;
 
 const $ = id => document.getElementById(id);
 
@@ -98,6 +99,9 @@ function connectAndDo(action) {
     if (d.type === 'screen-started') {
       sharerId = d.from;
       $('screenContainer').style.display = 'block';
+      $('faces').classList.add('screen-mode');
+      camsVisible = true;
+      $('thumbToggle').classList.remove('hidden');
       toast('Кто-то делится экраном');
     }
     if (d.type === 'request-offer' && localStream) createOfferToPeer(d.from);
@@ -105,6 +109,9 @@ function connectAndDo(action) {
       sharerId = null;
       $('screenContainer').style.display = 'none';
       if ($('screenVideo')) $('screenVideo').srcObject = null;
+      $('faces').classList.remove('screen-mode');
+      $('peerList').style.display = 'flex';
+      $('localVideo').style.display = 'block';
       for (const pid of Object.keys(peers)) {
         if (peers[pid].screenPC) { peers[pid].screenPC.close(); delete peers[pid].screenPC; }
       }
@@ -133,7 +140,10 @@ function leaveRoom() {
   $('landing').style.display = 'flex';
   $('roomCodeInput').value = '';
   $('peerList').innerHTML = '';
+  $('peerList').style.display = 'flex';
+  $('localVideo').style.display = 'block';
   $('screenContainer').style.display = 'none';
+  $('faces').classList.remove('screen-mode');
   if ($('screenVideo')) $('screenVideo').srcObject = null;
 }
 
@@ -225,6 +235,16 @@ $('micBtn').onclick = () => {
   micOn = !micOn;
   if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = micOn);
   $('micBtn').classList.toggle('off', !micOn);
+};
+$('thumbToggle').onclick = () => {
+  camsVisible = !camsVisible;
+  $('peerList').style.display = camsVisible ? 'flex' : 'none';
+  $('localVideo').style.display = camsVisible ? 'block' : 'none';
+  $('thumbToggle').classList.toggle('hidden', !camsVisible);
+};
+$('scrFsBtn').onclick = () => {
+  const v = $('screenVideo');
+  if (v) { if (v.requestFullscreen) v.requestFullscreen(); else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen(); }
 };
 
 (function() {
