@@ -28,18 +28,15 @@ jobs:
             BODY=$(echo "$REL" | jq -r '.body')
           fi
 
+          printf '%s\n' \
+            '<b>🎬 TV Hamsters — новый релиз</b>' '' \
+            '<b>Версия:</b> '"${TAG}" \
+            '<b>Название:</b> '"${NAME}" '' \
+            '<b>Что нового:</b>' "${BODY}" '' \
+            "🔗 ${URL}" \
+            '🌐 tvhamsters.outmilk.online' > /tmp/msg.txt
+
           curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
             -d "chat_id=${CHAT}" \
             -d "parse_mode=HTML" \
-            --data-urlencode "text@-" << EOF
-🎬 <b>TV Hamsters — новый релиз</b>
-
-<b>Версия:</b> ${TAG}
-<b>Название:</b> ${NAME}
-
-<b>Что нового:</b>
-${BODY}
-
-🔗 ${URL}
-🌐 tvhamsters.outmilk.online
-EOF
+            --data-urlencode "text@/tmp/msg.txt"
