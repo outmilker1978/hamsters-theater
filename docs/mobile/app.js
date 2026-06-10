@@ -337,22 +337,17 @@ $('toggleCamsBtn').onclick = () => {
   $('toggleCamsBtn').classList.toggle('off', !camsVisible);
 };
 $('fullscreenBtn').onclick = () => {
-  const fs = $('room').classList.toggle('fullscreen');
-  $('controls').classList.toggle('overlay', fs);
+  const fs = !$('room').classList.contains('fullscreen');
+  $('room').classList.toggle('fullscreen');
+  $('controls').classList.toggle('overlay');
   if (fs) {
     try { document.documentElement.requestFullscreen(); } catch(e) {}
-    window.scrollTo(0, 1);
   } else if (document.fullscreenElement) {
     try { document.exitFullscreen(); } catch(e) {}
+    $('controls').classList.remove('overlay', 'auto-hide');
   }
 };
-document.addEventListener('fullscreenchange', () => {
-  if (!document.fullscreenElement) {
-    $('controls').classList.remove('overlay');
-    $('controls').classList.remove('auto-hide');
-    clearTimeout(hideTimer);
-  }
-});
+document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('contextmenu', e => e.preventDefault());
 let hideTimer;
 function showControls() {
