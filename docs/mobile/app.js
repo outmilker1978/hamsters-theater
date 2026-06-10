@@ -14,7 +14,7 @@ const RTC = {
     }
   ]
 };
-const MEDIA = { video: { facingMode: 'user', width: { ideal: 320 }, height: { ideal: 240 } }, audio: { echoCancellation: true, noiseSuppression: true } };
+const MEDIA = { video: { facingMode: 'user', width: { ideal: 240 }, height: { ideal: 180 }, frameRate: { ideal: 15, max: 20 } }, audio: { echoCancellation: true, noiseSuppression: true } };
 
 let socket, localStream, roomId, isHost = false;
 let peers = {}, pendingOffers = [], pendingPeers = [];
@@ -73,10 +73,10 @@ function connectAndDo(action) {
       localStream = await startMedia();
       $('localVideo').srcObject = localStream;
       pendingOffers.forEach(o => handleOffer(o)); pendingOffers = [];
-      pendingPeers.forEach(p => createPC(p)); pendingPeers = [];
+      pendingPeers.forEach(p => { createPC(p); socket.emit('signal', { to: p, signalType: 'request-offer' }); }); pendingPeers = [];
     } catch(e) { toast('Камера не доступна'); }
   });
-  socket.on('room-users', (users) => { users.forEach(pid => { if (localStream) createPC(pid); else pendingPeers.push(pid); }); });
+  socket.on('room-users', (users) => { users.forEach(pid => { if (localStream) { createPC(pid); socket.emit('signal', { to: pid, signalType: 'request-offer' }); } else pendingPeers.push(pid); }); });
   socket.on('peer-joined', (peerId) => { if (localStream) createOfferToPeer(peerId); else pendingPeers.push(peerId); });
   socket.on('offer', (data) => {
     if (data.type === 'screen') { handleScreenOffer(data); return; }
@@ -102,10 +102,12 @@ function connectAndDo(action) {
       $('screenContainer').style.display = 'block';
       $('faces').classList.add('screen-mode');
       camsVisible = true;
-      $('thumbToggle').classList.remove('cams-hidden');
+      $('toggleCamsBtn').classList.remove('off');
+      $('toggleCamsBtn').classList.remove('screen-only');
+      $('fullscreenBtn').classList.remove('screen-only');
       toast('Кто-то делится экраном');
     }
-    if (d.type === 'request-offer' && localStream) createOfferToPeer(d.from);
+    if (d.type === 'request-offer') { if (localStream) createOfferToPeer(d.from); }
     if (d.type === 'screen-stopped') {
       sharerId = null;
       $('screenContainer').style.display = 'none';
@@ -113,6 +115,8 @@ function connectAndDo(action) {
       $('faces').classList.remove('screen-mode');
       $('room').classList.remove('fullscreen');
       $('controls').classList.remove('overlay');
+      $('toggleCamsBtn').classList.add('screen-only');
+      $('fullscreenBtn').classList.add('screen-only');
       $('peerList').style.display = '';
       $('localVideo').style.display = '';
       for (const pid of Object.keys(peers)) {
@@ -155,6 +159,8 @@ function leaveRoom() {
   $('faces').classList.remove('screen-mode');
   $('room').classList.remove('fullscreen');
   $('controls').classList.remove('overlay');
+  $('toggleCamsBtn').classList.add('screen-only');
+  $('fullscreenBtn').classList.add('screen-only');
   if ($('screenVideo')) $('screenVideo').srcObject = null;
 }
 
@@ -249,17 +255,27 @@ $('micBtn').onclick = () => {
   if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = micOn);
   $('micBtn').classList.toggle('off', !micOn);
 };
-$('thumbToggle').onclick = () => {
+$('toggleCamsBtn').onclick = () => {
   camsVisible = !camsVisible;
   $('peerList').style.display = camsVisible ? '' : 'none';
   $('localVideo').style.display = camsVisible ? '' : 'none';
-  $('thumbToggle').classList.toggle('cams-hidden', !camsVisible);
+  $('toggleCamsBtn').classList.toggle('off', !camsVisible);
 };
-$('scrFsBtn').onclick = () => {
-  $('room').classList.toggle('fullscreen');
-  $('scrFsBtn').textContent = $('room').classList.contains('fullscreen') ? '✕' : '⛶';
-  $('controls').classList.toggle('overlay', $('room').classList.contains('fullscreen'));
+$('fullscreenBtn').onclick = () => {
+  const fs = $('room').classList.toggle('fullscreen');
+  $('controls').classList.toggle('overlay', fs);
+  if (fs) {
+    try { document.documentElement.requestFullscreen(); } catch(e) {}
+  } else {
+    try { document.exitFullscreen(); } catch(e) {}
+  }
 };
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement) {
+    $('room').classList.remove('fullscreen');
+    $('controls').classList.remove('overlay');
+  }
+});
 
 (function() {
   try {
