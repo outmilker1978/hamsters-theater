@@ -250,11 +250,50 @@ $('camBtn').onclick = () => {
   if (localStream) localStream.getVideoTracks().forEach(t => t.enabled = camOn);
   $('camBtn').classList.toggle('off', !camOn);
 };
-$('micBtn').onclick = () => {
-  micOn = !micOn;
-  if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = micOn);
-  $('micBtn').classList.toggle('off', !micOn);
-};
+let pttMode = false, lastTap = 0, tapTimer = null, savedMic = true;
+$('micBtn').addEventListener('click', () => {
+  const now = Date.now();
+  if (now - lastTap < 350) {
+    lastTap = 0; clearTimeout(tapTimer);
+    pttMode = !pttMode;
+    $('micBtn').classList.toggle('ptt-mode', pttMode);
+    if (pttMode) {
+      savedMic = micOn; micOn = false;
+      if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = false);
+      $('micBtn').classList.add('off');
+    } else {
+      micOn = savedMic;
+      if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = micOn);
+      $('micBtn').classList.toggle('off', !micOn);
+    }
+    return;
+  }
+  lastTap = now; clearTimeout(tapTimer);
+  tapTimer = setTimeout(() => {
+    if (pttMode) { lastTap = 0; return; }
+    micOn = !micOn;
+    if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = micOn);
+    $('micBtn').classList.toggle('off', !micOn);
+    lastTap = 0;
+  }, 350);
+});
+$('micBtn').addEventListener('touchstart', (e) => {
+  if (!pttMode) return;
+  e.preventDefault();
+  if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = true);
+  $('micBtn').classList.remove('off'); $('micBtn').classList.add('ptt-active');
+}, { passive: false });
+$('micBtn').addEventListener('touchend', (e) => {
+  if (!pttMode) return;
+  e.preventDefault();
+  if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = false);
+  $('micBtn').classList.add('off'); $('micBtn').classList.remove('ptt-active');
+}, { passive: false });
+$('micBtn').addEventListener('touchcancel', () => {
+  if (!pttMode) return;
+  if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = false);
+  $('micBtn').classList.add('off'); $('micBtn').classList.remove('ptt-active');
+});
 $('toggleCamsBtn').onclick = () => {
   camsVisible = !camsVisible;
   $('peerList').style.display = camsVisible ? '' : 'none';
@@ -274,8 +313,20 @@ document.addEventListener('fullscreenchange', () => {
   if (!document.fullscreenElement) {
     $('room').classList.remove('fullscreen');
     $('controls').classList.remove('overlay');
+    $('controls').classList.remove('auto-hide');
   }
 });
+let hideTimer;
+function showControls() {
+  $('controls').classList.remove('auto-hide');
+  clearTimeout(hideTimer);
+  if ($('room').classList.contains('fullscreen')) {
+    hideTimer = setTimeout(() => $('controls').classList.add('auto-hide'), 3000);
+  }
+}
+$('faces').addEventListener('touchstart', showControls);
+$('screenContainer').addEventListener('touchstart', showControls);
+$('controls').addEventListener('touchstart', (e) => { e.stopPropagation(); showControls(); });
 
 (function() {
   try {
