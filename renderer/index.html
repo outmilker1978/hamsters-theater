@@ -11,7 +11,7 @@
   <!-- Landing -->
   <div id="landing">
     <div class="landing-box">
-      <button id="helpBtn" class="help-btn" data-i18n-title="help.about" title="Рћ РїСЂРѕРіСЂР°РјРјРµ">?</button>
+      <button id="helpBtn" class="help-btn" data-i18n-title="help.about" title="&#x41E; &#x43F;&#x440;&#x43E;&#x433;&#x440;&#x430;&#x43C;&#x43C;&#x435;">?</button>
       <div class="logo-area">
         <img id="appIcon" src="../icon.png" alt="TV Hamsters">
         <div class="logo-text">
@@ -19,19 +19,19 @@
           <span class="version" id="versionDisplay">v1.7.7</span>
         </div>
       </div>
-      <p class="subtitle" data-i18n="landing.subtitle">РЎРјРѕС‚СЂРёС‚Рµ РІРёРґРµРѕ РІРјРµСЃС‚Рµ, Р±СѓРґС‚Рѕ РІС‹ СЂСЏРґРѕРј</p>
+      <p class="subtitle" data-i18n="landing.subtitle">&#x421;&#x43C;&#x43E;&#x442;&#x440;&#x438;&#x442;&#x435; &#x432;&#x438;&#x434;&#x435;&#x43E; &#x432;&#x43C;&#x435;&#x441;&#x442;&#x435;, &#x431;&#x443;&#x434;&#x442;&#x43E; &#x432;&#x44B; &#x440;&#x44F;&#x434;&#x43E;&#x43C;</p>
       <div class="info-rows" id="infoRows">
         <div class="info-row">
           <span class="info-label">&#x412;&#x44B;:</span>
           <span class="info-value" id="nameDisplay"></span>
-          <button class="name-edit-btn" id="nameEditBtn" title="РЎРјРµРЅРёС‚СЊ РёРјСЏ">
+          <button class="name-edit-btn" id="nameEditBtn" title="&#x421;&#x43C;&#x435;&#x43D;&#x438;&#x442;&#x44C; &#x438;&#x43C;&#x44F;">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
           </button>
         </div>
         <div class="info-row" id="addressRow" style="display:none">
           <span class="info-label" id="addressLabel">IP:</span>
           <span class="address-value" id="publicIP">...</span>
-          <button class="copy-addr-btn" onclick="copyAddress()" data-i18n-title="tooltip.copy" title="РљРѕРїРёСЂРѕРІР°С‚СЊ"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align:middle"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/></svg></button>
+          <button class="copy-addr-btn" onclick="copyAddress()" data-i18n-title="tooltip.copy" title="&#x41A;&#x43E;&#x43F;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x442;&#x44C;"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align:middle"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/></svg></button>
         </div>
         <div class="info-subrow" id="upnpRow" style="display:none">
           <span class="upnp-status" id="upnpStatus"></span>
@@ -40,18 +40,18 @@
       <div class="mode-selector">
         <label class="mode-option" id="modeLan">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align:-3px;margin-right:4px"><path d="M4 6h16v10H4V6zm0-2c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h7v2H8v2h8v-2h-3v-2h7c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4z"/></svg>
-          <span data-i18n="mode.local">Р›РѕРєР°Р»СЊРЅРѕ</span>
+          <span data-i18n="mode.local">&#x41B;&#x43E;&#x43A;&#x430;&#x43B;&#x44C;&#x43D;&#x43E;</span>
         </label>
         <label class="mode-option" id="modeCloud">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align:-3px;margin-right:4px"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
-          <span data-i18n="mode.cloud">Р§РµСЂРµР· РРЅС‚РµСЂРЅРµС‚</span>
+          <span data-i18n="mode.cloud">&#x427;&#x435;&#x440;&#x435;&#x437; &#x418;&#x43D;&#x442;&#x435;&#x440;&#x43D;&#x435;&#x442;</span>
         </label>
       </div>
-      <input id="serverUrlInput" type="text" value="localhost:3000" placeholder="РђРґСЂРµСЃ СЃРµСЂРІРµСЂР° (IP:РїРѕСЂС‚)">
-      <button id="createRoomBtn" class="btn primary" data-i18n="landing.create_room">РЎРѕР·РґР°С‚СЊ РєРѕРјРЅР°С‚Сѓ</button>
-      <div class="divider"><span data-i18n="landing.or">РёР»Рё</span></div>
-      <input id="roomCodeInput" type="text" data-i18n-placeholder="landing.code_placeholder" placeholder="Р’РІРµРґРёС‚Рµ РєРѕРґ РєРѕРјРЅР°С‚С‹">
-      <button id="joinRoomBtn" class="btn secondary" data-i18n="landing.join_room">РџРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ Рє РєРѕРјРЅР°С‚Рµ</button>
+      <input id="serverUrlInput" type="text" value="localhost:3000" placeholder="&#x410;&#x434;&#x440;&#x435;&#x441; &#x441;&#x435;&#x440;&#x432;&#x435;&#x440;&#x430; (IP:&#x43F;&#x43E;&#x440;&#x442;)">
+      <button id="createRoomBtn" class="btn primary" data-i18n="landing.create_room">&#x421;&#x43E;&#x437;&#x434;&#x430;&#x442;&#x44C; &#x43A;&#x43E;&#x43C;&#x43D;&#x430;&#x442;&#x443;</button>
+      <div class="divider"><span data-i18n="landing.or">&#x438;&#x43B;&#x438;</span></div>
+      <input id="roomCodeInput" type="text" data-i18n-placeholder="landing.code_placeholder" placeholder="&#x412;&#x432;&#x435;&#x434;&#x438;&#x442;&#x435; &#x43A;&#x43E;&#x434; &#x43A;&#x43E;&#x43C;&#x43D;&#x430;&#x442;&#x44B;">
+      <button id="joinRoomBtn" class="btn secondary" data-i18n="landing.join_room">&#x41F;&#x43E;&#x434;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x442;&#x44C;&#x441;&#x44F; &#x43A; &#x43A;&#x43E;&#x43C;&#x43D;&#x430;&#x442;&#x435;</button>
       <p id="errorMsg" class="error"></p>
     </div>
   </div>
@@ -61,8 +61,8 @@
     <div id="screenshare-container">
       <video id="screenshareVideo" autoplay playsinline></video>
       <div id="screenshare-placeholder">
-        <p data-i18n="room.screenshare_empty">Р­РєСЂР°РЅ РЅРµ С‚СЂР°РЅСЃР»РёСЂСѓРµС‚СЃСЏ</p>
-        <p class="hint" data-i18n="room.screenshare_hint">РќР°Р¶РјРёС‚Рµ В«РџРѕРґРµР»РёС‚СЊСЃСЏ СЌРєСЂР°РЅРѕРјВ», С‡С‚РѕР±С‹ РЅР°С‡Р°С‚СЊ</p>
+        <p data-i18n="room.screenshare_empty">&#x42D;&#x43A;&#x440;&#x430;&#x43D; &#x43D;&#x435; &#x442;&#x440;&#x430;&#x43D;&#x441;&#x43B;&#x438;&#x440;&#x443;&#x435;&#x442;&#x441;&#x44F;</p>
+        <p class="hint" data-i18n="room.screenshare_hint">&#x41D;&#x430;&#x436;&#x43C;&#x438;&#x442;&#x435; &#xAB;&#x41F;&#x43E;&#x434;&#x435;&#x43B;&#x438;&#x442;&#x44C;&#x441;&#x44F; &#x44D;&#x43A;&#x440;&#x430;&#x43D;&#x43E;&#x43C;&#xBB;, &#x447;&#x442;&#x43E;&#x431;&#x44B; &#x43D;&#x430;&#x447;&#x430;&#x442;&#x44C;</p>
       </div>
     </div>
 
@@ -70,7 +70,7 @@
       <div id="remote-faces"></div>
       <div class="face-wrapper local-face" id="localFace">
         <video id="localVideo" autoplay playsinline muted></video>
-        <div class="face-label" data-i18n="room.you">Р’С‹</div>
+        <div class="face-label" data-i18n="room.you">&#x412;&#x44B;</div>
       </div>
     </div>
 
@@ -79,26 +79,26 @@
     </div>
 
     <div id="controls">
-      <button id="toggleCameraBtn" class="control-btn" data-tooltip-i18n="tooltip.camera" data-i18n-title="tooltip.camera" title="РљР°РјРµСЂР°">
+      <button id="toggleCameraBtn" class="control-btn" data-tooltip-i18n="tooltip.camera" data-i18n-title="tooltip.camera" title="&#x41A;&#x430;&#x43C;&#x435;&#x440;&#x430;">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
       </button>
-      <button id="toggleMicBtn" class="control-btn" data-tooltip-i18n="tooltip.mic" data-i18n-title="tooltip.mic" title="РњРёРєСЂРѕС„РѕРЅ">
+      <button id="toggleMicBtn" class="control-btn" data-tooltip-i18n="tooltip.mic" data-i18n-title="tooltip.mic" title="&#x41C;&#x438;&#x43A;&#x440;&#x43E;&#x444;&#x43E;&#x43D;">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
       </button>
-      <button id="pttBtn" class="control-btn ptt" style="display:none" data-tooltip-i18n="tooltip.ptt" data-i18n-title="tooltip.ptt" title="Р—Р°Р¶РјРёС‚Рµ РџСЂРѕР±РµР», С‡С‚РѕР±С‹ РіРѕРІРѕСЂРёС‚СЊ">
+      <button id="pttBtn" class="control-btn ptt" style="display:none" data-tooltip-i18n="tooltip.ptt" data-i18n-title="tooltip.ptt" title="&#x417;&#x430;&#x436;&#x43C;&#x438;&#x442;&#x435; &#x41F;&#x440;&#x43E;&#x431;&#x435;&#x43B;, &#x447;&#x442;&#x43E;&#x431;&#x44B; &#x433;&#x43E;&#x432;&#x43E;&#x440;&#x438;&#x442;&#x44C;">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
         <span id="pttLabel" class="ptt-label">&#x41F;&#x440;&#x43E;&#x431;&#x435;&#x43B;</span>
       </button>
-      <button id="shareScreenBtn" class="control-btn" data-tooltip-i18n="tooltip.share" data-i18n-title="tooltip.share" title="РџРѕРґРµР»РёС‚СЊСЃСЏ СЌРєСЂР°РЅРѕРј">
+      <button id="shareScreenBtn" class="control-btn" data-tooltip-i18n="tooltip.share" data-i18n-title="tooltip.share" title="&#x41F;&#x43E;&#x434;&#x435;&#x43B;&#x438;&#x442;&#x44C;&#x441;&#x44F; &#x44D;&#x43A;&#x440;&#x430;&#x43D;&#x43E;&#x43C;">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
       </button>
-      <button id="leaveBtn" class="control-btn danger" data-tooltip-i18n="tooltip.leave" data-i18n-title="tooltip.leave" title="РџРѕРєРёРЅСѓС‚СЊ РєРѕРјРЅР°С‚Сѓ">
+      <button id="leaveBtn" class="control-btn danger" data-tooltip-i18n="tooltip.leave" data-i18n-title="tooltip.leave" title="&#x41F;&#x43E;&#x43A;&#x438;&#x43D;&#x443;&#x442;&#x44C; &#x43A;&#x43E;&#x43C;&#x43D;&#x430;&#x442;&#x443;">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6.23 8.06c-.53-.55-.46-1.41.16-1.87.78-.59 1.72-.93 2.74-.98 2.26-.09 4.23.94 5.34 2.42.43.57.31 1.39-.29 1.78-.6.39-1.42.27-1.85-.3-.65-.85-1.74-1.39-2.97-1.34-.54.03-1.05.18-1.49.43-.54.3-1.22.26-1.64-.14z"/><path d="M9.15 10.42c-.46-.33-1.11-.27-1.5.15-.39.42-.33 1.07.13 1.4l2.05 1.48c.37.27.69.64.84 1.09.53 1.6 1.52 3.13 2.94 4.32.44.37 1.1.32 1.47-.12.37-.44.32-1.1-.12-1.47-.88-.74-1.53-1.63-1.96-2.6l-1.93-1.39c-.33-.21-.65-.52-.92-.86z"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
       </button>
-      <button id="chatBtn" class="control-btn" data-tooltip-i18n="tooltip.chat" data-i18n-title="tooltip.chat" title="Р§Р°С‚">
+      <button id="chatBtn" class="control-btn" data-tooltip-i18n="tooltip.chat" data-i18n-title="tooltip.chat" title="&#x427;&#x430;&#x442;">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </button>
-      <button id="reactionBtn" class="control-btn" data-tooltip-i18n="tooltip.reaction" data-i18n-title="tooltip.reaction" title="Р РµР°РєС†РёСЏ">
+      <button id="reactionBtn" class="control-btn" data-tooltip-i18n="tooltip.reaction" data-i18n-title="tooltip.reaction" title="&#xFFFD; &#x435;&#x430;&#x43A;&#x446;&#x438;&#x44F;">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="9" r="1"/><circle cx="16" cy="9" r="1"/><path d="M8 14c0 0 1.5 2 4 2s4-2 4-2"/></svg>
       </button>
     </div>
@@ -108,12 +108,12 @@
   <div id="chatOverlay" class="chat-overlay" style="display:none">
     <div class="chat-panel">
       <div class="chat-header">
-        <span data-i18n="chat.title">Р§Р°С‚</span>
+        <span data-i18n="chat.title">&#x427;&#x430;&#x442;</span>
         <button id="chatCloseBtn" class="chat-close">&times;</button>
       </div>
       <div id="chatMessages" class="chat-messages"></div>
       <div class="chat-input-row">
-        <input type="text" id="chatInput" data-i18n-placeholder="chat.input_placeholder" placeholder="РќР°РїРёСЃР°С‚СЊ..." maxlength="500" autocomplete="off">
+        <input type="text" id="chatInput" data-i18n-placeholder="chat.input_placeholder" placeholder="&#x41D;&#x430;&#x43F;&#x438;&#x441;&#x430;&#x442;&#x44C;..." maxlength="500" autocomplete="off">
         <button id="chatSendBtn" class="chat-send">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
@@ -134,65 +134,65 @@
     <div id="helpModal" class="modal-overlay" style="display:none">
     <div class="modal-content">
       <button id="closeHelpBtn" class="modal-close">&times;</button>
-      <h2 data-i18n="help.about">Рћ РїСЂРѕРіСЂР°РјРјРµ</h2>
+      <h2 data-i18n="help.about">&#x41E; &#x43F;&#x440;&#x43E;&#x433;&#x440;&#x430;&#x43C;&#x43C;&#x435;</h2>
       <p class="modal-subtitle">TV Hamsters <span class="modal-version">v1.7.7</span></p>
 
-      <p data-i18n-html="help.desc">TV Hamsters вЂ” СЃРјРѕС‚СЂРёС‚Рµ С„РёР»СЊРјС‹, СЃРµСЂРёР°Р»С‹ Рё РІРёРґРµРѕ РІРјРµСЃС‚Рµ, Р±СѓРґС‚Рѕ РІС‹ СЂСЏРґРѕРј. РћРґРёРЅ РІРєР»СЋС‡Р°РµС‚ С‚СЂР°РЅСЃР»СЏС†РёСЋ СЌРєСЂР°РЅР° СЃРѕ Р·РІСѓРєРѕРј, РѕСЃС‚Р°Р»СЊРЅС‹Рµ РІРёРґСЏС‚ РІРёРґРµРѕ Рё СЃР»С‹С€Р°С‚ РіРѕР»РѕСЃР° РІСЃРµС… СѓС‡Р°СЃС‚РЅРёРєРѕРІ. РњРѕР¶РЅРѕ РѕР±СЃСѓР¶РґР°С‚СЊ РїСЂРѕРёСЃС…РѕРґСЏС‰РµРµ РІ СЂРµР°Р»СЊРЅРѕРј РІСЂРµРјРµРЅРё, С…РѕС…РѕС‚Р°С‚СЊ Рё РєРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ вЂ” РєР°Рє РІ РЅР°СЃС‚РѕСЏС‰РµРј РєРёРЅРѕС‚РµР°С‚СЂРµ, С‚РѕР»СЊРєРѕ РѕРЅР»Р°Р№РЅ.</p>
-      <p class="help-tip" data-i18n-html="help.killer_feature"><b>Р Р°С†РёСЏ (Push-to-Talk)</b> вЂ” РЅР°Р¶РјРё РїСЂР°РІРѕР№ РєРЅРѕРїРєРѕР№ РјС‹С€Рё РїРѕ РјРёРєСЂРѕС„РѕРЅСѓ, С‡С‚РѕР±С‹ РІРєР»СЋС‡РёС‚СЊ СЂРµР¶РёРј СЂР°С†РёРё. Р—Р°Р¶РјРё <b>РџСЂРѕР±РµР»</b> РёР»Рё РєРЅРѕРїРєСѓ вЂ” РіРѕРІРѕСЂРё. РћС‚РїСѓСЃС‚Рё вЂ” РјРёРєСЂРѕС„РѕРЅ РІС‹РєР»СЋС‡РёС‚СЃСЏ. Р’ РѕР±С‹С‡РЅРѕРј СЂРµР¶РёРјРµ РјРёРєСЂРѕС„РѕРЅ СЂР°Р±РѕС‚Р°РµС‚ РїРѕСЃС‚РѕСЏРЅРЅРѕ.</p>
+      <p data-i18n-html="help.desc">TV Hamsters &#x2014; &#x441;&#x43C;&#x43E;&#x442;&#x440;&#x438;&#x442;&#x435; &#x444;&#x438;&#x43B;&#x44C;&#x43C;&#x44B;, &#x441;&#x435;&#x440;&#x438;&#x430;&#x43B;&#x44B; &#x438; &#x432;&#x438;&#x434;&#x435;&#x43E; &#x432;&#x43C;&#x435;&#x441;&#x442;&#x435;, &#x431;&#x443;&#x434;&#x442;&#x43E; &#x432;&#x44B; &#x440;&#x44F;&#x434;&#x43E;&#x43C;. &#x41E;&#x434;&#x438;&#x43D; &#x432;&#x43A;&#x43B;&#x44E;&#x447;&#x430;&#x435;&#x442; &#x442;&#x440;&#x430;&#x43D;&#x441;&#x43B;&#x44F;&#x446;&#x438;&#x44E; &#x44D;&#x43A;&#x440;&#x430;&#x43D;&#x430; &#x441;&#x43E; &#x437;&#x432;&#x443;&#x43A;&#x43E;&#x43C;, &#x43E;&#x441;&#x442;&#x430;&#x43B;&#x44C;&#x43D;&#x44B;&#x435; &#x432;&#x438;&#x434;&#x44F;&#x442; &#x432;&#x438;&#x434;&#x435;&#x43E; &#x438; &#x441;&#x43B;&#x44B;&#x448;&#x430;&#x442; &#x433;&#x43E;&#x43B;&#x43E;&#x441;&#x430; &#x432;&#x441;&#x435;&#x445; &#x443;&#x447;&#x430;&#x441;&#x442;&#x43D;&#x438;&#x43A;&#x43E;&#x432;. &#x41C;&#x43E;&#x436;&#x43D;&#x43E; &#x43E;&#x431;&#x441;&#x443;&#x436;&#x434;&#x430;&#x442;&#x44C; &#x43F;&#x440;&#x43E;&#x438;&#x441;&#x445;&#x43E;&#x434;&#x44F;&#x449;&#x435;&#x435; &#x432; &#x440;&#x435;&#x430;&#x43B;&#x44C;&#x43D;&#x43E;&#x43C; &#x432;&#x440;&#x435;&#x43C;&#x435;&#x43D;&#x438;, &#x445;&#x43E;&#x445;&#x43E;&#x442;&#x430;&#x442;&#x44C; &#x438; &#x43A;&#x43E;&#x43C;&#x43C;&#x435;&#x43D;&#x442;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x442;&#x44C; &#x2014; &#x43A;&#x430;&#x43A; &#x432; &#x43D;&#x430;&#x441;&#x442;&#x43E;&#x44F;&#x449;&#x435;&#x43C; &#x43A;&#x438;&#x43D;&#x43E;&#x442;&#x435;&#x430;&#x442;&#x440;&#x435;, &#x442;&#x43E;&#x43B;&#x44C;&#x43A;&#x43E; &#x43E;&#x43D;&#x43B;&#x430;&#x439;&#x43D;.</p>
+      <p class="help-tip" data-i18n-html="help.killer_feature"><b>&#x420;&#x430;&#x446;&#x438;&#x44F; (Push-to-Talk)</b> &#x2014; &#x43D;&#x430;&#x436;&#x43C;&#x438; &#x43F;&#x440;&#x430;&#x432;&#x43E;&#x439; &#x43A;&#x43D;&#x43E;&#x43F;&#x43A;&#x43E;&#x439; &#x43C;&#x44B;&#x448;&#x438; &#x43F;&#x43E; &#x43C;&#x438;&#x43A;&#x440;&#x43E;&#x444;&#x43E;&#x43D;&#x443;, &#x447;&#x442;&#x43E;&#x431;&#x44B; &#x432;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x442;&#x44C; &#x440;&#x435;&#x436;&#x438;&#x43C; &#x440;&#x430;&#x446;&#x438;&#x438;. &#x417;&#x430;&#x436;&#x43C;&#x438; <b>&#x41F;&#x440;&#x43E;&#x431;&#x435;&#x43B;</b> &#x438;&#x43B;&#x438; &#x43A;&#x43D;&#x43E;&#x43F;&#x43A;&#x443; &#x2014; &#x433;&#x43E;&#x432;&#x43E;&#x440;&#x438;. &#x41E;&#x442;&#x43F;&#x443;&#x441;&#x442;&#x438; &#x2014; &#x43C;&#x438;&#x43A;&#x440;&#x43E;&#x444;&#x43E;&#x43D; &#x432;&#x44B;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x442;&#x441;&#x44F;. &#x412; &#x43E;&#x431;&#x44B;&#x447;&#x43D;&#x43E;&#x43C; &#x440;&#x435;&#x436;&#x438;&#x43C;&#x435; &#x43C;&#x438;&#x43A;&#x440;&#x43E;&#x444;&#x43E;&#x43D; &#x440;&#x430;&#x431;&#x43E;&#x442;&#x430;&#x435;&#x442; &#x43F;&#x43E;&#x441;&#x442;&#x43E;&#x44F;&#x43D;&#x43D;&#x43E;.</p>
 
-      <h3 data-i18n="help.how_title">РљР°Рє СЌС‚Рѕ СЂР°Р±РѕС‚Р°РµС‚</h3>
-      <p data-i18n-html="help.how_text">Р’РёРґРµРѕ Рё РіРѕР»РѕСЃ РїРµСЂРµРґР°СЋС‚СЃСЏ РЅР°РїСЂСЏРјСѓСЋ РјРµР¶РґСѓ С…РѕРјСЏС‡РєР°РјРё вЂ” Р±С‹СЃС‚СЂРѕ Рё Р±РµР· Р·Р°РґРµСЂР¶РµРє. Р”Р»СЏ СЃРѕРµРґРёРЅРµРЅРёСЏ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РѕР±Р»Р°С‡РЅС‹Р№ СЃРµСЂРІРµСЂ, РѕРЅ РїРѕРјРѕРіР°РµС‚ РЅР°Р№С‚Рё РґСЂСѓРі РґСЂСѓРіР° Рё РЅР°СЃС‚СЂРѕРёС‚СЊ СЃРІСЏР·СЊ. Р’ РѕРґРЅРѕР№ РєРѕРјРЅР°С‚Рµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РґРѕ 5 СѓС‡Р°СЃС‚РЅРёРєРѕРІ.</p>
+      <h3 data-i18n="help.how_title">&#x41A;&#x430;&#x43A; &#x44D;&#x442;&#x43E; &#x440;&#x430;&#x431;&#x43E;&#x442;&#x430;&#x435;&#x442;</h3>
+      <p data-i18n-html="help.how_text">&#x412;&#x438;&#x434;&#x435;&#x43E; &#x438; &#x433;&#x43E;&#x43B;&#x43E;&#x441; &#x43F;&#x435;&#x440;&#x435;&#x434;&#x430;&#x44E;&#x442;&#x441;&#x44F; &#x43D;&#x430;&#x43F;&#x440;&#x44F;&#x43C;&#x443;&#x44E; &#x43C;&#x435;&#x436;&#x434;&#x443; &#x445;&#x43E;&#x43C;&#x44F;&#x447;&#x43A;&#x430;&#x43C;&#x438; &#x2014; &#x431;&#x44B;&#x441;&#x442;&#x440;&#x43E; &#x438; &#x431;&#x435;&#x437; &#x437;&#x430;&#x434;&#x435;&#x440;&#x436;&#x435;&#x43A;. &#x414;&#x43B;&#x44F; &#x441;&#x43E;&#x435;&#x434;&#x438;&#x43D;&#x435;&#x43D;&#x438;&#x44F; &#x438;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x443;&#x435;&#x442;&#x441;&#x44F; &#x43E;&#x431;&#x43B;&#x430;&#x447;&#x43D;&#x44B;&#x439; &#x441;&#x435;&#x440;&#x432;&#x435;&#x440;, &#x43E;&#x43D; &#x43F;&#x43E;&#x43C;&#x43E;&#x433;&#x430;&#x435;&#x442; &#x43D;&#x430;&#x439;&#x442;&#x438; &#x434;&#x440;&#x443;&#x433; &#x434;&#x440;&#x443;&#x433;&#x430; &#x438; &#x43D;&#x430;&#x441;&#x442;&#x440;&#x43E;&#x438;&#x442;&#x44C; &#x441;&#x432;&#x44F;&#x437;&#x44C;. &#x412; &#x43E;&#x434;&#x43D;&#x43E;&#x439; &#x43A;&#x43E;&#x43C;&#x43D;&#x430;&#x442;&#x435; &#x43C;&#x43E;&#x436;&#x435;&#x442; &#x431;&#x44B;&#x442;&#x44C; &#x434;&#x43E; 5 &#x443;&#x447;&#x430;&#x441;&#x442;&#x43D;&#x438;&#x43A;&#x43E;&#x432;.</p>
 
-      <h3 data-i18n="help.modes_title">Р РµР¶РёРјС‹ СЂР°Р±РѕС‚С‹</h3>
+      <h3 data-i18n="help.modes_title">&#x420;&#x435;&#x436;&#x438;&#x43C;&#x44B; &#x440;&#x430;&#x431;&#x43E;&#x442;&#x44B;</h3>
       <div class="help-modes">
         <div class="help-mode">
           <div class="help-mode-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M4 6h16v10H4V6zm0-2c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h7v2H8v2h8v-2h-3v-2h7c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4z"/></svg></div>
-          <div data-i18n-html="help.mode_local"><strong>Р›РѕРєР°Р»СЊРЅРѕ</strong> вЂ” РґР»СЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РІ РѕРґРЅРѕР№ СЃРµС‚Рё (С‡РµСЂРµР· СЂРѕСѓС‚РµСЂ).</div>
+          <div data-i18n-html="help.mode_local"><strong>&#x41B;&#x43E;&#x43A;&#x430;&#x43B;&#x44C;&#x43D;&#x43E;</strong> &#x2014; &#x434;&#x43B;&#x44F; &#x438;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x44F; &#x432; &#x43E;&#x434;&#x43D;&#x43E;&#x439; &#x441;&#x435;&#x442;&#x438; (&#x447;&#x435;&#x440;&#x435;&#x437; &#x440;&#x43E;&#x443;&#x442;&#x435;&#x440;).</div>
         </div>
         <div class="help-mode">
           <div class="help-mode-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg></div>
-          <div data-i18n-html="help.mode_cloud"><strong>Р§РµСЂРµР· РРЅС‚РµСЂРЅРµС‚</strong> вЂ” РёСЃРїРѕР»СЊР·СѓРµС‚ РѕР±Р»Р°С‡РЅС‹Р№ СЃРµСЂРІРµСЂ. РќРµ С‚СЂРµР±СѓРµС‚ РѕС‚РєСЂС‹С‚РёСЏ РїРѕСЂС‚РѕРІ.</div>
+          <div data-i18n-html="help.mode_cloud"><strong>&#x427;&#x435;&#x440;&#x435;&#x437; &#x418;&#x43D;&#x442;&#x435;&#x440;&#x43D;&#x435;&#x442;</strong> &#x2014; &#x438;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x443;&#x435;&#x442; &#x43E;&#x431;&#x43B;&#x430;&#x447;&#x43D;&#x44B;&#x439; &#x441;&#x435;&#x440;&#x432;&#x435;&#x440;. &#x41D;&#x435; &#x442;&#x440;&#x435;&#x431;&#x443;&#x435;&#x442; &#x43E;&#x442;&#x43A;&#x440;&#x44B;&#x442;&#x438;&#x44F; &#x43F;&#x43E;&#x440;&#x442;&#x43E;&#x432;.</div>
         </div>
       </div>
 
-      <h3 data-i18n="help.scenarios_title">Р§РµРј Р·Р°РЅСЏС‚СЊСЃСЏ</h3>
+      <h3 data-i18n="help.scenarios_title">&#x427;&#x435;&#x43C; &#x437;&#x430;&#x43D;&#x44F;&#x442;&#x44C;&#x441;&#x44F;</h3>
       <div class="help-scenarios">
-        <div class="help-scenario" data-i18n-html="help.scenario_cinema"><b>РљРёРЅРѕС‚РµР°С‚СЂ РЅР° РґРёРІР°РЅРµ</b> вЂ” РІРєР»СЋС‡РёР»Рё С„РёР»СЊРј, РґСЂСѓР·СЊСЏ СЃРјРѕС‚СЂСЏС‚ Рё РєРѕРјРјРµРЅС‚РёСЂСѓСЋС‚ РІ РїСЂСЏРјРѕРј СЌС„РёСЂРµ.</div>
-        <div class="help-scenario" data-i18n-html="help.scenario_tutor"><b>РќР°СЃС‚Р°РІРЅРёРє РѕРЅР»Р°Р№РЅ</b> вЂ” РїРѕРєР°Р·С‹РІР°РµС‚Рµ СЌРєСЂР°РЅ, СѓС‡РµРЅРёРє РїРѕРІС‚РѕСЂСЏРµС‚. РР·СѓС‡РµРЅРёРµ СЃРѕС„С‚Р°, СЂР°РґРёРѕСѓРїСЂР°РІР»РµРЅРёРµ СѓС‡РµРЅРёРєРѕРј РїРѕ С‚РµС…РЅРѕР»РѕРіРёРё В«РРґРё СЃСЋРґР°, С‚С‹РєР°Р№ РІ СЌС‚РѕВ», РѕР±СѓС‡РµРЅРёРµ РёСЃРїР°РЅСЃРєРѕРјСѓ СЏР·С‹РєСѓ, Р±СѓС…Р°С‚СЊ РѕРЅР»Р°Р№РЅ СЃ РґСЂСѓР·СЊСЏРјРё!</div>
-        <div class="help-scenario" data-i18n-html="help.scenario_party"><b>РћР±С‰РµРЅРёРµ СЃ С‚РµРјРё, РєС‚Рѕ РґР°Р»РµРєРѕ</b> вЂ” РґРµРЅСЊ СЂРѕР¶РґРµРЅРёСЏ, РќРѕРІС‹Р№ РіРѕРґ РІРјРµСЃС‚Рµ, С…РѕС‚СЊ РІС‹ Рё РІ СЂР°Р·РЅС‹С… РіРѕСЂРѕРґР°С… Рё СЃС‚СЂР°РЅР°С….</div>
+        <div class="help-scenario" data-i18n-html="help.scenario_cinema"><b>&#x41A;&#x438;&#x43D;&#x43E;&#x442;&#x435;&#x430;&#x442;&#x440; &#x43D;&#x430; &#x434;&#x438;&#x432;&#x430;&#x43D;&#x435;</b> &#x2014; &#x432;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x43B;&#x438; &#x444;&#x438;&#x43B;&#x44C;&#x43C;, &#x434;&#x440;&#x443;&#x437;&#x44C;&#x44F; &#x441;&#x43C;&#x43E;&#x442;&#x440;&#x44F;&#x442; &#x438; &#x43A;&#x43E;&#x43C;&#x43C;&#x435;&#x43D;&#x442;&#x438;&#x440;&#x443;&#x44E;&#x442; &#x432; &#x43F;&#x440;&#x44F;&#x43C;&#x43E;&#x43C; &#x44D;&#x444;&#x438;&#x440;&#x435;.</div>
+        <div class="help-scenario" data-i18n-html="help.scenario_tutor"><b>&#x41D;&#x430;&#x441;&#x442;&#x430;&#x432;&#x43D;&#x438;&#x43A; &#x43E;&#x43D;&#x43B;&#x430;&#x439;&#x43D;</b> &#x2014; &#x43F;&#x43E;&#x43A;&#x430;&#x437;&#x44B;&#x432;&#x430;&#x435;&#x442;&#x435; &#x44D;&#x43A;&#x440;&#x430;&#x43D;, &#x443;&#x447;&#x435;&#x43D;&#x438;&#x43A; &#x43F;&#x43E;&#x432;&#x442;&#x43E;&#x440;&#x44F;&#x435;&#x442;. &#x418;&#x437;&#x443;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x441;&#x43E;&#x444;&#x442;&#x430;, &#x440;&#x430;&#x434;&#x438;&#x43E;&#x443;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x435;&#x43D;&#x438;&#x435; &#x443;&#x447;&#x435;&#x43D;&#x438;&#x43A;&#x43E;&#x43C; &#x43F;&#x43E; &#x442;&#x435;&#x445;&#x43D;&#x43E;&#x43B;&#x43E;&#x433;&#x438;&#x438; &#xAB;&#x418;&#x434;&#x438; &#x441;&#x44E;&#x434;&#x430;, &#x442;&#x44B;&#x43A;&#x430;&#x439; &#x432; &#x44D;&#x442;&#x43E;&#xBB;, &#x43E;&#x431;&#x443;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x438;&#x441;&#x43F;&#x430;&#x43D;&#x441;&#x43A;&#x43E;&#x43C;&#x443; &#x44F;&#x437;&#x44B;&#x43A;&#x443;, &#x431;&#x443;&#x445;&#x430;&#x442;&#x44C; &#x43E;&#x43D;&#x43B;&#x430;&#x439;&#x43D; &#x441; &#x434;&#x440;&#x443;&#x437;&#x44C;&#x44F;&#x43C;&#x438;!</div>
+        <div class="help-scenario" data-i18n-html="help.scenario_party"><b>&#x41E;&#x431;&#x449;&#x435;&#x43D;&#x438;&#x435; &#x441; &#x442;&#x435;&#x43C;&#x438;, &#x43A;&#x442;&#x43E; &#x434;&#x430;&#x43B;&#x435;&#x43A;&#x43E;</b> &#x2014; &#x434;&#x435;&#x43D;&#x44C; &#x440;&#x43E;&#x436;&#x434;&#x435;&#x43D;&#x438;&#x44F;, &#x41D;&#x43E;&#x432;&#x44B;&#x439; &#x433;&#x43E;&#x434; &#x432;&#x43C;&#x435;&#x441;&#x442;&#x435;, &#x445;&#x43E;&#x442;&#x44C; &#x432;&#x44B; &#x438; &#x432; &#x440;&#x430;&#x437;&#x43D;&#x44B;&#x445; &#x433;&#x43E;&#x440;&#x43E;&#x434;&#x430;&#x445; &#x438; &#x441;&#x442;&#x440;&#x430;&#x43D;&#x430;&#x445;.</div>
       </div>
 
-      <h3 data-i18n="help.buttons_title">РљРЅРѕРїРєРё СѓРїСЂР°РІР»РµРЅРёСЏ</h3>
+      <h3 data-i18n="help.buttons_title">&#x41A;&#x43D;&#x43E;&#x43F;&#x43A;&#x438; &#x443;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x435;&#x43D;&#x438;&#x44F;</h3>
       <div class="help-buttons">
-        <div class="help-btn-row"><span class="help-btn-tag"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg> РљР°РјРµСЂР°</span><span data-i18n="help.btn_camera">РІРєР»СЋС‡РёС‚СЊ / РІС‹РєР»СЋС‡РёС‚СЊ РєР°РјРµСЂСѓ</span></div>
-        <div class="help-btn-row"><span class="help-btn-tag"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg> РњРёРєСЂРѕС„РѕРЅ</span><span data-i18n="help.btn_mic">РІРєР»СЋС‡РёС‚СЊ / РІС‹РєР»СЋС‡РёС‚СЊ РјРёРєСЂРѕС„РѕРЅ</span></div>
-        <div class="help-btn-row"><span class="help-btn-tag"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg> Р­РєСЂР°РЅ</span><span data-i18n="help.btn_screen">РїРѕРєР°Р·Р°С‚СЊ СЃРІРѕР№ СЌРєСЂР°РЅ РІСЃРµРј</span></div>
-        <div class="help-btn-row"><span class="help-btn-tag"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6.23 8.06c-.53-.55-.46-1.41.16-1.87.78-.59 1.72-.93 2.74-.98 2.26-.09 4.23.94 5.34 2.42.43.57.31 1.39-.29 1.78-.6.39-1.42.27-1.85-.3-.65-.85-1.74-1.39-2.97-1.34-.54.03-1.05.18-1.49.43-.54.3-1.22.26-1.64-.14z"/><path d="M9.15 10.42c-.46-.33-1.11-.27-1.5.15-.39.42-.33 1.07.13 1.4l2.05 1.48c.37.27.69.64.84 1.09.53 1.6 1.52 3.13 2.94 4.32.44.37 1.1.32 1.47-.12.37-.44.32-1.1-.12-1.47-.88-.74-1.53-1.63-1.96-2.6l-1.93-1.39c-.33-.21-.65-.52-.92-.86z"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg> Р’С‹С…РѕРґ</span><span data-i18n="help.btn_leave">РїРѕРєРёРЅСѓС‚СЊ РєРѕРјРЅР°С‚Сѓ</span></div>
-        <div class="help-btn-row"><span class="help-btn-tag"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> РџСЂРѕР±РµР»</span><span data-i18n="help.btn_ptt">РЅР°Р¶Р°С‚СЊ Рё РіРѕРІРѕСЂРёС‚СЊ (Push-to-Talk)</span></div>
+        <div class="help-btn-row"><span class="help-btn-tag"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg> &#x41A;&#x430;&#x43C;&#x435;&#x440;&#x430;</span><span data-i18n="help.btn_camera">&#x432;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x442;&#x44C; / &#x432;&#x44B;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x442;&#x44C; &#x43A;&#x430;&#x43C;&#x435;&#x440;&#x443;</span></div>
+        <div class="help-btn-row"><span class="help-btn-tag"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg> &#x41C;&#x438;&#x43A;&#x440;&#x43E;&#x444;&#x43E;&#x43D;</span><span data-i18n="help.btn_mic">&#x432;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x442;&#x44C; / &#x432;&#x44B;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x442;&#x44C; &#x43C;&#x438;&#x43A;&#x440;&#x43E;&#x444;&#x43E;&#x43D;</span></div>
+        <div class="help-btn-row"><span class="help-btn-tag"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg> &#x42D;&#x43A;&#x440;&#x430;&#x43D;</span><span data-i18n="help.btn_screen">&#x43F;&#x43E;&#x43A;&#x430;&#x437;&#x430;&#x442;&#x44C; &#x441;&#x432;&#x43E;&#x439; &#x44D;&#x43A;&#x440;&#x430;&#x43D; &#x432;&#x441;&#x435;&#x43C;</span></div>
+        <div class="help-btn-row"><span class="help-btn-tag"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6.23 8.06c-.53-.55-.46-1.41.16-1.87.78-.59 1.72-.93 2.74-.98 2.26-.09 4.23.94 5.34 2.42.43.57.31 1.39-.29 1.78-.6.39-1.42.27-1.85-.3-.65-.85-1.74-1.39-2.97-1.34-.54.03-1.05.18-1.49.43-.54.3-1.22.26-1.64-.14z"/><path d="M9.15 10.42c-.46-.33-1.11-.27-1.5.15-.39.42-.33 1.07.13 1.4l2.05 1.48c.37.27.69.64.84 1.09.53 1.6 1.52 3.13 2.94 4.32.44.37 1.1.32 1.47-.12.37-.44.32-1.1-.12-1.47-.88-.74-1.53-1.63-1.96-2.6l-1.93-1.39c-.33-.21-.65-.52-.92-.86z"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg> &#x412;&#x44B;&#x445;&#x43E;&#x434;</span><span data-i18n="help.btn_leave">&#x43F;&#x43E;&#x43A;&#x438;&#x43D;&#x443;&#x442;&#x44C; &#x43A;&#x43E;&#x43C;&#x43D;&#x430;&#x442;&#x443;</span></div>
+        <div class="help-btn-row"><span class="help-btn-tag"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> &#x41F;&#x440;&#x43E;&#x431;&#x435;&#x43B;</span><span data-i18n="help.btn_ptt">&#x43D;&#x430;&#x436;&#x430;&#x442;&#x44C; &#x438; &#x433;&#x43E;&#x432;&#x43E;&#x440;&#x438;&#x442;&#x44C; (Push-to-Talk)</span></div>
       </div>
 
-      <h3 data-i18n="help.team_title">Рћ РєРѕРјР°РЅРґРµ</h3>
+      <h3 data-i18n="help.team_title">&#x41E; &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x435;</h3>
       <div class="help-team">
-        <div class="help-team-row"><span class="help-team-role">Р Р°Р·СЂР°Р±РѕС‚С‡РёРє:</span> Р‘РµР·СѓРјРЅС‹Р№ РҐРѕРјСЏРє "Outmilker"</div>
-        <div class="help-team-row"><span class="help-team-role">РРґРµСЏ:</span> РҐРѕРјРёРјСѓРјРё Рё РќР°СЃС‚СЏ "РЎРµРЅСЏ" (РЎРїР°СЃРёР±Рѕ РјРѕРёРј Р»СЋР±РёРјС‹Рј С…РѕРјСЏС‡РєР°Рј Р·Р° РІРґРѕС…РЅРѕРІРµРЅРёРµ, РєРѕС‚РѕСЂРѕРµ РїСЂРёС€Р»Рѕ РєРѕ РјРЅРµ РЅРѕС‡СЊСЋ, РїРѕРєР° РѕРЅРё РЅРµ РґР°РІР°Р»Рё РјРЅРµ СЃРїРѕРєРѕР№РЅРµРЅСЊРєРѕ СЃРїР°С‚СЊ...)</div>
-        <div class="help-team-row"><span class="help-team-role">РџРѕРјРѕС‰СЊ РІ СЃРѕР·РґР°РЅРёРё:</span> Р’Р°СЃРёР»СЊРєР° (РѕРіСЂРѕРјРЅРѕРµ СЃРїР°СЃРёР±Рѕ Р·Р° РїРѕРјРѕС‰СЊ РїСЂРё СЂР°Р·СЂР°Р±РѕС‚РєРµ Рё С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЋ)</div>
-        <div class="help-team-row"><span class="help-team-role">AI-Р°СЃСЃРёСЃС‚РµРЅС‚:</span> opencode (opencode.ai вЂ” С‚РѕР¶Рµ РјРѕР»РѕРґРµС†)</div>
-        <div class="help-team-row help-team-final">Р РІРјРµСЃС‚Рµ РјС‹ Р±СЂРёРіР°РґР° "РЈС…!"... СЂР°Р±РѕС‚Р°РµРј РґРѕ РґРІСѓС….... РЅРѕС‡Рё)</div>
+        <div class="help-team-row"><span class="help-team-role">&#x420;&#x430;&#x437;&#x440;&#x430;&#x431;&#x43E;&#x442;&#x447;&#x438;&#x43A;:</span> &#x411;&#x435;&#x437;&#x443;&#x43C;&#x43D;&#x44B;&#x439; &#x425;&#x43E;&#x43C;&#x44F;&#x43A; "Outmilker"</div>
+        <div class="help-team-row"><span class="help-team-role">&#x418;&#x434;&#x435;&#x44F;:</span> &#x425;&#x43E;&#x43C;&#x438;&#x43C;&#x443;&#x43C;&#x438; &#x438; &#x41D;&#x430;&#x441;&#x442;&#x44F; "&#x421;&#x435;&#x43D;&#x44F;" (&#x421;&#x43F;&#x430;&#x441;&#x438;&#x431;&#x43E; &#x43C;&#x43E;&#x438;&#x43C; &#x43B;&#x44E;&#x431;&#x438;&#x43C;&#x44B;&#x43C; &#x445;&#x43E;&#x43C;&#x44F;&#x447;&#x43A;&#x430;&#x43C; &#x437;&#x430; &#x432;&#x434;&#x43E;&#x445;&#x43D;&#x43E;&#x432;&#x435;&#x43D;&#x438;&#x435;, &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x43E;&#x435; &#x43F;&#x440;&#x438;&#x448;&#x43B;&#x43E; &#x43A;&#x43E; &#x43C;&#x43D;&#x435; &#x43D;&#x43E;&#x447;&#x44C;&#x44E;, &#x43F;&#x43E;&#x43A;&#x430; &#x43E;&#x43D;&#x438; &#x43D;&#x435; &#x434;&#x430;&#x432;&#x430;&#x43B;&#x438; &#x43C;&#x43D;&#x435; &#x441;&#x43F;&#x43E;&#x43A;&#x43E;&#x439;&#x43D;&#x435;&#x43D;&#x44C;&#x43A;&#x43E; &#x441;&#x43F;&#x430;&#x442;&#x44C;...)</div>
+        <div class="help-team-row"><span class="help-team-role">&#x41F;&#x43E;&#x43C;&#x43E;&#x449;&#x44C; &#x432; &#x441;&#x43E;&#x437;&#x434;&#x430;&#x43D;&#x438;&#x438;:</span> &#x412;&#x430;&#x441;&#x438;&#x43B;&#x44C;&#x43A;&#x430; (&#x43E;&#x433;&#x440;&#x43E;&#x43C;&#x43D;&#x43E;&#x435; &#x441;&#x43F;&#x430;&#x441;&#x438;&#x431;&#x43E; &#x437;&#x430; &#x43F;&#x43E;&#x43C;&#x43E;&#x449;&#x44C; &#x43F;&#x440;&#x438; &#x440;&#x430;&#x437;&#x440;&#x430;&#x431;&#x43E;&#x442;&#x43A;&#x435; &#x438; &#x442;&#x435;&#x441;&#x442;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x44E;)</div>
+        <div class="help-team-row"><span class="help-team-role">AI-&#x430;&#x441;&#x441;&#x438;&#x441;&#x442;&#x435;&#x43D;&#x442;:</span> opencode (opencode.ai &#x2014; &#x442;&#x43E;&#x436;&#x435; &#x43C;&#x43E;&#x43B;&#x43E;&#x434;&#x435;&#x446;)</div>
+        <div class="help-team-row help-team-final">&#x418; &#x432;&#x43C;&#x435;&#x441;&#x442;&#x435; &#x43C;&#x44B; &#x431;&#x440;&#x438;&#x433;&#x430;&#x434;&#x430; "&#x423;&#x445;!"... &#x440;&#x430;&#x431;&#x43E;&#x442;&#x430;&#x435;&#x43C; &#x434;&#x43E; &#x434;&#x432;&#x443;&#x445;.... &#x43D;&#x43E;&#x447;&#x438;)</div>
       </div>
-      <h3 data-i18n="help.support_title">РџРѕРјРѕС‡СЊ РҐРѕРјСЏРєСѓ СЃРѕР·РґР°С‚РµР»СЋ</h3>
+      <h3 data-i18n="help.support_title">&#x41F;&#x43E;&#x43C;&#x43E;&#x447;&#x44C; &#x425;&#x43E;&#x43C;&#x44F;&#x43A;&#x443; &#x441;&#x43E;&#x437;&#x434;&#x430;&#x442;&#x435;&#x43B;&#x44E;</h3>
       <div class="help-donate">
         <div class="donate-card" id="donateLinkBoosty">
           <div class="donate-card-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div>
           <div class="donate-card-text">
             <div class="donate-card-title">Boosty</div>
-            <div class="donate-card-sub">Р Р°Р·РѕРІС‹Р№ РґРѕРЅР°С‚</div>
+            <div class="donate-card-sub">&#x420;&#x430;&#x437;&#x43E;&#x432;&#x44B;&#x439; &#x434;&#x43E;&#x43D;&#x430;&#x442;</div>
           </div>
         </div>
         <div class="donate-card" id="donateLinkCloud">
           <div class="donate-card-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg></div>
           <div class="donate-card-text">
             <div class="donate-card-title">CloudTips</div>
-            <div class="donate-card-sub">Р§Р°РµРІС‹Рµ</div>
+            <div class="donate-card-sub">&#x427;&#x430;&#x435;&#x432;&#x44B;&#x435;</div>
           </div>
         </div>
       </div>
@@ -203,27 +203,27 @@
   <div id="releaseNotesModal" class="modal-overlay" style="display:none">
     <div class="modal-content">
       <button id="closeReleaseBtn" class="modal-close">&times;</button>
-      <h2 data-i18n="help.release_notes">РСЃС‚РѕСЂРёСЏ РІРµСЂСЃРёР№</h2>
+      <h2 data-i18n="help.release_notes">&#x418;&#x441;&#x442;&#x43E;&#x440;&#x438;&#x44F; &#x432;&#x435;&#x440;&#x441;&#x438;&#x439;</h2>
       <div class="release-list">
         <div class="release-item"><span class="release-ver">1.7.7</span><span class="release-desc">Desktop: &#x438;&#x441;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x435;&#x43D; &#x441;&#x442;&#x430;&#x440;&#x442;&#x43E;&#x432;&#x44B;&#x439; &#x44D;&#x43A;&#x440;&#x430;&#x43D; (&#x43A;&#x43E;&#x434;&#x438;&#x440;&#x43E;&#x432;&#x43A;&#x430;, UPnP &#x43E;&#x442;&#x434;&#x435;&#x43B;&#x44C;&#x43D;&#x43E;&#x439; &#x441;&#x442;&#x440;&#x43E;&#x43A;&#x43E;&#x439;). Desktop: &#x440;&#x435;&#x430;&#x43A;&#x446;&#x438;&#x438; &#x432; &#x43F;&#x430;&#x43D;&#x435;&#x43B;&#x438; (normal flow, &#x43D;&#x435; &#x434;&#x432;&#x438;&#x433;&#x430;&#x44E;&#x442; &#x43A;&#x43D;&#x43E;&#x43F;&#x43A;&#x438;). Desktop: &#x447;&#x430;&#x442; &#x432; &#x43F;&#x430;&#x43D;&#x435;&#x43B;&#x438; (&#x437;&#x430;&#x433;&#x43E;&#x43B;&#x43E;&#x432;&#x43E;&#x43A; + &#x43A;&#x43D;&#x43E;&#x43F;&#x43A;&#x430; &#x437;&#x430;&#x43A;&#x440;&#x44B;&#x442;&#x438;&#x44F;). Desktop: &#x438;&#x441;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x435;&#x43D; PTT &#x432; &#x43E;&#x43A;&#x43D;&#x435;. Desktop + Mobile: &#x438;&#x43C;&#x435;&#x43D;&#x430; &#x43C;&#x43E;&#x431;&#x438;&#x43B;&#x44C;&#x43D;&#x44B;&#x445; &#x443;&#x447;&#x430;&#x441;&#x442;&#x43D;&#x438;&#x43A;&#x43E;&#x432; (user-info). Mobile: &#x43A;&#x43D;&#x43E;&#x43F;&#x43A;&#x438; 42px &#x435;&#x434;&#x438;&#x43D;&#x43E;&#x433;&#x43E; &#x440;&#x430;&#x437;&#x43C;&#x435;&#x440;&#x430;. Mobile: &#x438;&#x441;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x435;&#x43D;&#x430; &#x43A;&#x43E;&#x434;&#x438;&#x440;&#x43E;&#x432;&#x43A;&#x430;.</span></div>
-        <div class="release-item"><span class="release-ver">1.7.6</span><span class="release-desc">Desktop + Mobile: Р§Р°С‚ (С‚РµРєСЃС‚РѕРІС‹Рµ СЃРѕРѕР±С‰РµРЅРёСЏ РјРµР¶РґСѓ РІСЃРµРјРё СѓС‡Р°СЃС‚РЅРёРєР°РјРё). Desktop + Mobile: Р РµР°РєС†РёРё (СЌРјРѕРґР·Рё, РІСЃРїР»С‹РІР°СЋС‚ Р°РЅРёРјР°С†РёРµР№). Mobile: РїСЂРѕР·СЂР°С‡РЅС‹Р№ РѕРІРµСЂР»РµР№ С‡Р°С‚Р°, РїРѕР»РЅРѕСЌРєСЂР°РЅРЅС‹Р№ СЂРµР¶РёРј. Mobile: Р°РІС‚Рѕ-РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РєРѕРјРЅР°С‚С‹ РїСЂРё СЂРµР·РєРѕРЅРЅРµРєС‚Рµ.</span></div>
-        <div class="release-item"><span class="release-ver">1.7.5</span><span class="release-desc">Desktop: Enter РІ РїРѕР»Рµ РєРѕРґР° РєРѕРјРЅР°С‚С‹. Desktop: РїРѕР»Р·СѓРЅРєРё РіСЂРѕРјРєРѕСЃС‚Рё РІСЃРµРіРґР° РІРёРґРЅС‹. Mobile: РєРЅРѕРїРєР° В«РџРѕРґРµР»РёС‚СЊСЃСЏВ» РєРѕРјРЅР°С‚РѕР№. Mobile: РєРЅРѕРїРєР° СѓСЃС‚Р°РЅРѕРІРєРё PWA В«РЎРєР°С‡Р°С‚СЊ РЅР° AndroidВ». Mobile: С„РёРѕР»РµС‚РѕРІС‹Р№ РґРёР·Р°Р№РЅ, РїРѕР»РЅС‹Р№ СЌРєСЂР°РЅ Р±РµР· РѕРІРµСЂР»РµСЏ Chrome.</span></div>
-        <div class="release-item"><span class="release-ver">1.7.4</span><span class="release-desc">РЎРµС‚РєР° РєР°РјРµСЂ СѓС‡Р°СЃС‚РЅРёРєРѕРІ РІРѕ РІРµСЃСЊ СЌРєСЂР°РЅ, РєРѕРіРґР° РЅРёРєС‚Рѕ РЅРµ С‚СЂР°РЅСЃР»РёСЂСѓРµС‚. РСЃРїСЂР°РІР»РµРЅ РїСЂРѕС‚РѕРєРѕР» hamsters:// (СЂСѓС‡РЅР°СЏ Р·Р°РїРёСЃСЊ РІ СЂРµРµСЃС‚СЂ). РћР±РЅРѕРІР»РµРЅР° СЃС‚СЂР°РЅРёС†Р° РІС…РѕРґР° РїРѕ СЃСЃС‹Р»РєРµ вЂ” С‚С‘РјРЅР°СЏ РєР°СЂС‚РѕС‡РєР°, РєРЅРѕРїРєР° СЃ Р»РѕРіРѕС‚РёРїРѕРј. Р’ Р±РѕС‚Рµ &#x1F43A; Рё &#x2695; РІ СЃРѕРѕР±С‰РµРЅРёРё РїР°Р»Р°С‚С‹.</span></div>
-        <div class="release-item"><span class="release-ver">1.7.3</span><span class="release-desc">Р‘РѕС‚ РїРµСЂРµРїРёСЃР°РЅ: РїСЂРёРІРµС‚СЃС‚РІРµРЅРЅС‹Рµ СЃРѕРѕР±С‰РµРЅРёСЏ, РєРЅРѕРїРєРё, СЃРѕР·РґР°РЅРёРµ РєРѕРјРЅР°С‚С‹ Р»РѕРєР°Р»СЊРЅРѕ. РЎРёРіРЅР°Р»РёРЅРі РІСЃС‚СЂРѕРµРЅ РІ Р±РѕС‚Р°, РѕР±Р»Р°С‡РЅС‹Р№ СЃРµСЂРІРµСЂ СѓРґР°Р»С‘РЅ. РЎР°Р№С‚: РёСЃРїСЂР°РІР»РµРЅС‹ СЃС†РµРЅР°СЂРёРё, СЃСЃС‹Р»РєР° РЅР° РёСЃРїР°РЅСЃРєРёР№. Deep-link hamsters://</span></div>
-        <div class="release-item"><span class="release-ver">1.7.2</span><span class="release-desc">В«РџР°Р»Р°С‚Р° в„–В» РІРјРµСЃС‚Рѕ В«РљРѕРґ РєРѕРјРЅР°С‚С‹В». РЎС†РµРЅР°СЂРёРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РІ РјРѕРґР°Р»РєРµ Рћ РїСЂРѕРіСЂР°РјРјРµ. Deep-link РїСЂРѕС‚РѕРєРѕР» hamsters://. РЎСЃС‹Р»РєР° РЅР° РґРѕРЅР°С‚С‹ (Boosty) РІ РїСЂРѕРіСЂР°РјРјРµ.</span></div>
-        <div class="release-item"><span class="release-ver">1.7.1</span><span class="release-desc">РџРµСЂРµРёРјРµРЅРѕРІР°РЅРёРµ РІ TV Hamsters. РСЃРїСЂР°РІР»РµРЅРёРµ СЌС…Р° вЂ” РјРёРєСЂРѕС„РѕРЅ СЂРµРіСѓР»РёСЂСѓРµС‚СЃСЏ С‡РµСЂРµР· applyConstraints(gain) Р±РµР· РїРѕС‚РµСЂРё echo cancellation. РЈРІРµР»РёС‡РµРЅ СЂР°Р·РјРµСЂ РѕРєРЅР° (480Г—680). РџРѕР»Р·СѓРЅРѕРє РіСЂРѕРјРєРѕСЃС‚Рё РјРёРєСЂРѕС„РѕРЅР° РЅР° РїР°РЅРµР»Рё Р»РёС†. РСЃРїСЂР°РІР»РµРЅС‹ РєРЅРѕРїРєРё РїР°РЅРµР»Рё, PTT СЃ РїР°РЅРµР»Рё, РёСЃРїСЂР°РІР»РµРЅР° РєРѕРґРёСЂРѕРІРєР° PowerShell, flex-wrap РґР»СЏ 5 РєР°РјРµСЂ, РјРѕРґР°Р»РєР° РІС‹Р±РѕСЂР° РѕРєРЅР° вЂ” 3 РєРѕР»РѕРЅРєРё, Р°РІС‚Рѕ-РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ СЃРІС‘СЂРЅСѓС‚С‹С… РѕРєРѕРЅ</span></div>
-        <div class="release-item"><span class="release-ver">1.7.0</span><span class="release-desc">РќР°С‚РёРІРЅС‹Р№ РІС‹Р±РѕСЂ РѕРєРЅР° (РІСЃРµ РѕРєРЅР°, РІРєР»СЋС‡Р°СЏ СЃРІС‘СЂРЅСѓС‚С‹Рµ), РіР»Р°РІРЅРѕРµ РѕРєРЅРѕ СЃРІРѕСЂР°С‡РёРІР°РµС‚СЃСЏ РїСЂРё С‚СЂР°РЅСЃР»СЏС†РёРё, РїР»Р°РІР°СЋС‰Р°СЏ РїР°РЅРµР»СЊ РєР°Рє РІ РіР»Р°РІРЅРѕРј РѕРєРЅРµ, РѕС‚РґРµР»СЊРЅРѕРµ РѕРєРЅРѕ РєР°РјРµСЂ СѓС‡Р°СЃС‚РЅРёРєРѕРІ СЃ РїРѕР»Р·СѓРЅРєР°РјРё РіСЂРѕРјРєРѕСЃС‚Рё</span></div>
-        <div class="release-item"><span class="release-ver">1.6.1</span><span class="release-desc">РџР»Р°РІР°СЋС‰Р°СЏ РїР°РЅРµР»СЊ СѓРїСЂР°РІР»РµРЅРёСЏ (С‚РѕР»СЊРєРѕ РєРЅРѕРїРєРё, РєР°Рє РІ РіР»Р°РІРЅРѕРј РѕРєРЅРµ), РёСЃРїСЂР°РІР»РµРЅРёРµ СЂР°С†РёРё, РІС‹Р±РѕСЂ РѕРєРЅР° СЃ РїСЂРµРІСЊСЋ, РїРѕРґСЃРєР°Р·РєР° Рѕ СЃРІС‘СЂРЅСѓС‚С‹С… РѕРєРЅР°С…, РІС…РѕРґ/РІС‹С…РѕРґ Р±РµР· РЅР°РєРѕРїР»РµРЅРёСЏ, РІС‹С…РѕРґ РёР· PTT Р»СЋР±РѕР№ РєРЅРѕРїРєРѕР№</span></div>
-        <div class="release-item"><span class="release-ver">1.6.0</span><span class="release-desc">Р’С‹Р±РѕСЂ РѕРєРЅР° РїСЂРё С€Р°СЂРёРЅРіРµ, РєРѕРјРїР°РєС‚РЅС‹Р№ СЂРµР¶РёРј С€Р°СЂРµСЂР°, РїРѕР»Р·СѓРЅРєРё РіСЂРѕРјРєРѕСЃС‚Рё, СЂР°С†РёСЏ РґР»СЏ РІСЃРµС… (2 СЂРµР¶РёРјР° РјРёРєСЂРѕС„РѕРЅР°)</span></div>
-        <div class="release-item"><span class="release-ver">1.5.1</span><span class="release-desc">РЇСЂР»С‹Рє РЅР° СЂР°Р±РѕС‡РёР№ СЃС‚РѕР», СѓР»СѓС‡С€РµРЅРЅР°СЏ РєРЅРѕРїРєР° РєРѕРїРёСЂРѕРІР°РЅРёСЏ</span></div>
-        <div class="release-item"><span class="release-ver">1.5.0</span><span class="release-desc">Multi-user (РґРѕ 5), i18n EN/RU, РЅР°СЃС‚СЂРѕР№РєРё, release notes</span></div>
-        <div class="release-item"><span class="release-ver">1.4.2</span><span class="release-desc">РњРµРЅСЋ РџРѕРјРѕС‰СЊ в†’ Рћ РїСЂРѕРіСЂР°РјРјРµ, СЂР°Р·РґРµР» Рћ РєРѕРјР°РЅРґРµ</span></div>
-        <div class="release-item"><span class="release-ver">1.4.1</span><span class="release-desc">Р’РµСЂСЃРёСЏ РІ Р·Р°РіРѕР»РѕРІРєРµ РѕРєРЅР°, PTT С‚РѕР»СЊРєРѕ Сѓ С€Р°СЂРµСЂР°</span></div>
-        <div class="release-item"><span class="release-ver">1.4.0</span><span class="release-desc">РЎРїСЂР°РІРєР°, РјРѕРЅРѕС…СЂРѕРјРЅС‹Рµ РёРєРѕРЅРєРё, РѕС‡РµСЂРµРґСЊ ICE РєР°РЅРґРёРґР°С‚РѕРІ</span></div>
-        <div class="release-item"><span class="release-ver">1.3.0</span><span class="release-desc">РћР±Р»Р°С‡РЅС‹Р№ СЂРµР¶РёРј (Render.com), РїРµСЂРµРєР»СЋС‡Р°С‚РµР»СЊ Р›РѕРєР°Р»СЊРЅРѕ/РРЅС‚РµСЂРЅРµС‚</span></div>
-        <div class="release-item"><span class="release-ver">1.2.2</span><span class="release-desc">РСЃРїСЂР°РІР»РµРЅРёРµ СЌС…Р°, РїРѕРІС‚РѕСЂРЅРѕРµ РїРѕРґРєР»СЋС‡РµРЅРёРµ</span></div>
-        <div class="release-item"><span class="release-ver">1.1.0</span><span class="release-desc">Screen sharing РІ РѕР±Рµ СЃС‚РѕСЂРѕРЅС‹, PTT</span></div>
-        <div class="release-item"><span class="release-ver">1.0.0</span><span class="release-desc">РџРµСЂРІР°СЏ РІРµСЂСЃРёСЏ (LAN, РІСЃС‚СЂРѕРµРЅРЅС‹Р№ СЃРµСЂРІРµСЂ)</span></div>
+        <div class="release-item"><span class="release-ver">1.7.6</span><span class="release-desc">Desktop + Mobile: &#x427;&#x430;&#x442; (&#x442;&#x435;&#x43A;&#x441;&#x442;&#x43E;&#x432;&#x44B;&#x435; &#x441;&#x43E;&#x43E;&#x431;&#x449;&#x435;&#x43D;&#x438;&#x44F; &#x43C;&#x435;&#x436;&#x434;&#x443; &#x432;&#x441;&#x435;&#x43C;&#x438; &#x443;&#x447;&#x430;&#x441;&#x442;&#x43D;&#x438;&#x43A;&#x430;&#x43C;&#x438;). Desktop + Mobile: &#xFFFD; &#x435;&#x430;&#x43A;&#x446;&#x438;&#x438; (&#x44D;&#x43C;&#x43E;&#x434;&#x437;&#x438;, &#x432;&#x441;&#x43F;&#x43B;&#x44B;&#x432;&#x430;&#x44E;&#x442; &#x430;&#x43D;&#x438;&#x43C;&#x430;&#x446;&#x438;&#x435;&#x439;). Mobile: &#x43F;&#x440;&#x43E;&#x437;&#x440;&#x430;&#x447;&#x43D;&#x44B;&#x439; &#x43E;&#x432;&#x435;&#x440;&#x43B;&#x435;&#x439; &#x447;&#x430;&#x442;&#x430;, &#x43F;&#x43E;&#x43B;&#x43D;&#x43E;&#x44D;&#x43A;&#x440;&#x430;&#x43D;&#x43D;&#x44B;&#x439; &#x440;&#x435;&#x436;&#x438;&#x43C;. Mobile: &#x430;&#x432;&#x442;&#x43E;-&#x432;&#x43E;&#x441;&#x441;&#x442;&#x430;&#x43D;&#x43E;&#x432;&#x43B;&#x435;&#x43D;&#x438;&#x435; &#x43A;&#x43E;&#x43C;&#x43D;&#x430;&#x442;&#x44B; &#x43F;&#x440;&#x438; &#x440;&#x435;&#x437;&#x43A;&#x43E;&#x43D;&#x43D;&#x435;&#x43A;&#x442;&#x435;.</span></div>
+        <div class="release-item"><span class="release-ver">1.7.5</span><span class="release-desc">Desktop: Enter &#x432; &#x43F;&#x43E;&#x43B;&#x435; &#x43A;&#x43E;&#x434;&#x430; &#x43A;&#x43E;&#x43C;&#x43D;&#x430;&#x442;&#x44B;. Desktop: &#x43F;&#x43E;&#x43B;&#x437;&#x443;&#x43D;&#x43A;&#x438; &#x433;&#x440;&#x43E;&#x43C;&#x43A;&#x43E;&#x441;&#x442;&#x438; &#x432;&#x441;&#x435;&#x433;&#x434;&#x430; &#x432;&#x438;&#x434;&#x43D;&#x44B;. Mobile: &#x43A;&#x43D;&#x43E;&#x43F;&#x43A;&#x430; &#xAB;&#x41F;&#x43E;&#x434;&#x435;&#x43B;&#x438;&#x442;&#x44C;&#x441;&#x44F;&#xBB; &#x43A;&#x43E;&#x43C;&#x43D;&#x430;&#x442;&#x43E;&#x439;. Mobile: &#x43A;&#x43D;&#x43E;&#x43F;&#x43A;&#x430; &#x443;&#x441;&#x442;&#x430;&#x43D;&#x43E;&#x432;&#x43A;&#x438; PWA &#xAB;&#x421;&#x43A;&#x430;&#x447;&#x430;&#x442;&#x44C; &#x43D;&#x430; Android&#xBB;. Mobile: &#x444;&#x438;&#x43E;&#x43B;&#x435;&#x442;&#x43E;&#x432;&#x44B;&#x439; &#x434;&#x438;&#x437;&#x430;&#x439;&#x43D;, &#x43F;&#x43E;&#x43B;&#x43D;&#x44B;&#x439; &#x44D;&#x43A;&#x440;&#x430;&#x43D; &#x431;&#x435;&#x437; &#x43E;&#x432;&#x435;&#x440;&#x43B;&#x435;&#x44F; Chrome.</span></div>
+        <div class="release-item"><span class="release-ver">1.7.4</span><span class="release-desc">&#x421;&#x435;&#x442;&#x43A;&#x430; &#x43A;&#x430;&#x43C;&#x435;&#x440; &#x443;&#x447;&#x430;&#x441;&#x442;&#x43D;&#x438;&#x43A;&#x43E;&#x432; &#x432;&#x43E; &#x432;&#x435;&#x441;&#x44C; &#x44D;&#x43A;&#x440;&#x430;&#x43D;, &#x43A;&#x43E;&#x433;&#x434;&#x430; &#x43D;&#x438;&#x43A;&#x442;&#x43E; &#x43D;&#x435; &#x442;&#x440;&#x430;&#x43D;&#x441;&#x43B;&#x438;&#x440;&#x443;&#x435;&#x442;. &#x418;&#x441;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x435;&#x43D; &#x43F;&#x440;&#x43E;&#x442;&#x43E;&#x43A;&#x43E;&#x43B; hamsters:// (&#x440;&#x443;&#x447;&#x43D;&#x430;&#x44F; &#x437;&#x430;&#x43F;&#x438;&#x441;&#x44C; &#x432; &#x440;&#x435;&#x435;&#x441;&#x442;&#x440;). &#x41E;&#x431;&#x43D;&#x43E;&#x432;&#x43B;&#x435;&#x43D;&#x430; &#x441;&#x442;&#x440;&#x430;&#x43D;&#x438;&#x446;&#x430; &#x432;&#x445;&#x43E;&#x434;&#x430; &#x43F;&#x43E; &#x441;&#x441;&#x44B;&#x43B;&#x43A;&#x435; &#x2014; &#x442;&#x451;&#x43C;&#x43D;&#x430;&#x44F; &#x43A;&#x430;&#x440;&#x442;&#x43E;&#x447;&#x43A;&#x430;, &#x43A;&#x43D;&#x43E;&#x43F;&#x43A;&#x430; &#x441; &#x43B;&#x43E;&#x433;&#x43E;&#x442;&#x438;&#x43F;&#x43E;&#x43C;. &#x412; &#x431;&#x43E;&#x442;&#x435; &#x1F43A; &#x438; &#x2695; &#x432; &#x441;&#x43E;&#x43E;&#x431;&#x449;&#x435;&#x43D;&#x438;&#x438; &#x43F;&#x430;&#x43B;&#x430;&#x442;&#x44B;.</span></div>
+        <div class="release-item"><span class="release-ver">1.7.3</span><span class="release-desc">&#x411;&#x43E;&#x442; &#x43F;&#x435;&#x440;&#x435;&#x43F;&#x438;&#x441;&#x430;&#x43D;: &#x43F;&#x440;&#x438;&#x432;&#x435;&#x442;&#x441;&#x442;&#x432;&#x435;&#x43D;&#x43D;&#x44B;&#x435; &#x441;&#x43E;&#x43E;&#x431;&#x449;&#x435;&#x43D;&#x438;&#x44F;, &#x43A;&#x43D;&#x43E;&#x43F;&#x43A;&#x438;, &#x441;&#x43E;&#x437;&#x434;&#x430;&#x43D;&#x438;&#x435; &#x43A;&#x43E;&#x43C;&#x43D;&#x430;&#x442;&#x44B; &#x43B;&#x43E;&#x43A;&#x430;&#x43B;&#x44C;&#x43D;&#x43E;. &#x421;&#x438;&#x433;&#x43D;&#x430;&#x43B;&#x438;&#x43D;&#x433; &#x432;&#x441;&#x442;&#x440;&#x43E;&#x435;&#x43D; &#x432; &#x431;&#x43E;&#x442;&#x430;, &#x43E;&#x431;&#x43B;&#x430;&#x447;&#x43D;&#x44B;&#x439; &#x441;&#x435;&#x440;&#x432;&#x435;&#x440; &#x443;&#x434;&#x430;&#x43B;&#x451;&#x43D;. &#x421;&#x430;&#x439;&#x442;: &#x438;&#x441;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x435;&#x43D;&#x44B; &#x441;&#x446;&#x435;&#x43D;&#x430;&#x440;&#x438;&#x438;, &#x441;&#x441;&#x44B;&#x43B;&#x43A;&#x430; &#x43D;&#x430; &#x438;&#x441;&#x43F;&#x430;&#x43D;&#x441;&#x43A;&#x438;&#x439;. Deep-link hamsters://</span></div>
+        <div class="release-item"><span class="release-ver">1.7.2</span><span class="release-desc">&#xAB;&#x41F;&#x430;&#x43B;&#x430;&#x442;&#x430; &#x2116;&#xBB; &#x432;&#x43C;&#x435;&#x441;&#x442;&#x43E; &#xAB;&#x41A;&#x43E;&#x434; &#x43A;&#x43E;&#x43C;&#x43D;&#x430;&#x442;&#x44B;&#xBB;. &#x421;&#x446;&#x435;&#x43D;&#x430;&#x440;&#x438;&#x438; &#x438;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x44F; &#x432; &#x43C;&#x43E;&#x434;&#x430;&#x43B;&#x43A;&#x435; &#x41E; &#x43F;&#x440;&#x43E;&#x433;&#x440;&#x430;&#x43C;&#x43C;&#x435;. Deep-link &#x43F;&#x440;&#x43E;&#x442;&#x43E;&#x43A;&#x43E;&#x43B; hamsters://. &#x421;&#x441;&#x44B;&#x43B;&#x43A;&#x430; &#x43D;&#x430; &#x434;&#x43E;&#x43D;&#x430;&#x442;&#x44B; (Boosty) &#x432; &#x43F;&#x440;&#x43E;&#x433;&#x440;&#x430;&#x43C;&#x43C;&#x435;.</span></div>
+        <div class="release-item"><span class="release-ver">1.7.1</span><span class="release-desc">&#x41F;&#x435;&#x440;&#x435;&#x438;&#x43C;&#x435;&#x43D;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x435; &#x432; TV Hamsters. &#x418;&#x441;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x435;&#x43D;&#x438;&#x435; &#x44D;&#x445;&#x430; &#x2014; &#x43C;&#x438;&#x43A;&#x440;&#x43E;&#x444;&#x43E;&#x43D; &#x440;&#x435;&#x433;&#x443;&#x43B;&#x438;&#x440;&#x443;&#x435;&#x442;&#x441;&#x44F; &#x447;&#x435;&#x440;&#x435;&#x437; applyConstraints(gain) &#x431;&#x435;&#x437; &#x43F;&#x43E;&#x442;&#x435;&#x440;&#x438; echo cancellation. &#x423;&#x432;&#x435;&#x43B;&#x438;&#x447;&#x435;&#x43D; &#x440;&#x430;&#x437;&#x43C;&#x435;&#x440; &#x43E;&#x43A;&#x43D;&#x430; (480&#xD7;680). &#x41F;&#x43E;&#x43B;&#x437;&#x443;&#x43D;&#x43E;&#x43A; &#x433;&#x440;&#x43E;&#x43C;&#x43A;&#x43E;&#x441;&#x442;&#x438; &#x43C;&#x438;&#x43A;&#x440;&#x43E;&#x444;&#x43E;&#x43D;&#x430; &#x43D;&#x430; &#x43F;&#x430;&#x43D;&#x435;&#x43B;&#x438; &#x43B;&#x438;&#x446;. &#x418;&#x441;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x435;&#x43D;&#x44B; &#x43A;&#x43D;&#x43E;&#x43F;&#x43A;&#x438; &#x43F;&#x430;&#x43D;&#x435;&#x43B;&#x438;, PTT &#x441; &#x43F;&#x430;&#x43D;&#x435;&#x43B;&#x438;, &#x438;&#x441;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x435;&#x43D;&#x430; &#x43A;&#x43E;&#x434;&#x438;&#x440;&#x43E;&#x432;&#x43A;&#x430; PowerShell, flex-wrap &#x434;&#x43B;&#x44F; 5 &#x43A;&#x430;&#x43C;&#x435;&#x440;, &#x43C;&#x43E;&#x434;&#x430;&#x43B;&#x43A;&#x430; &#x432;&#x44B;&#x431;&#x43E;&#x440;&#x430; &#x43E;&#x43A;&#x43D;&#x430; &#x2014; 3 &#x43A;&#x43E;&#x43B;&#x43E;&#x43D;&#x43A;&#x438;, &#x430;&#x432;&#x442;&#x43E;-&#x432;&#x43E;&#x441;&#x441;&#x442;&#x430;&#x43D;&#x43E;&#x432;&#x43B;&#x435;&#x43D;&#x438;&#x435; &#x441;&#x432;&#x451;&#x440;&#x43D;&#x443;&#x442;&#x44B;&#x445; &#x43E;&#x43A;&#x43E;&#x43D;</span></div>
+        <div class="release-item"><span class="release-ver">1.7.0</span><span class="release-desc">&#x41D;&#x430;&#x442;&#x438;&#x432;&#x43D;&#x44B;&#x439; &#x432;&#x44B;&#x431;&#x43E;&#x440; &#x43E;&#x43A;&#x43D;&#x430; (&#x432;&#x441;&#x435; &#x43E;&#x43A;&#x43D;&#x430;, &#x432;&#x43A;&#x43B;&#x44E;&#x447;&#x430;&#x44F; &#x441;&#x432;&#x451;&#x440;&#x43D;&#x443;&#x442;&#x44B;&#x435;), &#x433;&#x43B;&#x430;&#x432;&#x43D;&#x43E;&#x435; &#x43E;&#x43A;&#x43D;&#x43E; &#x441;&#x432;&#x43E;&#x440;&#x430;&#x447;&#x438;&#x432;&#x430;&#x435;&#x442;&#x441;&#x44F; &#x43F;&#x440;&#x438; &#x442;&#x440;&#x430;&#x43D;&#x441;&#x43B;&#x44F;&#x446;&#x438;&#x438;, &#x43F;&#x43B;&#x430;&#x432;&#x430;&#x44E;&#x449;&#x430;&#x44F; &#x43F;&#x430;&#x43D;&#x435;&#x43B;&#x44C; &#x43A;&#x430;&#x43A; &#x432; &#x433;&#x43B;&#x430;&#x432;&#x43D;&#x43E;&#x43C; &#x43E;&#x43A;&#x43D;&#x435;, &#x43E;&#x442;&#x434;&#x435;&#x43B;&#x44C;&#x43D;&#x43E;&#x435; &#x43E;&#x43A;&#x43D;&#x43E; &#x43A;&#x430;&#x43C;&#x435;&#x440; &#x443;&#x447;&#x430;&#x441;&#x442;&#x43D;&#x438;&#x43A;&#x43E;&#x432; &#x441; &#x43F;&#x43E;&#x43B;&#x437;&#x443;&#x43D;&#x43A;&#x430;&#x43C;&#x438; &#x433;&#x440;&#x43E;&#x43C;&#x43A;&#x43E;&#x441;&#x442;&#x438;</span></div>
+        <div class="release-item"><span class="release-ver">1.6.1</span><span class="release-desc">&#x41F;&#x43B;&#x430;&#x432;&#x430;&#x44E;&#x449;&#x430;&#x44F; &#x43F;&#x430;&#x43D;&#x435;&#x43B;&#x44C; &#x443;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x435;&#x43D;&#x438;&#x44F; (&#x442;&#x43E;&#x43B;&#x44C;&#x43A;&#x43E; &#x43A;&#x43D;&#x43E;&#x43F;&#x43A;&#x438;, &#x43A;&#x430;&#x43A; &#x432; &#x433;&#x43B;&#x430;&#x432;&#x43D;&#x43E;&#x43C; &#x43E;&#x43A;&#x43D;&#x435;), &#x438;&#x441;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x435;&#x43D;&#x438;&#x435; &#x440;&#x430;&#x446;&#x438;&#x438;, &#x432;&#x44B;&#x431;&#x43E;&#x440; &#x43E;&#x43A;&#x43D;&#x430; &#x441; &#x43F;&#x440;&#x435;&#x432;&#x44C;&#x44E;, &#x43F;&#x43E;&#x434;&#x441;&#x43A;&#x430;&#x437;&#x43A;&#x430; &#x43E; &#x441;&#x432;&#x451;&#x440;&#x43D;&#x443;&#x442;&#x44B;&#x445; &#x43E;&#x43A;&#x43D;&#x430;&#x445;, &#x432;&#x445;&#x43E;&#x434;/&#x432;&#x44B;&#x445;&#x43E;&#x434; &#x431;&#x435;&#x437; &#x43D;&#x430;&#x43A;&#x43E;&#x43F;&#x43B;&#x435;&#x43D;&#x438;&#x44F;, &#x432;&#x44B;&#x445;&#x43E;&#x434; &#x438;&#x437; PTT &#x43B;&#x44E;&#x431;&#x43E;&#x439; &#x43A;&#x43D;&#x43E;&#x43F;&#x43A;&#x43E;&#x439;</span></div>
+        <div class="release-item"><span class="release-ver">1.6.0</span><span class="release-desc">&#x412;&#x44B;&#x431;&#x43E;&#x440; &#x43E;&#x43A;&#x43D;&#x430; &#x43F;&#x440;&#x438; &#x448;&#x430;&#x440;&#x438;&#x43D;&#x433;&#x435;, &#x43A;&#x43E;&#x43C;&#x43F;&#x430;&#x43A;&#x442;&#x43D;&#x44B;&#x439; &#x440;&#x435;&#x436;&#x438;&#x43C; &#x448;&#x430;&#x440;&#x435;&#x440;&#x430;, &#x43F;&#x43E;&#x43B;&#x437;&#x443;&#x43D;&#x43A;&#x438; &#x433;&#x440;&#x43E;&#x43C;&#x43A;&#x43E;&#x441;&#x442;&#x438;, &#x440;&#x430;&#x446;&#x438;&#x44F; &#x434;&#x43B;&#x44F; &#x432;&#x441;&#x435;&#x445; (2 &#x440;&#x435;&#x436;&#x438;&#x43C;&#x430; &#x43C;&#x438;&#x43A;&#x440;&#x43E;&#x444;&#x43E;&#x43D;&#x430;)</span></div>
+        <div class="release-item"><span class="release-ver">1.5.1</span><span class="release-desc">&#x42F;&#x440;&#x43B;&#x44B;&#x43A; &#x43D;&#x430; &#x440;&#x430;&#x431;&#x43E;&#x447;&#x438;&#x439; &#x441;&#x442;&#x43E;&#x43B;, &#x443;&#x43B;&#x443;&#x447;&#x448;&#x435;&#x43D;&#x43D;&#x430;&#x44F; &#x43A;&#x43D;&#x43E;&#x43F;&#x43A;&#x430; &#x43A;&#x43E;&#x43F;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x44F;</span></div>
+        <div class="release-item"><span class="release-ver">1.5.0</span><span class="release-desc">Multi-user (&#x434;&#x43E; 5), i18n EN/RU, &#x43D;&#x430;&#x441;&#x442;&#x440;&#x43E;&#x439;&#x43A;&#x438;, release notes</span></div>
+        <div class="release-item"><span class="release-ver">1.4.2</span><span class="release-desc">&#x41C;&#x435;&#x43D;&#x44E; &#x41F;&#x43E;&#x43C;&#x43E;&#x449;&#x44C; &#x2192; &#x41E; &#x43F;&#x440;&#x43E;&#x433;&#x440;&#x430;&#x43C;&#x43C;&#x435;, &#x440;&#x430;&#x437;&#x434;&#x435;&#x43B; &#x41E; &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x435;</span></div>
+        <div class="release-item"><span class="release-ver">1.4.1</span><span class="release-desc">&#x412;&#x435;&#x440;&#x441;&#x438;&#x44F; &#x432; &#x437;&#x430;&#x433;&#x43E;&#x43B;&#x43E;&#x432;&#x43A;&#x435; &#x43E;&#x43A;&#x43D;&#x430;, PTT &#x442;&#x43E;&#x43B;&#x44C;&#x43A;&#x43E; &#x443; &#x448;&#x430;&#x440;&#x435;&#x440;&#x430;</span></div>
+        <div class="release-item"><span class="release-ver">1.4.0</span><span class="release-desc">&#x421;&#x43F;&#x440;&#x430;&#x432;&#x43A;&#x430;, &#x43C;&#x43E;&#x43D;&#x43E;&#x445;&#x440;&#x43E;&#x43C;&#x43D;&#x44B;&#x435; &#x438;&#x43A;&#x43E;&#x43D;&#x43A;&#x438;, &#x43E;&#x447;&#x435;&#x440;&#x435;&#x434;&#x44C; ICE &#x43A;&#x430;&#x43D;&#x434;&#x438;&#x434;&#x430;&#x442;&#x43E;&#x432;</span></div>
+        <div class="release-item"><span class="release-ver">1.3.0</span><span class="release-desc">&#x41E;&#x431;&#x43B;&#x430;&#x447;&#x43D;&#x44B;&#x439; &#x440;&#x435;&#x436;&#x438;&#x43C; (Render.com), &#x43F;&#x435;&#x440;&#x435;&#x43A;&#x43B;&#x44E;&#x447;&#x430;&#x442;&#x435;&#x43B;&#x44C; &#x41B;&#x43E;&#x43A;&#x430;&#x43B;&#x44C;&#x43D;&#x43E;/&#x418;&#x43D;&#x442;&#x435;&#x440;&#x43D;&#x435;&#x442;</span></div>
+        <div class="release-item"><span class="release-ver">1.2.2</span><span class="release-desc">&#x418;&#x441;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x435;&#x43D;&#x438;&#x435; &#x44D;&#x445;&#x430;, &#x43F;&#x43E;&#x432;&#x442;&#x43E;&#x440;&#x43D;&#x43E;&#x435; &#x43F;&#x43E;&#x434;&#x43A;&#x43B;&#x44E;&#x447;&#x435;&#x43D;&#x438;&#x435;</span></div>
+        <div class="release-item"><span class="release-ver">1.1.0</span><span class="release-desc">Screen sharing &#x432; &#x43E;&#x431;&#x435; &#x441;&#x442;&#x43E;&#x440;&#x43E;&#x43D;&#x44B;, PTT</span></div>
+        <div class="release-item"><span class="release-ver">1.0.0</span><span class="release-desc">&#x41F;&#x435;&#x440;&#x432;&#x430;&#x44F; &#x432;&#x435;&#x440;&#x441;&#x438;&#x44F; (LAN, &#x432;&#x441;&#x442;&#x440;&#x43E;&#x435;&#x43D;&#x43D;&#x44B;&#x439; &#x441;&#x435;&#x440;&#x432;&#x435;&#x440;)</span></div>
       </div>
     </div>
   </div>
@@ -232,28 +232,28 @@
   <div id="settingsModal" class="modal-overlay" style="display:none">
     <div class="modal-content modal-settings">
       <button id="closeSettingsBtn" class="modal-close">&times;</button>
-      <h2 data-i18n="help.settings">РќР°СЃС‚СЂРѕР№РєРё</h2>
+      <h2 data-i18n="help.settings">&#x41D;&#x430;&#x441;&#x442;&#x440;&#x43E;&#x439;&#x43A;&#x438;</h2>
 
       <div class="settings-section">
-        <h3 data-i18n="settings.window_mode">Р РµР¶РёРј РѕРєРЅР°</h3>
+        <h3 data-i18n="settings.window_mode">&#x420;&#x435;&#x436;&#x438;&#x43C; &#x43E;&#x43A;&#x43D;&#x430;</h3>
         <div class="settings-buttons">
-          <button class="settings-btn" data-window="normal" data-i18n="settings.window_normal">РћР±С‹С‡РЅС‹Р№</button>
-          <button class="settings-btn" data-window="fullscreen" data-i18n="settings.window_fullscreen">РџРѕР»РЅС‹Р№ СЌРєСЂР°РЅ</button>
-          <button class="settings-btn" data-window="minimized" data-i18n="settings.window_minimized">РЎРІРµСЂРЅСѓС‚СЊ</button>
+          <button class="settings-btn" data-window="normal" data-i18n="settings.window_normal">&#x41E;&#x431;&#x44B;&#x447;&#x43D;&#x44B;&#x439;</button>
+          <button class="settings-btn" data-window="fullscreen" data-i18n="settings.window_fullscreen">&#x41F;&#x43E;&#x43B;&#x43D;&#x44B;&#x439; &#x44D;&#x43A;&#x440;&#x430;&#x43D;</button>
+          <button class="settings-btn" data-window="minimized" data-i18n="settings.window_minimized">&#x421;&#x432;&#x435;&#x440;&#x43D;&#x443;&#x442;&#x44C;</button>
         </div>
       </div>
 
       <div class="settings-section">
-        <h3 data-i18n="settings.language">РЇР·С‹Рє / Language</h3>
+        <h3 data-i18n="settings.language">&#x42F;&#x437;&#x44B;&#x43A; / Language</h3>
         <div class="settings-buttons lang-buttons">
-          <button class="settings-btn lang-btn" data-lang="ru" data-i18n="settings.language_ru">Р СѓСЃСЃРєРёР№</button>
+          <button class="settings-btn lang-btn" data-lang="ru" data-i18n="settings.language_ru">&#x420;&#x443;&#x441;&#x441;&#x43A;&#x438;&#x439;</button>
           <button class="settings-btn lang-btn" data-lang="en" data-i18n="settings.language_en">English</button>
         </div>
       </div>
       <div class="settings-section">
-        <h3 data-i18n="settings.shortcut">Р Р°Р±РѕС‡РёР№ СЃС‚РѕР»</h3>
+        <h3 data-i18n="settings.shortcut">&#x420;&#x430;&#x431;&#x43E;&#x447;&#x438;&#x439; &#x441;&#x442;&#x43E;&#x43B;</h3>
         <div class="settings-buttons">
-          <button class="settings-btn" id="createShortcutBtn" onclick="createDesktopShortcut()" data-i18n="settings.shortcut_btn">РЎРѕР·РґР°С‚СЊ СЏСЂР»С‹Рє РЅР° СЂР°Р±РѕС‡РµРј СЃС‚РѕР»Рµ</button>
+          <button class="settings-btn" id="createShortcutBtn" onclick="createDesktopShortcut()" data-i18n="settings.shortcut_btn">&#x421;&#x43E;&#x437;&#x434;&#x430;&#x442;&#x44C; &#x44F;&#x440;&#x43B;&#x44B;&#x43A; &#x43D;&#x430; &#x440;&#x430;&#x431;&#x43E;&#x447;&#x435;&#x43C; &#x441;&#x442;&#x43E;&#x43B;&#x435;</button>
         </div>
       </div>
     </div>
@@ -262,12 +262,12 @@
   <!-- Name Prompt Modal -->
   <div id="namePromptModal" class="modal-overlay" style="display:none">
     <div class="modal-content" style="max-width:380px;text-align:center">
-      <h3 data-i18n="name.prompt_title">РљР°Рє РІР°СЃ Р·РѕРІСѓС‚?</h3>
-      <p data-i18n="name.prompt_text" style="margin:12px 0;line-height:1.5">Р’РІРµРґРёС‚Рµ РІР°С€Рµ РёРјСЏ РёР»Рё РїСЂРѕРїСѓСЃС‚РёС‚Рµ — РїРѕР»СѓС‡РёС‚Рµ СЃР»СѓС‡Р°Р№РЅРѕРµ РёРјСЏ</p>
+      <h3 data-i18n="name.prompt_title">&#x41A;&#x430;&#x43A; &#x432;&#x430;&#x441; &#x437;&#x43E;&#x432;&#x443;&#x442;?</h3>
+      <p data-i18n="name.prompt_text" style="margin:12px 0;line-height:1.5">&#x412;&#x432;&#x435;&#x434;&#x438;&#x442;&#x435; &#x432;&#x430;&#x448;&#x435; &#x438;&#x43C;&#x44F; &#x438;&#x43B;&#x438; &#x43F;&#x440;&#x43E;&#x43F;&#x443;&#x441;&#x442;&#x438;&#x442;&#x435; &#xFFFD; &#x43F;&#x43E;&#x43B;&#x443;&#x447;&#x438;&#x442;&#x435; &#x441;&#x43B;&#x443;&#x447;&#x430;&#x439;&#x43D;&#x43E;&#x435; &#x438;&#x43C;&#x44F;</p>
       <input id="nameInput" type="text" maxlength="20" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text);font-size:16px;margin-bottom:12px" placeholder="&#x412;&#x430;&#x448;&#x435; &#x438;&#x43C;&#x44F;...">
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px">
-        <button class="settings-btn" id="nameConfirm" data-i18n="name.confirm">Р“РѕС‚РѕРІРѕ!</button>
-        <button class="settings-btn" id="nameSkip" data-i18n="name.skip">РџСЂРѕРїСѓСЃС‚РёС‚СЊ</button>
+        <button class="settings-btn" id="nameConfirm" data-i18n="name.confirm">&#x413;&#x43E;&#x442;&#x43E;&#x432;&#x43E;!</button>
+        <button class="settings-btn" id="nameSkip" data-i18n="name.skip">&#x41F;&#x440;&#x43E;&#x43F;&#x443;&#x441;&#x442;&#x438;&#x442;&#x44C;</button>
       </div>
     </div>
   </div>
@@ -275,12 +275,12 @@
   <!-- Shortcut Prompt Modal -->
   <div id="shortcutPromptModal" class="modal-overlay" style="display:none">
     <div class="modal-content" style="max-width:380px;text-align:center">
-      <h3 data-i18n="shortcut.prompt_title">РЇСЂР»С‹Рє РЅР° СЂР°Р±РѕС‡РёР№ СЃС‚РѕР»</h3>
-      <p data-i18n="shortcut.prompt_text" style="margin:12px 0;line-height:1.5">РЎРѕР·РґР°С‚СЊ СЏСЂР»С‹Рє TV Hamsters РЅР° СЂР°Р±РѕС‡РµРј СЃС‚РѕР»Рµ РґР»СЏ Р±С‹СЃС‚СЂРѕРіРѕ Р·Р°РїСѓСЃРєР°?</p>
+      <h3 data-i18n="shortcut.prompt_title">&#x42F;&#x440;&#x43B;&#x44B;&#x43A; &#x43D;&#x430; &#x440;&#x430;&#x431;&#x43E;&#x447;&#x438;&#x439; &#x441;&#x442;&#x43E;&#x43B;</h3>
+      <p data-i18n="shortcut.prompt_text" style="margin:12px 0;line-height:1.5">&#x421;&#x43E;&#x437;&#x434;&#x430;&#x442;&#x44C; &#x44F;&#x440;&#x43B;&#x44B;&#x43A; TV Hamsters &#x43D;&#x430; &#x440;&#x430;&#x431;&#x43E;&#x447;&#x435;&#x43C; &#x441;&#x442;&#x43E;&#x43B;&#x435; &#x434;&#x43B;&#x44F; &#x431;&#x44B;&#x441;&#x442;&#x440;&#x43E;&#x433;&#x43E; &#x437;&#x430;&#x43F;&#x443;&#x441;&#x43A;&#x430;?</p>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px">
-        <button class="settings-btn" id="shortcutYes" data-i18n="shortcut.yes">Р”Р°, СЃРѕР·РґР°С‚СЊ</button>
-        <button class="settings-btn" id="shortcutNo" data-i18n="shortcut.no">РќРµС‚</button>
-        <button class="settings-btn" id="shortcutDontAsk" data-i18n="shortcut.dont_ask">Р‘РѕР»СЊС€Рµ РЅРµ СЃРїСЂР°С€РёРІР°С‚СЊ</button>
+        <button class="settings-btn" id="shortcutYes" data-i18n="shortcut.yes">&#x414;&#x430;, &#x441;&#x43E;&#x437;&#x434;&#x430;&#x442;&#x44C;</button>
+        <button class="settings-btn" id="shortcutNo" data-i18n="shortcut.no">&#x41D;&#x435;&#x442;</button>
+        <button class="settings-btn" id="shortcutDontAsk" data-i18n="shortcut.dont_ask">&#x411;&#x43E;&#x43B;&#x44C;&#x448;&#x435; &#x43D;&#x435; &#x441;&#x43F;&#x440;&#x430;&#x448;&#x438;&#x432;&#x430;&#x442;&#x44C;</button>
       </div>
     </div>
   </div>
@@ -289,7 +289,7 @@
   <div id="sourcePickerModal" class="modal-overlay" style="display:none">
     <div class="modal-content" style="max-width:640px">
       <button id="closeSourcePickerBtn" class="modal-close">&times;</button>
-      <h2 data-i18n="sourcepicker.title">Р’С‹Р±РµСЂРёС‚Рµ РѕРєРЅРѕ РґР»СЏ С‚СЂР°РЅСЃР»СЏС†РёРё</h2>
+      <h2 data-i18n="sourcepicker.title">&#x412;&#x44B;&#x431;&#x435;&#x440;&#x438;&#x442;&#x435; &#x43E;&#x43A;&#x43D;&#x43E; &#x434;&#x43B;&#x44F; &#x442;&#x440;&#x430;&#x43D;&#x441;&#x43B;&#x44F;&#x446;&#x438;&#x438;</h2>
       <div id="sourceList" class="source-list"></div>
     </div>
   </div>
