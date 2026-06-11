@@ -15,21 +15,18 @@ jobs:
           VERSION: ${{ github.event.release.tag_name || '1.7.5' }}
           NOTES: ${{ github.event.release.body || 'Новые возможности и улучшения' }}
         run: |
-          # Берём первую строку из описания (до первого переноса)
           SUMMARY=$(echo "$NOTES" | head -1)
-          
-          # Формируем подпись
-          cat > caption.txt << CAPTIONEOF
+          cat > cap.txt << EOF
           <b>⚡ TV Hamsters $VERSION</b>
-          
+
           $SUMMARY
-          
+
           🔗 Скачать: https://github.com/outmilker1978/hamsters-theater/releases/tag/$TAG
           🌐 Сайт: tvhamsters.outmilk.online
-          CAPTIONEOF
+          EOF
           
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
-            -F chat_id="@tvhamsters" \
+            -F chat_id="162363099" \
             -F photo="https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png" \
             -F parse_mode="HTML" \
-            -F "caption=@caption.txt"
+            --form-string "caption=$(cat cap.txt)"
