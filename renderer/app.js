@@ -715,13 +715,8 @@ function setupPTT() {
   pttMode = true;
   pttActive = false;
   prevMicOn = micOn;
-  // Restore saved mic mode
-  micMode = localStorage.getItem('micMode') || 'normal';
-  // Start with mic off in PTT mode
-  if (micMode === 'ptt') {
-    micOn = false;
-    if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = false);
-  }
+  // Always start in normal mic mode
+  micMode = 'normal';
   updatePTTUI();
   updateMicButtonUI();
   log('PTT mode on');
@@ -885,7 +880,7 @@ function cleanupCall() {
   updateControlTooltips();
   el('toggleCameraBtn').className = 'control-btn active';
   removePTT();
-  micMode = localStorage.getItem('micMode') || 'normal';
+  micMode = 'normal';
   micOn = true;
   updateMicButtonUI();
 }

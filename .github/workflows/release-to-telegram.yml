@@ -10,35 +10,32 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick fonts-dejavu-core
       - name: Generate + send
         env:
-          TAG: ${{ github.event.release.tag_name || 'v1.7.5' }}
+          TAG: ${{ github.event.release.tag_name || 'v1.7.7' }}
           NOTES: ${{ github.event.release.body || 'Новый релиз с улучшениями' }}
+          CHAT: ${{ vars.TELEGRAM_CHAT_ID || '-1003813372615' }}
         run: |
           curl -s -o icon.png https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png
 
-          # Берём цвет фона из угла и удаляем его с запасом
-          BG=$(convert icon.png -crop 1x1+0+0 -format '%[hex:p{0,0}]' info:-)
-          echo "Background color: #$BG"
+          BG=$(convert icon.png -crop 1x1+0+0 -format '%[hex:u.p{0,0}]' info:-)
           convert icon.png -alpha on -fuzz 25% -transparent "#$BG" icon-clear.png
 
-          # Фон: фиолетово-сиреневый градиент
-          convert -size 780x440 \
-            gradient:'#7c3aed'-'#c084fc' \
-            -font DejaVu-Sans-Bold \
-            -pointsize 22 -fill white -gravity north -annotate +0+25 'TV Hamsters' \
-            -pointsize 52 -fill white -gravity center -annotate +0-20 "$TAG" \
-            -pointsize 18 -fill '#f3e8ff' -gravity center -annotate +0+40 'Новый релиз' \
-            -pointsize 14 -fill '#e9d5ff' -gravity south -annotate +0+20 'tvhamsters.outmilk.online' \
+          convert -size 780x440 gradient:'#7c3aed'-'#c084fc' -font DejaVu-Sans-Bold \
+            -gravity north -pointsize 22 -fill white -annotate +0+25 'TV Hamsters' \
+            -gravity center -pointsize 46 -fill white -annotate +0-45 'НОВЫЙ РЕЛИЗ' \
+            -gravity center -pointsize 28 -fill '#f3e8ff' -annotate +0+20 "$TAG" \
+            -gravity south -pointsize 14 -fill '#e9d5ff' -annotate +0+20 'tvhamsters.outmilk.online' \
             out.png
 
-          # Лого с прозрачным фоном поверх
           composite -geometry +25+18 icon-clear.png out.png out.png
 
           cat > cap.txt << EOF
-          <b>$TAG</b>
+          <b>TV Hamsters $TAG</b>
           $(echo "$NOTES" | head -1)
           tvhamsters.outmilk.online
           EOF
 
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
-            -F chat_id="162363099" -F photo="@out.png" -F parse_mode="HTML" \
+            -F chat_id="$CHAT" \
+            -F photo="@out.png" \
+            -F parse_mode="HTML" \
             --form-string "caption=$(cat cap.txt)"
