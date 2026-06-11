@@ -421,8 +421,9 @@ $('controls').addEventListener('touchstart', (e) => { e.stopPropagation(); showC
 // Chat
 $('chatBtn').onclick = () => {
   $('chatOverlay').style.display = 'flex';
-  $('chatInput').focus();
+  setTimeout(() => $('chatInput').focus(), 300);
 };
+$('chatOverlay').onclick = (e) => { if (e.target === $('chatOverlay')) $('chatOverlay').style.display = 'none'; };
 $('chatCloseBtn').onclick = () => $('chatOverlay').style.display = 'none';
 $('chatInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendChat(); });
 $('chatSendBtn').onclick = sendChat;
