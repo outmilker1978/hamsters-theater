@@ -15,17 +15,17 @@ jobs:
         run: |
           curl -s -o icon.png https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png
 
-          # Яркий фиолетово-розовый фон
+          # Фон: фиолетово-сиреневый градиент
           convert -size 780x440 \
-            gradient:'#7c3aed'-'#ec4899' \
+            gradient:'#7c3aed'-'#c084fc' \
             -font DejaVu-Sans-Bold \
-            -pointsize 22 -fill '#fbbf24' -gravity north -annotate +0+25 'TV Hamsters' \
+            -pointsize 22 -fill white -gravity north -annotate +0+25 'TV Hamsters' \
             -pointsize 52 -fill white -gravity center -annotate +0-20 "$TAG" \
-            -pointsize 18 -fill '#fce7f3' -gravity center -annotate +0+40 'Новый релиз' \
+            -pointsize 18 -fill '#f3e8ff' -gravity center -annotate +0+40 'Новый релиз' \
             -pointsize 14 -fill '#e9d5ff' -gravity south -annotate +0+20 'tvhamsters.outmilk.online' \
             out.png
 
-          # Иконка поверх (левый верх)
+          # Лого с прозрачностью (alpha уже есть)
           composite -geometry +25+18 icon.png out.png out.png
 
           cat > cap.txt << EOF
