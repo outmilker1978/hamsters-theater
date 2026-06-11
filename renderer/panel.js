@@ -34,6 +34,7 @@ document.querySelectorAll('.panel-reaction-btn').forEach(btn => {
     const emoji = btn.dataset.emoji;
     document.getElementById('panel-reactions').classList.remove('open');
     reactOpen = false;
+    updatePanelSize();
     try { ipcRenderer.send('panel-action', 'send-reaction', emoji); } catch(e) {}
   };
 });

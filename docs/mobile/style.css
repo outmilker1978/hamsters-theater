@@ -350,7 +350,7 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 .ctrl-btn {
-  width: 44px; height: 44px;
+  width: 42px; height: 42px;
   border: none;
   border-radius: 50%;
   background: #2e2638;
@@ -368,9 +368,9 @@ body {
 .ctrl-btn.off { box-shadow: inset 0 0 0 2px #666; color: #999; }
 .ctrl-btn.ptt-mode { opacity: 0.5; box-shadow: inset 0 0 0 2px #666; color: #888; }
 .ctrl-btn.ptt-active { box-shadow: 0 0 16px rgba(34,197,94,0.6), inset 0 0 0 2px #22c55e; color: #22c55e; }
-.ctrl-btn svg { display: block; width: 22px; height: 22px; }
-.ctrl-btn-sm { width: 38px; height: 38px; flex-shrink: 0; }
-.ctrl-btn-sm svg { width: 18px; height: 18px; }
+.ctrl-btn svg { display: block; width: 20px; height: 20px; }
+.ctrl-btn-sm { width: 42px; height: 42px; flex-shrink: 0; }
+.ctrl-btn-sm svg { width: 20px; height: 20px; }
 
 /* Connection status toast */
 #statusToast {
