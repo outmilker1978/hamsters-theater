@@ -187,6 +187,17 @@ function setupSocketListeners() {
   socket.on('disconnect', () => { showError(t('error.server_lost')); });
   socket.on('signal', handleSignal);
   socket.on('server-log', (msg) => log(msg));
+  socket.on('chat-message', (d) => {
+    const el = document.createElement('div');
+    el.className = 'chat-msg';
+    el.innerHTML = '<span class="chat-msg-author">' + escapeHtml(d.name) + '</span><span class="chat-msg-text">' + escapeHtml(d.text) + '</span>';
+    el('chatMessages').appendChild(el);
+    el('chatMessages').scrollTop = el('chatMessages').scrollHeight;
+    if (el('chatOverlay').style.display !== 'flex' && d.from !== socket.id) log('Chat: ' + d.name + ' said ' + d.text);
+  });
+  socket.on('reaction', (d) => {
+    showReaction(d.emoji);
+  });
 }
 
 // --- Landing ---
@@ -836,6 +847,9 @@ function cleanupCall() {
   stopFacesTimer();
   ipcRenderer.invoke('window-mode', 'restore');
   el('shareScreenBtn').disabled = false;
+  el('chatOverlay').style.display = 'none';
+  el('chatMessages').innerHTML = '';
+  el('chatInput').value = '';
   updateControlTooltips();
   el('toggleCameraBtn').className = 'control-btn active';
   removePTT();
@@ -1080,6 +1094,46 @@ initLang();
 applyModeUI();
 // Init PTT mode early (works without localStream)
 setupPTT();
+
+// Chat
+el('chatBtn').onclick = () => el('chatOverlay').style.display = 'flex';
+el('chatOverlay').onclick = (e) => { if (e.target === el('chatOverlay')) el('chatOverlay').style.display = 'none'; };
+el('chatCloseBtn').onclick = () => el('chatOverlay').style.display = 'none';
+el('chatInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendChat(); });
+el('chatSendBtn').onclick = sendChat;
+function sendChat() {
+  const input = el('chatInput');
+  const text = input.value.trim();
+  if (!text || !socket) return;
+  input.value = '';
+  const elMsg = document.createElement('div');
+  elMsg.className = 'chat-msg chat-msg-self';
+  elMsg.innerHTML = '<span class="chat-msg-text">' + escapeHtml(text) + '</span>';
+  el('chatMessages').appendChild(elMsg);
+  el('chatMessages').scrollTop = el('chatMessages').scrollHeight;
+  socket.emit('chat-message', { text: text, name: 'Я' });
+}
+function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Reactions
+el('reactionBtn').onclick = () => {
+  el('reactionPicker').style.display = el('reactionPicker').style.display === 'flex' ? 'none' : 'flex';
+};
+document.querySelectorAll('.reaction-emoji').forEach(btn => {
+  btn.onclick = () => {
+    const emoji = btn.dataset.emoji;
+    el('reactionPicker').style.display = 'none';
+    showReaction(emoji);
+    if (socket && socket.connected) socket.emit('reaction', { emoji: emoji });
+  };
+});
+function showReaction(emoji) {
+  const elm = document.createElement('div');
+  elm.className = 'reaction-float';
+  elm.textContent = emoji;
+  el('faces').appendChild(elm);
+  setTimeout(() => elm.remove(), 2000);
+}
 
 // First-launch shortcut prompt (shows once per version)
 (function() {
