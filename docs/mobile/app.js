@@ -77,10 +77,12 @@ function connectAndDo(action) {
   socket.on('room-created', (id) => {
     roomId = id;
     if (!myAction) myAction = { type: 'create', code: id };
+    sessionStorage.setItem('hamsters_room', JSON.stringify(myAction));
     showRoom();
     if (localStream) $('localVideo').srcObject = localStream;
   });
   socket.on('joined', () => {
+    if (myAction) sessionStorage.setItem('hamsters_room', JSON.stringify(myAction));
     showRoom();
     if (localStream) $('localVideo').srcObject = localStream;
     pendingOffers.forEach(o => handleOffer(o)); pendingOffers = [];
@@ -175,6 +177,7 @@ function leaveRoom() {
   connecting = false;
   sharerId = null;
   myAction = null; wasInRoom = false;
+  sessionStorage.removeItem('hamsters_room');
   $('room').style.display = 'none';
   $('landing').style.display = 'flex';
   $('roomCodeInput').value = '';
@@ -490,7 +493,18 @@ $('donateLinkCloud').onclick = () => {
       roomId = c;
       show('Подключаюсь...');
       myAction = { type: 'join', code: c };
+      sessionStorage.setItem('hamsters_room', JSON.stringify({ type: 'join', code: c }));
       requestMedia().then(() => connectAndDo(() => socket.emit('join-room', c)));
+    } else {
+      const saved = sessionStorage.getItem('hamsters_room');
+      if (saved) {
+        const r = JSON.parse(saved);
+        $('roomCodeInput').value = r.code;
+        roomId = r.code;
+        show('Восстанавливаю комнату...');
+        myAction = r;
+        requestMedia().then(() => connectAndDo(() => { if (r.type === 'create') socket.emit('create-room'); else socket.emit('join-room', r.code); }));
+      }
     }
   } catch(e) { console.error(e); }
 })();
