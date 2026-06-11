@@ -19,9 +19,8 @@ jobs:
           convert icon.png -alpha on -fuzz 25% -transparent "#$BG" -resize 220x220 icon-med.png
 
           convert -size 780x440 gradient:'#7c3aed'-'#c084fc' -font DejaVu-Sans-Bold \
-            -gravity northwest -pointsize 28 -fill white -annotate +260+28 'TV Hamsters' \
-            -gravity center -pointsize 52 -fill white -annotate +0+40 'НОВЫЙ РЕЛИЗ' \
-            -gravity center -pointsize 28 -fill '#f3e8ff' -annotate +0+95 "$TAG" \
+            -gravity northwest -pointsize 36 -fill white -annotate +260+40 'НОВЫЙ РЕЛИЗ' \
+            -gravity center -pointsize 36 -fill '#f3e8ff' -annotate +0+65 "$TAG" \
             -gravity south -pointsize 14 -fill '#e9d5ff' -annotate +0+20 'tvhamsters.outmilk.online' \
             out.png
 

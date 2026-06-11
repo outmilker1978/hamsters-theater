@@ -317,7 +317,7 @@ async function startCamera() {
 // --- Peer Entry ---
 function createPeerEntry(peerId) {
   if (!peers[peerId]) {
-    peers[peerId] = { pc: null, screenPC: null, remoteStream: null, cameraCandidates: [], screenCandidates: [] };
+    peers[peerId] = { pc: null, screenPC: null, remoteStream: null, cameraCandidates: [], screenCandidates: [], name: '' };
   }
   return peers[peerId];
 }
@@ -337,7 +337,7 @@ function addPeerVideo(peerId) {
   const label = document.createElement('div');
   label.className = 'face-label';
   label.id = 'label-' + peerId;
-  label.textContent = '\u0425\u043e\u043c\u044f\u0447\u043e\u043a ' + Object.keys(peers).length;
+  label.textContent = peers[peerId]?.name || '\u0425\u043e\u043c\u044f\u0447\u043e\u043a ' + Object.keys(peers).length;
   wrapper.appendChild(video);
   wrapper.appendChild(label);
   // Volume slider
@@ -571,6 +571,7 @@ function handleSignal(data) {
     if (localStream) createOfferToPeer(data.from);
   }
   if (data.type === 'user-info' && data.name) {
+    if (peers[data.from]) peers[data.from].name = data.name;
     const label = document.getElementById('label-' + data.from);
     if (label) label.textContent = data.name;
   }
