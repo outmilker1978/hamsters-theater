@@ -9,34 +9,27 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Send release notification to Telegram channel
+      - name: Send to Telegram
         env:
-          TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          CHAT: -1003813372615
+          TAG: ${{ github.event.release.tag_name || 'v1.7.5' }}
+          VERSION: ${{ github.event.release.tag_name || '1.7.5' }}
+          NOTES: ${{ github.event.release.body || 'Новые возможности и улучшения' }}
         run: |
-          TAG="${{ github.event.release.tag_name }}"
-          NAME="${{ github.event.release.name }}"
-          URL="${{ github.event.release.html_url }}"
-          BODY="${{ github.event.release.body }}"
-
-          # Fallback for workflow_dispatch (no release event)
-          if [ -z "$TAG" ]; then
-            REL=$(curl -s "https://api.github.com/repos/${{ github.repository }}/releases/latest")
-            TAG=$(echo "$REL" | jq -r '.tag_name')
-            NAME=$(echo "$REL" | jq -r '.name')
-            URL=$(echo "$REL" | jq -r '.html_url')
-            BODY=$(echo "$REL" | jq -r '.body')
-          fi
-
-          printf '%s\n' \
-            '<b>🎬 TV Hamsters — новый релиз</b>' '' \
-            '<b>Версия:</b> '"${TAG}" \
-            '<b>Название:</b> '"${NAME}" '' \
-            '<b>Что нового:</b>' "${BODY}" '' \
-            "🔗 ${URL}" \
-            '🌐 tvhamsters.outmilk.online' > /tmp/msg.txt
-
-          curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
-            -d "chat_id=${CHAT}" \
-            -d "parse_mode=HTML" \
-            --data-urlencode "text@/tmp/msg.txt"
+          # Берём первую строку из описания (до первого переноса)
+          SUMMARY=$(echo "$NOTES" | head -1)
+          
+          # Формируем подпись
+          cat > caption.txt << CAPTIONEOF
+          <b>⚡ TV Hamsters $VERSION</b>
+          
+          $SUMMARY
+          
+          🔗 Скачать: https://github.com/outmilker1978/hamsters-theater/releases/tag/$TAG
+          🌐 Сайт: tvhamsters.outmilk.online
+          CAPTIONEOF
+          
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
+            -F chat_id="@tvhamsters" \
+            -F photo="https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png" \
+            -F parse_mode="HTML" \
+            -F "caption=@caption.txt"
