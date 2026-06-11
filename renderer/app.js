@@ -745,9 +745,9 @@ function setupPTT() {
   window.addEventListener('keydown', onKeyDown, true);
   window.addEventListener('keyup', onKeyUp, true);
   // PTT button: hold to talk (mouse)
-  el('pttBtn').onmousedown = (e) => { e.preventDefault(); if (pttMode && micMode === 'ptt') startPTT(); };
-  el('pttBtn').onmouseup = (e) => { e.preventDefault(); if (pttMode && micMode === 'ptt') stopPTT(); };
-  el('pttBtn').onmouseleave = (e) => { if (pttMode && pttActive && micMode === 'ptt') stopPTT(); };
+  el('pttBtn').onmousedown = (e) => { e.preventDefault(); if (micMode === 'ptt') startPTT(); };
+  el('pttBtn').onmouseup = (e) => { e.preventDefault(); stopPTT(); };
+  el('pttBtn').onmouseleave = (e) => { stopPTT(); };
   el('pttBtn')._onKeyDown = onKeyDown;
   el('pttBtn')._onKeyUp = onKeyUp;
 }
@@ -808,6 +808,8 @@ function startPTT() {
   micOn = true;
   if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = true);
   el('pttBtn').classList.add('active');
+  el('pttBtn').style.background = '';
+  el('pttBtn').style.color = '';
   updateMicButtonUI();
 }
 

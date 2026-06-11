@@ -12,15 +12,22 @@ for (const [id, action] of Object.entries(map)) {
 const chatBtn = document.getElementById('btn-chat');
 if (chatBtn) chatBtn.onclick = toggleChat;
 
+const REACT_H = 56;
 const reactBtn = document.getElementById('btn-reaction');
 let reactOpen = false;
 if (reactBtn) reactBtn.onclick = () => {
   reactOpen = !reactOpen;
   const el = document.getElementById('panel-reactions');
   if (el) el.classList.toggle('open', reactOpen);
-  if (chatOpen && reactOpen) { toggleChat(); }
   if (reactOpen && chatOpen) { toggleChat(); }
+  updatePanelSize();
 };
+function updatePanelSize() {
+  let h = 70;
+  if (chatOpen) h = 260;
+  else if (reactOpen) h = 70 + REACT_H;
+  try { ipcRenderer.send('panel-resize', h); } catch(e) {}
+}
 
 document.querySelectorAll('.panel-reaction-btn').forEach(btn => {
   btn.onclick = () => {
@@ -46,7 +53,8 @@ function toggleChat() {
   chatOpen = !chatOpen;
   const el = document.getElementById('panel-chat');
   if (el) el.classList.toggle('open', chatOpen);
-  try { ipcRenderer.send('panel-resize', chatOpen ? 260 : 70); } catch(e) {}
+  if (reactOpen && chatOpen) { reactOpen = false; document.getElementById('panel-reactions').classList.remove('open'); }
+  updatePanelSize();
   if (chatOpen) {
     const input = document.getElementById('panelChatInput');
     if (input) setTimeout(() => input.focus(), 200);

@@ -71,16 +71,9 @@ body {
 .panel-reactions {
   display: none;
   gap: 6px;
-  padding: 6px 12px 0;
-  justify-content: center;
-  position: absolute;
-  bottom: calc(100% + 4px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(18, 14, 20, 0.85);
-  border-radius: 20px;
   padding: 6px 12px;
-  white-space: nowrap;
+  justify-content: center;
+  border-radius: 20px;
 }
 .panel-reactions.open { display: flex; }
 .panel-reaction-btn {
@@ -170,14 +163,14 @@ body {
       </button>
     </div>
   </div>
-  <div id="panel-buttons" style="position:relative">
-    <div id="panel-reactions" class="panel-reactions">
-      <button class="panel-reaction-btn" data-emoji="&#x2764;&#xFE0F;">&#x2764;&#xFE0F;</button>
-      <button class="panel-reaction-btn" data-emoji="&#x1F602;">&#x1F602;</button>
-      <button class="panel-reaction-btn" data-emoji="&#x1F525;">&#x1F525;</button>
-      <button class="panel-reaction-btn" data-emoji="&#x1F97A;">&#x1F97A;</button>
-      <button class="panel-reaction-btn" data-emoji="&#x1F4A9;">&#x1F4A9;</button>
-    </div>
+  <div id="panel-reactions" class="panel-reactions">
+    <button class="panel-reaction-btn" data-emoji="&#x2764;&#xFE0F;">&#x2764;&#xFE0F;</button>
+    <button class="panel-reaction-btn" data-emoji="&#x1F602;">&#x1F602;</button>
+    <button class="panel-reaction-btn" data-emoji="&#x1F525;">&#x1F525;</button>
+    <button class="panel-reaction-btn" data-emoji="&#x1F97A;">&#x1F97A;</button>
+    <button class="panel-reaction-btn" data-emoji="&#x1F4A9;">&#x1F4A9;</button>
+  </div>
+  <div id="panel-buttons">
     <button id="btn-cam" class="control-btn active">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
     </button>
