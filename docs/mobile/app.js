@@ -1,4 +1,5 @@
 const CLOUD = 'https://tv-hamsters-bot.onrender.com';
+const TURN_CRED = { username: 'openrelayproject', credential: 'openrelayproject' };
 const RTC = {
   iceServers: [
     { urls: 'stun:stun.l.google.com:19302' },
@@ -7,11 +8,9 @@ const RTC = {
     { urls: 'stun:stun3.l.google.com:19302' },
     { urls: 'stun:stun4.l.google.com:19302' },
     { urls: 'stun:stun.cloudflare.com:3478' },
-    {
-      urls: 'turn:relay.metered.ca:80',
-      username: 'openrelayproject',
-      credential: 'openrelayproject'
-    }
+    { urls: 'turn:relay.metered.ca:80', ...TURN_CRED },
+    { urls: 'turn:relay.metered.ca:443', ...TURN_CRED },
+    { urls: 'turn:relay.metered.ca:443?transport=tcp', ...TURN_CRED },
   ]
 };
 const MEDIA = { video: { facingMode: 'user', width: { ideal: 240 }, height: { ideal: 180 }, frameRate: { ideal: 15, max: 20 } }, audio: { echoCancellation: true, noiseSuppression: true } };
@@ -22,6 +21,8 @@ let micOn = true, camOn = true;
 let connecting = false;
 let sharerId = null;
 let camsVisible = true;
+let myAction = null; // { type: 'create'|'join', code: roomId }
+let wasInRoom = false;
 
 const $ = id => document.getElementById(id);
 
@@ -45,12 +46,20 @@ function connectAndDo(action) {
   connecting = true;
   if (socket) { socket.disconnect(); socket = null; }
   toast('Подключаюсь к серверу...');
-  socket = io(CLOUD, { transports: ['websocket', 'polling'], timeout: 15000, reconnection: true, reconnectionAttempts: 3 });
+  socket = io(CLOUD, { transports: ['websocket', 'polling'], timeout: 15000, reconnection: true, reconnectionAttempts: 10, reconnectionDelay: 2000 });
   socket.on('connect', () => {
     connecting = false;
     log('Connected, id=' + socket.id);
-    toast('Подключено, вхожу в комнату...');
-    action();
+    if (wasInRoom && myAction) {
+      log('Reconnecting to room ' + myAction.code);
+      toast('Переподключаюсь...');
+      if (myAction.type === 'create') socket.emit('create-room');
+      else socket.emit('join-room', myAction.code);
+      wasInRoom = false;
+    } else {
+      toast('Подключено, вхожу в комнату...');
+      action();
+    }
   });
   socket.on('connect_error', (err) => {
     log('connect_error: ' + err.message);
@@ -59,11 +68,15 @@ function connectAndDo(action) {
   });
   socket.on('disconnect', (reason) => {
     log('disconnect: ' + reason);
-    if (reason !== 'io client disconnect') toast('Потеря связи с сервером');
+    if (reason !== 'io client disconnect') {
+      wasInRoom = true;
+      toast('Потеря связи, переподключаюсь...');
+    }
   });
   socket.on('error-msg', (msg) => { toast(msg); show(msg); });
   socket.on('room-created', (id) => {
     roomId = id;
+    if (!myAction) myAction = { type: 'create', code: id };
     showRoom();
     startMedia().then(s => { localStream = s; $('localVideo').srcObject = s; }).catch(() => toast('Камера не доступна'));
   });
@@ -153,6 +166,7 @@ function leaveRoom() {
   if (socket) { socket.disconnect(); socket = null; }
   connecting = false;
   sharerId = null;
+  myAction = null; wasInRoom = false;
   $('room').style.display = 'none';
   $('landing').style.display = 'flex';
   $('roomCodeInput').value = '';
@@ -186,10 +200,25 @@ function createPC(peerId) {
     }
     if (e.streams[0] && v.srcObject !== e.streams[0]) v.srcObject = e.streams[0];
   };
+  pc.oniceconnectionstatechange = () => {
+    log('pc ice ' + peerId + ': ' + pc.iceConnectionState);
+    if (pc.iceConnectionState === 'failed') {
+      log('ICE failed for ' + peerId + ', restarting...');
+      pc.restartIce();
+    }
+  };
   pc.onconnectionstatechange = () => {
     log('pc ' + peerId + ': ' + pc.connectionState);
     if (pc.connectionState === 'connected') toast('Хомячок подключился');
-    if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') removePeer(peerId);
+    if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
+      log('Connection lost for ' + peerId + ', will retry');
+      setTimeout(() => {
+        if (socket && socket.connected && localStream) {
+          log('Retrying connection to ' + peerId);
+          if (!peers[peerId]) createOfferToPeer(peerId);
+        }
+      }, 3000);
+    }
   };
   return pc;
 }
@@ -240,14 +269,19 @@ function removePeer(peerId) {
   if (el) { const w = el.closest('.remote-peer'); if (w) w.remove(); }
 }
 
-$('createRoomBtn').onclick = () => { show(''); connectAndDo(() => socket.emit('create-room')); };
+$('createRoomBtn').onclick = () => {
+  show('');
+  myAction = null; wasInRoom = false;
+  connectAndDo(() => { myAction = { type: 'create', code: null }; socket.emit('create-room'); });
+};
 $('roomCodeInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('joinRoomBtn').click(); });
 $('joinRoomBtn').onclick = () => {
   show('');
   const code = $('roomCodeInput').value.trim();
   if (!code) { show('Введите код комнаты'); return; }
   roomId = code;
-  connectAndDo(() => socket.emit('join-room', code));
+  myAction = null; wasInRoom = false;
+  connectAndDo(() => { myAction = { type: 'join', code: code }; socket.emit('join-room', code); });
 };
 $('leaveBtn').onclick = leaveRoom;
 $('camBtn').onclick = () => {
@@ -390,6 +424,7 @@ $('donateLinkCloud').onclick = () => {
       $('roomCodeInput').value = c;
       roomId = c;
       show('Подключаюсь...');
+      myAction = { type: 'join', code: c };
       connectAndDo(() => socket.emit('join-room', c));
     }
   } catch(e) { console.error(e); }
