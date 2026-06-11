@@ -344,7 +344,7 @@ function addPeerVideo(peerId) {
   const label = document.createElement('div');
   label.className = 'face-label';
   label.id = 'label-' + peerId;
-  label.textContent = peerNames[peerId] || '\u0425\u043e\u043c\u044f\u0447\u043e\u043a ' + Object.keys(peers).length;
+  label.textContent = peerNames[peerId] || '\u0425\u043e\u043c\u044f\u0447\u043e\u043a [' + peerId.slice(0,6) + '] ' + Object.keys(peers).length;
   wrapper.appendChild(video);
   wrapper.appendChild(label);
   // Volume slider
@@ -580,7 +580,8 @@ function handleSignal(data) {
   if (data.type === 'user-info' && data.name) {
     peerNames[data.from] = data.name;
     const label = document.getElementById('label-' + data.from);
-    if (label) label.textContent = data.name;
+    if (label) { label.textContent = data.name; }
+    else { console.log('user-info: label for ' + data.from + ' not found'); }
   }
 }
 
