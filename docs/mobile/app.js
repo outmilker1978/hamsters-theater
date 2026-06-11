@@ -78,16 +78,13 @@ function connectAndDo(action) {
     roomId = id;
     if (!myAction) myAction = { type: 'create', code: id };
     showRoom();
-    startMedia().then(s => { localStream = s; $('localVideo').srcObject = s; }).catch(() => toast('Камера не доступна'));
+    if (localStream) $('localVideo').srcObject = localStream;
   });
-  socket.on('joined', async () => {
+  socket.on('joined', () => {
     showRoom();
-    try {
-      localStream = await startMedia();
-      $('localVideo').srcObject = localStream;
-      pendingOffers.forEach(o => handleOffer(o)); pendingOffers = [];
-      pendingPeers.forEach(p => { createPC(p); socket.emit('signal', { to: p, signalType: 'request-offer' }); }); pendingPeers = [];
-    } catch(e) { toast('Камера не доступна'); }
+    if (localStream) $('localVideo').srcObject = localStream;
+    pendingOffers.forEach(o => handleOffer(o)); pendingOffers = [];
+    pendingPeers.forEach(p => { createPC(p); socket.emit('signal', { to: p, signalType: 'request-offer' }); }); pendingPeers = [];
   });
   socket.on('room-users', (users) => { users.forEach(pid => { if (localStream) { createPC(pid); socket.emit('signal', { to: pid, signalType: 'request-offer' }); } else pendingPeers.push(pid); }); });
   socket.on('peer-joined', (peerId) => { if (localStream) createOfferToPeer(peerId); else pendingPeers.push(peerId); });
@@ -269,10 +266,16 @@ function removePeer(peerId) {
   if (el) { const w = el.closest('.remote-peer'); if (w) w.remove(); }
 }
 
+function requestMedia() {
+  if (localStream) return Promise.resolve(localStream);
+  return startMedia().then(s => { localStream = s; return s; }).catch(() => { toast('Нет доступа к камере/микрофону'); return null; });
+}
 $('createRoomBtn').onclick = () => {
   show('');
   myAction = null; wasInRoom = false;
-  connectAndDo(() => { myAction = { type: 'create', code: null }; socket.emit('create-room'); });
+  requestMedia().then(() => {
+    connectAndDo(() => { myAction = { type: 'create', code: null }; socket.emit('create-room'); });
+  });
 };
 $('roomCodeInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('joinRoomBtn').click(); });
 $('joinRoomBtn').onclick = () => {
@@ -281,7 +284,9 @@ $('joinRoomBtn').onclick = () => {
   if (!code) { show('Введите код комнаты'); return; }
   roomId = code;
   myAction = null; wasInRoom = false;
-  connectAndDo(() => { myAction = { type: 'join', code: code }; socket.emit('join-room', code); });
+  requestMedia().then(() => {
+    connectAndDo(() => { myAction = { type: 'join', code: code }; socket.emit('join-room', code); });
+  });
 };
 $('leaveBtn').onclick = leaveRoom;
 $('camBtn').onclick = () => {
@@ -425,7 +430,7 @@ $('donateLinkCloud').onclick = () => {
       roomId = c;
       show('Подключаюсь...');
       myAction = { type: 'join', code: c };
-      connectAndDo(() => socket.emit('join-room', c));
+      requestMedia().then(() => connectAndDo(() => socket.emit('join-room', c)));
     }
   } catch(e) { console.error(e); }
 })();
