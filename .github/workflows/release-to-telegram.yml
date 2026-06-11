@@ -15,6 +15,11 @@ jobs:
         run: |
           curl -s -o icon.png https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png
 
+          # Убираем фон у иконки: оставляем только белое
+          convert icon.png -alpha on \
+            \( +clone -colorspace gray -threshold 60% \) \
+            -compose CopyOpacity -composite icon-clear.png
+
           # Фон: фиолетово-сиреневый градиент
           convert -size 780x440 \
             gradient:'#7c3aed'-'#c084fc' \
@@ -25,8 +30,8 @@ jobs:
             -pointsize 14 -fill '#e9d5ff' -gravity south -annotate +0+20 'tvhamsters.outmilk.online' \
             out.png
 
-          # Лого с прозрачностью (alpha уже есть)
-          composite -geometry +25+18 icon.png out.png out.png
+          # Лого с прозрачным фоном поверх
+          composite -geometry +25+18 icon-clear.png out.png out.png
 
           cat > cap.txt << EOF
           <b>$TAG</b>
