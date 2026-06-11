@@ -599,21 +599,21 @@ app.whenReady().then(() => {
   startSignalingServer();
   registerProtocol();
   startDeepLinkServer();
-  const gotLock = app.requestSingleInstanceLock();
-  if (!gotLock) {
-    app.quit();
-    return;
-  }
-  app.on('second-instance', (event, argv) => {
-    const url = argv.find(a => a.startsWith('hamsters://'));
-    if (mainWindow && !mainWindow.isDestroyed()) {
-      if (url) {
-        mainWindow.webContents.send('deep-link', url);
-      }
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.focus();
-    }
-  });
+  // const gotLock = app.requestSingleInstanceLock();
+  // if (!gotLock) {
+  //   app.quit();
+  //   return;
+  // }
+  // app.on('second-instance', (event, argv) => {
+  //   const url = argv.find(a => a.startsWith('hamsters://'));
+  //   if (mainWindow && !mainWindow.isDestroyed()) {
+  //     if (url) {
+  //       mainWindow.webContents.send('deep-link', url);
+  //     }
+  //     if (mainWindow.isMinimized()) mainWindow.restore();
+  //     mainWindow.focus();
+  //   }
+  // });
   session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
     const allowed = ['media', 'display-capture'];
     if (allowed.includes(permission)) return callback(true);
