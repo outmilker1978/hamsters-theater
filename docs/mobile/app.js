@@ -58,32 +58,32 @@ function connectAndDo(action) {
   if (socket && socket.connected) { action(); return; }
   connecting = true;
   if (socket) { socket.disconnect(); socket = null; }
-  toast('Подключаюсь к серверу...');
+  toast('\u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0430\u044E\u0441\u044C \u043A \u0441\u0435\u0440\u0432\u0435\u0440\u0443...');
   socket = io(CLOUD, { transports: ['websocket', 'polling'], timeout: 15000, reconnection: true, reconnectionAttempts: 10, reconnectionDelay: 2000 });
   socket.on('connect', () => {
     connecting = false;
     log('Connected, id=' + socket.id);
     if (wasInRoom && myAction) {
       log('Reconnecting to room ' + myAction.code);
-      toast('Переподключаюсь...');
+      toast('\u041F\u0435\u0440\u0435\u043F\u043E\u0434\u043A\u043B\u044E\u0447\u0430\u044E\u0441\u044C...');
       if (myAction.type === 'create') socket.emit('create-room');
       else socket.emit('join-room', myAction.code);
       wasInRoom = false;
     } else {
-      toast('Подключено, вхожу в комнату...');
+      toast('\u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0435\u043D\u043E, \u0432\u0445\u043E\u0436\u0443 \u0432 \u043A\u043E\u043C\u043D\u0430\u0442\u0443...');
       action();
     }
   });
   socket.on('connect_error', (err) => {
     log('connect_error: ' + err.message);
-    toast('Ошибка: ' + err.message);
+    toast('\u041E\u0448\u0438\u0431\u043A\u0430: ' + err.message);
     connecting = false;
   });
   socket.on('disconnect', (reason) => {
     log('disconnect: ' + reason);
     if (reason !== 'io client disconnect') {
       wasInRoom = true;
-      toast('Потеря связи, переподключаюсь...');
+      toast('\u041F\u043E\u0442\u0435\u0440\u044F \u0441\u0432\u044F\u0437\u0438, \u043F\u0435\u0440\u0435\u043F\u043E\u0434\u043A\u043B\u044E\u0447\u0430\u044E\u0441\u044C...');
     }
   });
   socket.on('error-msg', (msg) => { toast(msg); show(msg); });
@@ -132,7 +132,7 @@ function connectAndDo(action) {
     el.innerHTML = '<span class="chat-msg-author">' + escapeHtml(d.name) + '</span><span class="chat-msg-text">' + escapeHtml(d.text) + '</span>';
     $('chatMessages').appendChild(el);
     $('chatMessages').scrollTop = $('chatMessages').scrollHeight;
-    if ($('chatOverlay').style.display !== 'flex' && d.from !== socket.id) toast('Чат: ' + d.name + ' написал(а)');
+    if ($('chatOverlay').style.display !== 'flex' && d.from !== socket.id) toast('\u0427\u0430\u0442: ' + d.name + ' \u043D\u0430\u043F\u0438\u0441\u0430\u043B(\u0430)');
   });
   socket.on('reaction', (d) => {
     showReaction(d.emoji);
@@ -152,7 +152,7 @@ function connectAndDo(action) {
       camsVisible = true;
       $('toggleCamsBtn').classList.remove('off');
       $('toggleCamsBtn').classList.remove('screen-only');
-      toast('Кто-то делится экраном');
+      toast('\u041A\u0442\u043E-\u0442\u043E \u0434\u0435\u043B\u0438\u0442\u0441\u044F \u044D\u043A\u0440\u0430\u043D\u043E\u043C');
     }
     if (d.type === 'request-offer') { if (localStream) createOfferToPeer(d.from); }
     if (d.type === 'screen-stopped') {
@@ -169,7 +169,7 @@ function connectAndDo(action) {
       for (const pid of Object.keys(peers)) {
         if (peers[pid].screenPC) { peers[pid].screenPC.close(); delete peers[pid].screenPC; }
       }
-      toast('Трансляция завершена');
+      toast('\u0422\u0440\u0430\u043D\u0441\u043B\u044F\u0446\u0438\u044F \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0430');
     }
   });
 }
@@ -177,7 +177,7 @@ function connectAndDo(action) {
 function showRoom() {
   $('landing').style.display = 'none';
   $('room').style.display = 'flex';
-  $('roomCode').textContent = (userName || 'Чат') + ' • Палата № ' + roomId;
+  $('roomCode').textContent = (userName || '\u0427\u0430\u0442') + ' \u2022 \u041F\u0430\u043B\u0430\u0442\u0430 \u2116 ' + roomId;
   updatePeerCount();
   $('camBtn').classList.add('on');
   $('micBtn').classList.add('on');
@@ -187,7 +187,7 @@ function showRoom() {
 function updatePeerCount() {
   const count = Object.keys(peers).length + 1;
   const el = $('roomPeers');
-  if (el) el.textContent = count + ' хомяк' + (count % 10 === 1 && count % 100 !== 11 ? '' : count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 10 || count % 100 >= 20) ? 'а' : 'ов');
+  if (el) el.textContent = count + ' \u0445\u043E\u043C\u044F\u043A' + (count % 10 === 1 && count % 100 !== 11 ? '' : count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 10 || count % 100 >= 20) ? '\u0430' : '\u043E\u0432');
 }
 
 function leaveRoom() {
@@ -253,7 +253,7 @@ function createPC(peerId) {
   };
   pc.onconnectionstatechange = () => {
     log('connState ' + peerId + ': ' + pc.connectionState);
-    if (pc.connectionState === 'connected') toast('Хомячок подключился');
+    if (pc.connectionState === 'connected') toast('\u0425\u043E\u043C\u044F\u0447\u043E\u043A \u043F\u043E\u0434\u043A\u043B\u044E\u0447\u0438\u043B\u0441\u044F');
     if (pc.connectionState === 'failed') {
       log('conn failed for ' + peerId + ', recreating...');
       removePeer(peerId);
@@ -311,7 +311,7 @@ function removePeer(peerId) {
 
 function requestMedia() {
   if (localStream) return Promise.resolve(localStream);
-  return startMedia().then(s => { localStream = s; return s; }).catch(() => { toast('Нет доступа к камере/микрофону'); return null; });
+  return startMedia().then(s => { localStream = s; return s; }).catch(() => { toast('\u041D\u0435\u0442 \u0434\u043E\u0441\u0442\u0443\u043F\u0430 \u043A \u043A\u0430\u043C\u0435\u0440\u0435/\u043C\u0438\u043A\u0440\u043E\u0444\u043E\u043D\u0443'); return null; });
 }
 $('createRoomBtn').onclick = () => {
   show('');
@@ -324,7 +324,7 @@ $('roomCodeInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') $
 $('joinRoomBtn').onclick = () => {
   show('');
   const code = $('roomCodeInput').value.trim();
-  if (!code) { show('Введите код комнаты'); return; }
+  if (!code) { show('\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043A\u043E\u0434 \u043A\u043E\u043C\u043D\u0430\u0442\u044B'); return; }
   roomId = code;
   myAction = null; wasInRoom = false;
   requestMedia().then(() => {
@@ -425,11 +425,11 @@ $('fullscreenBtn').onclick = () => {
 $('shareBtn').onclick = () => {
   if (!roomId) return;
   const url = `https://tvhamsters.outmilk.online/mobile/?code=${roomId}`;
-  const text = `Присоединяйся ко мне в TV Hamsters! 🐹\nКод комнаты: ${roomId}\nСсылка: ${url}`;
+  const text = `\u041F\u0440\u0438\u0441\u043E\u0435\u0434\u0438\u043D\u044F\u0439\u0441\u044F \u043A\u043E \u043C\u043D\u0435 \u0432 TV Hamsters! \uD83D\uDC39\n\u041A\u043E\u0434 \u043A\u043E\u043C\u043D\u0430\u0442\u044B: ${roomId}\n\u0421\u0441\u044B\u043B\u043A\u0430: ${url}`;
   if (navigator.share) {
     navigator.share({ title: 'TV Hamsters', text: text, url: url }).catch(() => {});
   } else {
-    navigator.clipboard.writeText(url).then(() => toast('Ссылка скопирована')).catch(() => {});
+    navigator.clipboard.writeText(url).then(() => toast('\u0421\u0441\u044B\u043B\u043A\u0430 \u0441\u043A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u043D\u0430')).catch(() => {});
   }
 };
 document.addEventListener('contextmenu', e => e.preventDefault());
@@ -464,7 +464,7 @@ function sendChat() {
   el.innerHTML = '<span class="chat-msg-text">' + escapeHtml(text) + '</span>';
   $('chatMessages').appendChild(el);
   $('chatMessages').scrollTop = $('chatMessages').scrollHeight;
-  socket.emit('chat-message', { text: text, name: userName || 'РЇ' });
+  socket.emit('chat-message', { text: text, name: userName || '\u042F' });
 }
 function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -543,7 +543,7 @@ $('donateLinkCloud').onclick = () => {
     if (c) {
       $('roomCodeInput').value = c;
       roomId = c;
-      show('Подключаюсь...');
+      show('\u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0430\u044E\u0441\u044C...');
       myAction = { type: 'join', code: c };
       sessionStorage.setItem('hamsters_room', JSON.stringify({ type: 'join', code: c }));
       requestMedia().then(() => connectAndDo(() => socket.emit('join-room', c)));
@@ -553,7 +553,7 @@ $('donateLinkCloud').onclick = () => {
         const r = JSON.parse(saved);
         $('roomCodeInput').value = r.code;
         roomId = r.code;
-        show('Восстанавливаю комнату...');
+        show('\u0412\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u044E \u043A\u043E\u043C\u043D\u0430\u0442\u0443...');
         myAction = r;
         requestMedia().then(() => connectAndDo(() => { if (r.type === 'create') socket.emit('create-room'); else socket.emit('join-room', r.code); }));
       }
