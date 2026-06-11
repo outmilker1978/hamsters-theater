@@ -276,6 +276,11 @@ el('joinRoomBtn').onclick = () => {
   });
   socket.on('room-users', (users) => {
     log('room-users: ' + JSON.stringify(users));
+    if (userName && socket && socket.connected) {
+      users.forEach(pid => {
+        socket.emit('signal', { to: pid, signalType: 'user-info', name: userName });
+      });
+    }
   });
 };
 
@@ -314,10 +319,12 @@ async function startCamera() {
   }
 }
 
+let peerNames = {};
+
 // --- Peer Entry ---
 function createPeerEntry(peerId) {
   if (!peers[peerId]) {
-    peers[peerId] = { pc: null, screenPC: null, remoteStream: null, cameraCandidates: [], screenCandidates: [], name: '' };
+    peers[peerId] = { pc: null, screenPC: null, remoteStream: null, cameraCandidates: [], screenCandidates: [] };
   }
   return peers[peerId];
 }
@@ -337,7 +344,7 @@ function addPeerVideo(peerId) {
   const label = document.createElement('div');
   label.className = 'face-label';
   label.id = 'label-' + peerId;
-  label.textContent = peers[peerId]?.name || '\u0425\u043e\u043c\u044f\u0447\u043e\u043a ' + Object.keys(peers).length;
+  label.textContent = peerNames[peerId] || '\u0425\u043e\u043c\u044f\u0447\u043e\u043a ' + Object.keys(peers).length;
   wrapper.appendChild(video);
   wrapper.appendChild(label);
   // Volume slider
@@ -571,7 +578,7 @@ function handleSignal(data) {
     if (localStream) createOfferToPeer(data.from);
   }
   if (data.type === 'user-info' && data.name) {
-    if (peers[data.from]) peers[data.from].name = data.name;
+    peerNames[data.from] = data.name;
     const label = document.getElementById('label-' + data.from);
     if (label) label.textContent = data.name;
   }
@@ -844,6 +851,7 @@ function removePeer(peerId) {
       updateCamGrid();
     }
     delete peers[peerId];
+    delete peerNames[peerId];
   }
   removePeerVideo(peerId);
   if (Object.keys(peers).length === 0) {
@@ -858,6 +866,7 @@ function cleanupCall() {
     delete peers[pid];
   }
   peers = {};
+  peerNames = {};
   // Clear all peer video elements from DOM
   const facesContainer = el('remote-faces');
   if (facesContainer) facesContainer.innerHTML = '';
