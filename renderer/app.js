@@ -48,6 +48,19 @@ let micOn = true;
 let micMode = 'normal'; // 'normal' | 'ptt'
 let pendingPeers = [];
 let pendingOffers = [];
+let userName = localStorage.getItem('userName') || '';
+const FUNNY_NAMES = [
+  '\u043F\u0443\u0445\u043B\u044F\u043A', '\u043D\u0430 \u0441\u043F\u043E\u0440\u0442\u0435', '\u0436\u0443\u043B\u044C\u0431\u0430\u043D', '\u0448\u0438\u0432\u043E\u0440\u043E\u0442', '\u043A\u043E\u043B\u0431\u0430\u0441\u043A\u0430', '\u043F\u044B\u0445\u0442\u0435\u043B\u043A\u0438\u043D',
+  '\u0449\u0438\u043F\u0430\u0447', '\u043B\u0430\u043F\u0448\u0430', '\u0448\u043C\u0435\u043B\u044C', '\u0431\u0443\u043B\u044C\u043A\u0430', '\u0441\u044B\u0440\u043D\u0438\u043A', '\u0445\u0440\u044F\u043A',
+  '\u043F\u0443\u0448\u0438\u0441\u0442\u0430\u044F \u0436\u043E\u043F\u043A\u0430', '\u043D\u0430 \u043B\u0438\u043D\u044C\u043A\u0435', '\u043D\u0430 \u0437\u0430\u0436\u0438\u0440\u043E\u0432\u043A\u0435', '\u0447\u0443\u0431\u0438\u043A', '\u0445\u0432\u043E\u0441\u0442\u0438\u043A', '\u0448\u0430\u0440\u0438\u043A', '\u043A\u043E\u043C\u043E\u0447\u0435\u043A',
+  '\u044C\u044E-\u0445\u044E', '\u0445\u0440\u044E\u043C', '\u043F\u0438\u0449\u0430\u043B\u043A\u0430', '\u0445\u0440\u044E\u0447\u0438\u043A'
+];
+function getRandomName() { return '\u0425\u043E\u043C\u044F\u043A ' + FUNNY_NAMES[Math.floor(Math.random() * FUNNY_NAMES.length)]; }
+function ensureUserName() {
+  const saved = localStorage.getItem('userName');
+  if (saved && saved.trim()) { userName = saved.trim(); return true; }
+  return false;
+}
 
 let peers = {};
 
@@ -141,20 +154,24 @@ document.addEventListener('langchange', (e) => {
 });
 
 function applyModeUI() {
+  const addrRow = el('addressRow');
+  const upnpRow = el('upnpRow');
   if (isCloudMode) {
     el('modeCloud').classList.add('active');
     el('modeLan').classList.remove('active');
     el('serverUrlInput').value = CLOUD_SERVER_URL;
     el('serverUrlInput').placeholder = t('mode.cloud_placeholder');
-    el('upnpStatus').style.display = 'none';
-    el('publicIP').textContent = CLOUD_SERVER_URL;
+    if (addrRow) addrRow.style.display = 'none';
+    if (upnpRow) upnpRow.style.display = 'none';
   } else {
     el('modeLan').classList.add('active');
     el('modeCloud').classList.remove('active');
     el('serverUrlInput').placeholder = t('mode.local_placeholder');
     el('serverUrlInput').value = 'localhost:' + serverPort;
-    el('upnpStatus').style.display = '';
     el('publicIP').textContent = localAddress;
+    el('addressLabel').textContent = t('landing.your_address') || '\u041B\u043E\u043A\u0430\u043B\u044C\u043D\u044B\u0439 \u0430\u0434\u0440\u0435\u0441:';
+    if (addrRow) addrRow.style.display = 'flex';
+    if (upnpRow) upnpRow.style.display = '';
   }
 }
 el('modeLan').onclick = () => {
@@ -172,6 +189,9 @@ function setupSocketListeners() {
     log('peer-joined: ' + peerId);
     if (localStream) createOfferToPeer(peerId);
     else pendingPeers.push(peerId);
+    if (socket && socket.connected && userName) {
+      socket.emit('signal', { to: peerId, signalType: 'user-info', name: userName });
+    }
   }
   socket.on('user-joined', onPeerJoined);
   socket.on('peer-joined', onPeerJoined);
@@ -188,15 +208,19 @@ function setupSocketListeners() {
   socket.on('signal', handleSignal);
   socket.on('server-log', (msg) => log(msg));
   socket.on('chat-message', (d) => {
-    const el = document.createElement('div');
-    el.className = 'chat-msg';
-    el.innerHTML = '<span class="chat-msg-author">' + escapeHtml(d.name) + '</span><span class="chat-msg-text">' + escapeHtml(d.text) + '</span>';
-    el('chatMessages').appendChild(el);
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'chat-msg';
+    msgDiv.innerHTML = '<span class="chat-msg-author">' + escapeHtml(d.name) + '</span><span class="chat-msg-text">' + escapeHtml(d.text) + '</span>';
+    el('chatMessages').appendChild(msgDiv);
     el('chatMessages').scrollTop = el('chatMessages').scrollHeight;
-    if (el('chatOverlay').style.display !== 'flex' && d.from !== socket.id) log('Chat: ' + d.name + ' said ' + d.text);
+    if (el('chatOverlay').style.display !== 'flex' && d.from !== socket.id) {
+      showToast(d.name + ': ' + d.text, 4000);
+      try { ipcRenderer.send('forward-chat', { name: d.name, text: d.text }); } catch(e) {}
+    }
   });
   socket.on('reaction', (d) => {
     showReaction(d.emoji);
+    try { ipcRenderer.send('forward-reaction', d.emoji); } catch(e) {}
   });
 }
 
@@ -280,6 +304,8 @@ async function startCamera() {
       try { audioTrack.applyConstraints({ advanced: [{ gain: savedMicVol / 100 }] }); } catch(e) {}
     }
     log('Camera ready');
+    const localLabel = el('localFace').querySelector('.face-label');
+    if (localLabel) localLabel.textContent = userName || t('room.you');
     setupPTT();
   } catch (err) {
     log('Camera error:', err.message);
@@ -543,6 +569,10 @@ function handleSignal(data) {
   }
   if (data.type === 'request-offer') {
     if (localStream) createOfferToPeer(data.from);
+  }
+  if (data.type === 'user-info' && data.name) {
+    const label = document.getElementById('label-' + data.from);
+    if (label) label.textContent = data.name;
   }
 }
 
@@ -1083,6 +1113,24 @@ ipcRenderer.on('panel-action', (event, action) => {
     stopPTT();
   } else if (action === 'leave') {
     el('leaveBtn').onclick();
+  } else if (action === 'show-chat') {
+    el('chatOverlay').style.display = 'flex';
+    el('chatInput').focus();
+  } else if (action === 'show-reaction') {
+    el('reactionPicker').style.display = 'flex';
+  }
+});
+
+ipcRenderer.on('faces-send-chat', (event, text) => {
+  if (socket && socket.connected) {
+    socket.emit('chat-message', { text: text, name: userName || 'РЇ' });
+  }
+});
+
+ipcRenderer.on('faces-send-reaction', (event, emoji) => {
+  showReaction(emoji);
+  if (socket && socket.connected) {
+    socket.emit('reaction', { emoji: emoji });
   }
 });
 
@@ -1094,6 +1142,44 @@ initLang();
 applyModeUI();
 // Init PTT mode early (works without localStream)
 setupPTT();
+
+// Name prompt
+function showNameModal(prefill) {
+  const modal = document.getElementById('namePromptModal');
+  const input = document.getElementById('nameInput');
+  if (input) input.value = prefill || '';
+  if (modal) modal.style.display = 'flex';
+  if (input) setTimeout(() => { input.focus(); input.select(); }, 100);
+}
+function applyName(val) {
+  if (val && val.trim()) { userName = val.trim(); localStorage.setItem('userName', val.trim()); }
+  else { userName = getRandomName(); }
+  document.getElementById('namePromptModal').style.display = 'none';
+  updateNameDisplay();
+}
+function updateNameDisplay() {
+  const display = document.getElementById('nameDisplay');
+  if (display) display.textContent = userName;
+  const localLabel = document.querySelector('#localFace .face-label');
+  if (localLabel) localLabel.textContent = userName;
+}
+if (!ensureUserName()) showNameModal('');
+else updateNameDisplay();
+document.getElementById('nameConfirm').onclick = () => {
+  applyName(document.getElementById('nameInput').value);
+};
+document.getElementById('nameSkip').onclick = () => {
+  applyName('');
+};
+document.getElementById('nameInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('nameConfirm').click();
+});
+document.getElementById('namePromptModal').onclick = (e) => {
+  if (e.target === document.getElementById('namePromptModal')) applyName('');
+};
+document.getElementById('nameEditBtn').onclick = () => {
+  showNameModal(userName);
+};
 
 // Chat
 el('chatBtn').onclick = () => el('chatOverlay').style.display = 'flex';
@@ -1111,7 +1197,7 @@ function sendChat() {
   elMsg.innerHTML = '<span class="chat-msg-text">' + escapeHtml(text) + '</span>';
   el('chatMessages').appendChild(elMsg);
   el('chatMessages').scrollTop = el('chatMessages').scrollHeight;
-  socket.emit('chat-message', { text: text, name: 'Я' });
+  socket.emit('chat-message', { text: text, name: userName || 'РЇ' });
 }
 function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -1137,7 +1223,7 @@ function showReaction(emoji) {
 
 // First-launch shortcut prompt (shows once per version)
 (function() {
-  const ver = '1.7.6';
+  const ver = '1.7.7';
   // Set version in UI
   const verEls = document.querySelectorAll('#versionDisplay, .modal-version, title');
   verEls.forEach(el => {

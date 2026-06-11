@@ -2,7 +2,7 @@ const LOCALES = {
   ru: {
     'app.title': 'TV Hamsters',
     'landing.subtitle': 'Смотрите видео вместе, будто вы рядом',
-    'landing.your_address': 'Ваш адрес:',
+    'landing.your_address': 'Локальный адрес:',
     'landing.server_placeholder': 'Адрес сервера (IP:порт)',
     'landing.create_room': 'Создать комнату',
     'landing.or': 'или',
@@ -94,6 +94,10 @@ const LOCALES = {
     'menu.help': 'Помощь',
     'menu.help.about': 'О программе',
     'menu.help.release_notes': 'История версий',
+    'name.prompt_title': 'Как вас зовут?',
+    'name.prompt_text': 'Введите ваше имя или пропустите — получите случайное имя',
+    'name.confirm': 'Готово!',
+    'name.skip': 'Пропустить',
   },
   en: {
     'app.title': 'TV Hamsters',
@@ -188,6 +192,10 @@ const LOCALES = {
     'menu.help': 'Help',
     'menu.help.about': 'About',
     'menu.help.release_notes': 'Release Notes',
+    'name.prompt_title': 'What\'s your name?',
+    'name.prompt_text': 'Enter your name or skip — get a random funny name',
+    'name.confirm': 'Done!',
+    'name.skip': 'Skip',
   }
 };
 

@@ -16,16 +16,27 @@
         <img id="appIcon" src="../icon.png" alt="TV Hamsters">
         <div class="logo-text">
           <h1>TV Hamsters</h1>
-          <span class="version" id="versionDisplay">v1.7.6</span>
+          <span class="version" id="versionDisplay">v1.7.7</span>
         </div>
       </div>
       <p class="subtitle" data-i18n="landing.subtitle">РЎРјРѕС‚СЂРёС‚Рµ РІРёРґРµРѕ РІРјРµСЃС‚Рµ, Р±СѓРґС‚Рѕ РІС‹ СЂСЏРґРѕРј</p>
-      <div class="address-bar">
-        <span class="address-label" data-i18n="landing.your_address">Р’Р°С€ Р°РґСЂРµСЃ:</span>
-        <span class="address-value" id="publicIP">Р·Р°РіСЂСѓР·РєР°...</span>
-        <button class="copy-addr-btn" onclick="copyAddress()" data-i18n-title="tooltip.copy" title="РљРѕРїРёСЂРѕРІР°С‚СЊ Р°РґСЂРµСЃ"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="vertical-align:middle"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/></svg></button>
+      <div class="info-rows" id="infoRows">
+        <div class="info-row">
+          <span class="info-label">&#x412;&#x44B;:</span>
+          <span class="info-value" id="nameDisplay"></span>
+          <button class="name-edit-btn" id="nameEditBtn" title="РЎРјРµРЅРёС‚СЊ РёРјСЏ">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+          </button>
+        </div>
+        <div class="info-row" id="addressRow" style="display:none">
+          <span class="info-label" id="addressLabel">IP:</span>
+          <span class="address-value" id="publicIP">...</span>
+          <button class="copy-addr-btn" onclick="copyAddress()" data-i18n-title="tooltip.copy" title="РљРѕРїРёСЂРѕРІР°С‚СЊ"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align:middle"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/></svg></button>
+        </div>
+        <div class="info-subrow" id="upnpRow" style="display:none">
+          <span class="upnp-status" id="upnpStatus"></span>
+        </div>
       </div>
-      <div class="upnp-status" id="upnpStatus">рџ”Њ UPnP: РїСЂРѕРІРµСЂРєР°...</div>
       <div class="mode-selector">
         <label class="mode-option" id="modeLan">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align:-3px;margin-right:4px"><path d="M4 6h16v10H4V6zm0-2c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h7v2H8v2h8v-2h-3v-2h7c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4z"/></svg>
@@ -76,7 +87,7 @@
       </button>
       <button id="pttBtn" class="control-btn ptt" style="display:none" data-tooltip-i18n="tooltip.ptt" data-i18n-title="tooltip.ptt" title="Р—Р°Р¶РјРёС‚Рµ РџСЂРѕР±РµР», С‡С‚РѕР±С‹ РіРѕРІРѕСЂРёС‚СЊ">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-        <span id="pttLabel" class="ptt-label">РџСЂРѕР±РµР»</span>
+        <span id="pttLabel" class="ptt-label">&#x41F;&#x440;&#x43E;&#x431;&#x435;&#x43B;</span>
       </button>
       <button id="shareScreenBtn" class="control-btn" data-tooltip-i18n="tooltip.share" data-i18n-title="tooltip.share" title="РџРѕРґРµР»РёС‚СЊСЃСЏ СЌРєСЂР°РЅРѕРј">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
@@ -88,7 +99,7 @@
         <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </button>
       <button id="reactionBtn" class="control-btn" data-tooltip-i18n="tooltip.reaction" data-i18n-title="tooltip.reaction" title="Р РµР°РєС†РёСЏ">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="9" r="1"/><circle cx="16" cy="9" r="1"/><path d="M8 14c0 0 1.5 2 4 2s4-2 4-2"/></svg>
       </button>
     </div>
   </div>
@@ -112,11 +123,11 @@
 
   <!-- Reaction Picker -->
   <div id="reactionPicker" class="reaction-picker" style="display:none">
-    <button class="reaction-emoji" data-emoji="вќ¤пёЏ">вќ¤пёЏ</button>
-    <button class="reaction-emoji" data-emoji="рџ�‚">рџ�‚</button>
-    <button class="reaction-emoji" data-emoji="рџ”Ґ">рџ”Ґ</button>
-    <button class="reaction-emoji" data-emoji="рџҐє">рџҐє</button>
-    <button class="reaction-emoji" data-emoji="рџ’©">рџ’©</button>
+    <button class="reaction-emoji" data-emoji="&#x2764;&#xFE0F;">&#x2764;&#xFE0F;</button>
+    <button class="reaction-emoji" data-emoji="&#x1F602;">&#x1F602;</button>
+    <button class="reaction-emoji" data-emoji="&#x1F525;">&#x1F525;</button>
+    <button class="reaction-emoji" data-emoji="&#x1F97A;">&#x1F97A;</button>
+    <button class="reaction-emoji" data-emoji="&#x1F4A9;">&#x1F4A9;</button>
   </div>
 
   <!-- Help Modal -->
@@ -124,7 +135,7 @@
     <div class="modal-content">
       <button id="closeHelpBtn" class="modal-close">&times;</button>
       <h2 data-i18n="help.about">Рћ РїСЂРѕРіСЂР°РјРјРµ</h2>
-      <p class="modal-subtitle">TV Hamsters <span class="modal-version">v1.7.6</span></p>
+      <p class="modal-subtitle">TV Hamsters <span class="modal-version">v1.7.7</span></p>
 
       <p data-i18n-html="help.desc">TV Hamsters вЂ” СЃРјРѕС‚СЂРёС‚Рµ С„РёР»СЊРјС‹, СЃРµСЂРёР°Р»С‹ Рё РІРёРґРµРѕ РІРјРµСЃС‚Рµ, Р±СѓРґС‚Рѕ РІС‹ СЂСЏРґРѕРј. РћРґРёРЅ РІРєР»СЋС‡Р°РµС‚ С‚СЂР°РЅСЃР»СЏС†РёСЋ СЌРєСЂР°РЅР° СЃРѕ Р·РІСѓРєРѕРј, РѕСЃС‚Р°Р»СЊРЅС‹Рµ РІРёРґСЏС‚ РІРёРґРµРѕ Рё СЃР»С‹С€Р°С‚ РіРѕР»РѕСЃР° РІСЃРµС… СѓС‡Р°СЃС‚РЅРёРєРѕРІ. РњРѕР¶РЅРѕ РѕР±СЃСѓР¶РґР°С‚СЊ РїСЂРѕРёСЃС…РѕРґСЏС‰РµРµ РІ СЂРµР°Р»СЊРЅРѕРј РІСЂРµРјРµРЅРё, С…РѕС…РѕС‚Р°С‚СЊ Рё РєРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ вЂ” РєР°Рє РІ РЅР°СЃС‚РѕСЏС‰РµРј РєРёРЅРѕС‚РµР°С‚СЂРµ, С‚РѕР»СЊРєРѕ РѕРЅР»Р°Р№РЅ.</p>
       <p class="help-tip" data-i18n-html="help.killer_feature"><b>Р Р°С†РёСЏ (Push-to-Talk)</b> вЂ” РЅР°Р¶РјРё РїСЂР°РІРѕР№ РєРЅРѕРїРєРѕР№ РјС‹С€Рё РїРѕ РјРёРєСЂРѕС„РѕРЅСѓ, С‡С‚РѕР±С‹ РІРєР»СЋС‡РёС‚СЊ СЂРµР¶РёРј СЂР°С†РёРё. Р—Р°Р¶РјРё <b>РџСЂРѕР±РµР»</b> РёР»Рё РєРЅРѕРїРєСѓ вЂ” РіРѕРІРѕСЂРё. РћС‚РїСѓСЃС‚Рё вЂ” РјРёРєСЂРѕС„РѕРЅ РІС‹РєР»СЋС‡РёС‚СЃСЏ. Р’ РѕР±С‹С‡РЅРѕРј СЂРµР¶РёРјРµ РјРёРєСЂРѕС„РѕРЅ СЂР°Р±РѕС‚Р°РµС‚ РїРѕСЃС‚РѕСЏРЅРЅРѕ.</p>
@@ -194,6 +205,7 @@
       <button id="closeReleaseBtn" class="modal-close">&times;</button>
       <h2 data-i18n="help.release_notes">РСЃС‚РѕСЂРёСЏ РІРµСЂСЃРёР№</h2>
       <div class="release-list">
+        <div class="release-item"><span class="release-ver">1.7.7</span><span class="release-desc">Desktop: РёРєРѕРЅРєР° СЂРµР°РєС†РёРё С‚РµРїРµСЂСЊ СЃРјР°Р№Р»РёРє (Р±С‹Р»Р° РґРѕРєСѓРјРµРЅС‚). Desktop: С‡Р°С‚/СЂРµР°РєС†РёРё РґРѕР±Р°РІР»РµРЅС‹ РІ Р»РѕРєР°Р»СЊРЅС‹Р№ СЃРµСЂРІРµСЂ (СЂР°Р±РѕС‚Р°СЋС‚ РІ Р»РѕРєР°Р»СЊРЅРѕРј СЂРµР¶РёРјРµ). Desktop: РєРЅРѕРїРєРё С‡Р°С‚Р° Рё СЂРµР°РєС†РёР№ РІ РїР»Р°РІР°СЋС‰РµР№ РїР°РЅРµР»Рё РїСЂРё С‚СЂР°РЅСЃР»СЏС†РёРё СЌРєСЂР°РЅР°. Desktop + Mobile: РёРјРµРЅР° СѓС‡Р°СЃС‚РЅРёРєРѕРІ Рё СЂР°РЅРґРѕРјРЅС‹Рµ РєР»РёС‡РєРё (Р•СЃР»Рё РЅРµ РЅР°Р·РІР°С‚СЊСЃСЏ — С…РѕРјСЏРє РїРѕР»СѓС‡Р°РµС‚ СЃРјРµС€РЅРѕРµ РёРјСЏ).</span></div>
         <div class="release-item"><span class="release-ver">1.7.6</span><span class="release-desc">Desktop + Mobile: Р§Р°С‚ (С‚РµРєСЃС‚РѕРІС‹Рµ СЃРѕРѕР±С‰РµРЅРёСЏ РјРµР¶РґСѓ РІСЃРµРјРё СѓС‡Р°СЃС‚РЅРёРєР°РјРё). Desktop + Mobile: Р РµР°РєС†РёРё (СЌРјРѕРґР·Рё, РІСЃРїР»С‹РІР°СЋС‚ Р°РЅРёРјР°С†РёРµР№). Mobile: РїСЂРѕР·СЂР°С‡РЅС‹Р№ РѕРІРµСЂР»РµР№ С‡Р°С‚Р°, РїРѕР»РЅРѕСЌРєСЂР°РЅРЅС‹Р№ СЂРµР¶РёРј. Mobile: Р°РІС‚Рѕ-РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РєРѕРјРЅР°С‚С‹ РїСЂРё СЂРµР·РєРѕРЅРЅРµРєС‚Рµ.</span></div>
         <div class="release-item"><span class="release-ver">1.7.5</span><span class="release-desc">Desktop: Enter РІ РїРѕР»Рµ РєРѕРґР° РєРѕРјРЅР°С‚С‹. Desktop: РїРѕР»Р·СѓРЅРєРё РіСЂРѕРјРєРѕСЃС‚Рё РІСЃРµРіРґР° РІРёРґРЅС‹. Mobile: РєРЅРѕРїРєР° В«РџРѕРґРµР»РёС‚СЊСЃСЏВ» РєРѕРјРЅР°С‚РѕР№. Mobile: РєРЅРѕРїРєР° СѓСЃС‚Р°РЅРѕРІРєРё PWA В«РЎРєР°С‡Р°С‚СЊ РЅР° AndroidВ». Mobile: С„РёРѕР»РµС‚РѕРІС‹Р№ РґРёР·Р°Р№РЅ, РїРѕР»РЅС‹Р№ СЌРєСЂР°РЅ Р±РµР· РѕРІРµСЂР»РµСЏ Chrome.</span></div>
         <div class="release-item"><span class="release-ver">1.7.4</span><span class="release-desc">РЎРµС‚РєР° РєР°РјРµСЂ СѓС‡Р°СЃС‚РЅРёРєРѕРІ РІРѕ РІРµСЃСЊ СЌРєСЂР°РЅ, РєРѕРіРґР° РЅРёРєС‚Рѕ РЅРµ С‚СЂР°РЅСЃР»РёСЂСѓРµС‚. РСЃРїСЂР°РІР»РµРЅ РїСЂРѕС‚РѕРєРѕР» hamsters:// (СЂСѓС‡РЅР°СЏ Р·Р°РїРёСЃСЊ РІ СЂРµРµСЃС‚СЂ). РћР±РЅРѕРІР»РµРЅР° СЃС‚СЂР°РЅРёС†Р° РІС…РѕРґР° РїРѕ СЃСЃС‹Р»РєРµ вЂ” С‚С‘РјРЅР°СЏ РєР°СЂС‚РѕС‡РєР°, РєРЅРѕРїРєР° СЃ Р»РѕРіРѕС‚РёРїРѕРј. Р’ Р±РѕС‚Рµ &#x1F43A; Рё &#x2695; РІ СЃРѕРѕР±С‰РµРЅРёРё РїР°Р»Р°С‚С‹.</span></div>
@@ -243,6 +255,19 @@
         <div class="settings-buttons">
           <button class="settings-btn" id="createShortcutBtn" onclick="createDesktopShortcut()" data-i18n="settings.shortcut_btn">РЎРѕР·РґР°С‚СЊ СЏСЂР»С‹Рє РЅР° СЂР°Р±РѕС‡РµРј СЃС‚РѕР»Рµ</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Name Prompt Modal -->
+  <div id="namePromptModal" class="modal-overlay" style="display:none">
+    <div class="modal-content" style="max-width:380px;text-align:center">
+      <h3 data-i18n="name.prompt_title">РљР°Рє РІР°СЃ Р·РѕРІСѓС‚?</h3>
+      <p data-i18n="name.prompt_text" style="margin:12px 0;line-height:1.5">Р’РІРµРґРёС‚Рµ РІР°С€Рµ РёРјСЏ РёР»Рё РїСЂРѕРїСѓСЃС‚РёС‚Рµ — РїРѕР»СѓС‡РёС‚Рµ СЃР»СѓС‡Р°Р№РЅРѕРµ РёРјСЏ</p>
+      <input id="nameInput" type="text" maxlength="20" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text);font-size:16px;margin-bottom:12px" placeholder="&#x412;&#x430;&#x448;&#x435; &#x438;&#x43C;&#x44F;...">
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px">
+        <button class="settings-btn" id="nameConfirm" data-i18n="name.confirm">Р“РѕС‚РѕРІРѕ!</button>
+        <button class="settings-btn" id="nameSkip" data-i18n="name.skip">РџСЂРѕРїСѓСЃС‚РёС‚СЊ</button>
       </div>
     </div>
   </div>

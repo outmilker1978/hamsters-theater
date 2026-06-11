@@ -95,6 +95,15 @@
       font-size: 12px;
       align-self: center;
     }
+    @keyframes reactionFade {
+      0% { opacity: 1; transform: translate(-50%,-50%) scale(0.5); }
+      50% { opacity: 1; transform: translate(-50%,-50%) scale(1.2); }
+      100% { opacity: 0; transform: translate(-50%,-80%) scale(1); }
+    }
+    @keyframes chatFadeIn {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>

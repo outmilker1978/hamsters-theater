@@ -4,7 +4,7 @@ let faceData = {};
 
 ipcRenderer.on('faces-frames', (event, frames) => {
   if (!frames || !frames.length) {
-    container.innerHTML = '<div class="no-faces">Участники появятся здесь</div>';
+    container.innerHTML = '<div class="no-faces">\u0423\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u0438 \u043F\u043E\u044F\u0432\u044F\u0442\u0441\u044F \u0437\u0434\u0435\u0441\u044C</div>';
     return;
   }
   const currentIds = frames.map(f => f.id);
@@ -27,7 +27,7 @@ ipcRenderer.on('faces-frames', (event, frames) => {
       const label = document.createElement('div');
       label.className = 'label';
       label.id = 'lbl-' + f.id;
-      label.textContent = f.isLocal ? 'Вы' : 'Хомячок';
+      label.textContent = f.isLocal ? '\u0412\u044B' : '\u0425\u043E\u043C\u044F\u0447\u043E\u043A';
       card.appendChild(label);
       const volContainer = document.createElement('div');
       volContainer.className = 'vol-container';
@@ -59,3 +59,22 @@ ipcRenderer.on('faces-frames', (event, frames) => {
     }
   }
 });
+
+ipcRenderer.on('faces-reaction', (event, emoji) => {
+  const el = document.createElement('div');
+  el.textContent = emoji;
+  el.style.cssText = 'position:fixed;top:50%;left:50%;font-size:48px;transform:translate(-50%,-50%);animation:reactionFade 2s ease-out forwards;pointer-events:none;z-index:999';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2000);
+});
+
+ipcRenderer.on('faces-chat-toast', (event, data) => {
+  if (!data) return;
+  const el = document.createElement('div');
+  el.style.cssText = 'position:fixed;bottom:12px;left:8px;right:8px;background:rgba(18,14,20,0.9);color:#e8d8f0;padding:8px 12px;border-radius:10px;font-size:12px;line-height:1.4;animation:chatFadeIn 0.3s ease-out;z-index:998;pointer-events:none';
+  el.innerHTML = '<b style="color:#c285e4">' + escapeHtml(data.name) + '</b>: ' + escapeHtml(data.text);
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 5000);
+});
+
+function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }

@@ -120,17 +120,39 @@ input, textarea, [contenteditable], .copyable {
   font-size: 14px;
 }
 
-.address-bar {
+.info-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 12px 0 20px 0;
+  align-items: center;
+  min-height: 48px;
+}
+.info-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin: -20px 0 24px 0;
+  gap: 6px;
   font-size: 13px;
 }
-.address-label {
-  color: var(--text-dim);
+.info-subrow {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
 }
+.info-label { color: var(--text-dim); }
+.info-value { color: var(--accent); font-weight: 600; }
+.name-edit-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+.name-edit-btn:hover { color: var(--accent); }
 .address-value {
   color: var(--accent);
   font-family: monospace;
@@ -142,8 +164,8 @@ input, textarea, [contenteditable], .copyable {
   background: transparent;
   border: 1px solid var(--accent-dim);
   cursor: pointer;
-  font-size: 12px;
-  padding: 2px 5px;
+  font-size: 11px;
+  padding: 1px 4px;
   border-radius: 4px;
   transition: color 0.2s, border-color 0.2s;
   color: var(--text-muted);
@@ -159,9 +181,8 @@ input, textarea, [contenteditable], .copyable {
   transform: scale(0.9);
 }
 .upnp-status {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
-  margin: -12px 0 16px 0;
   text-align: center;
 }
 

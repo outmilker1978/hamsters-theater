@@ -25,6 +25,19 @@ let myAction = null; // { type: 'create'|'join', code: roomId }
 let wasInRoom = false;
 
 const $ = id => document.getElementById(id);
+let userName = localStorage.getItem('mobileUserName') || '';
+const FUNNY_NAMES = [
+  '\u043F\u0443\u0445\u043B\u044F\u043A', '\u043D\u0430 \u0441\u043F\u043E\u0440\u0442\u0435', '\u0436\u0443\u043B\u044C\u0431\u0430\u043D', '\u0448\u0438\u0432\u043E\u0440\u043E\u0442', '\u043A\u043E\u043B\u0431\u0430\u0441\u043A\u0430', '\u043F\u044B\u0445\u0442\u0435\u043B\u043A\u0438\u043D',
+  '\u0449\u0438\u043F\u0430\u0447', '\u043B\u0430\u043F\u0448\u0430', '\u0448\u043C\u0435\u043B\u044C', '\u0431\u0443\u043B\u044C\u043A\u0430', '\u0441\u044B\u0440\u043D\u0438\u043A', '\u0445\u0440\u044F\u043A',
+  '\u043F\u0443\u0448\u0438\u0441\u0442\u0430\u044F \u0436\u043E\u043F\u043A\u0430', '\u043D\u0430 \u043B\u0438\u043D\u044C\u043A\u0435', '\u043D\u0430 \u0437\u0430\u0436\u0438\u0440\u043E\u0432\u043A\u0435', '\u0447\u0443\u0431\u0438\u043A', '\u0445\u0432\u043E\u0441\u0442\u0438\u043A', '\u0448\u0430\u0440\u0438\u043A', '\u043A\u043E\u043C\u043E\u0447\u0435\u043A',
+  '\u044C\u044E-\u0445\u044E', '\u0445\u0440\u044E\u043C', '\u043F\u0438\u0449\u0430\u043B\u043A\u0430', '\u0445\u0440\u044E\u0447\u0438\u043A'
+];
+function getRandomName() { return '\u0425\u043E\u043C\u044F\u043A ' + FUNNY_NAMES[Math.floor(Math.random() * FUNNY_NAMES.length)]; }
+function ensureUserName() {
+  const saved = localStorage.getItem('mobileUserName');
+  if (saved && saved.trim()) { userName = saved.trim(); return true; }
+  return false;
+}
 
 function toast(msg) { const t = $('statusToast'); if (t) { t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); } }
 function show(msg) { const e = $('error'); if (e) e.textContent = msg; }
@@ -86,10 +99,15 @@ function connectAndDo(action) {
     showRoom();
     if (localStream) $('localVideo').srcObject = localStream;
     pendingOffers.forEach(o => handleOffer(o)); pendingOffers = [];
-    pendingPeers.forEach(p => { createPC(p); socket.emit('signal', { to: p, signalType: 'request-offer' }); }); pendingPeers = [];
+    pendingPeers.forEach(p => { createPC(p); socket.emit('signal', { to: p, signalType: 'request-offer', name: userName }); socket.emit('signal', { to: p, signalType: 'user-info', name: userName }); }); pendingPeers = [];
   });
   socket.on('room-users', (users) => { users.forEach(pid => { createPC(pid); socket.emit('signal', { to: pid, signalType: 'request-offer' }); }); });
-  socket.on('peer-joined', (peerId) => { createOfferToPeer(peerId); });
+  socket.on('peer-joined', (peerId) => {
+    createOfferToPeer(peerId);
+    if (socket && socket.connected && userName) {
+      socket.emit('signal', { to: peerId, signalType: 'user-info', name: userName });
+    }
+  });
   socket.on('offer', (data) => {
     if (data.type === 'screen') { handleScreenOffer(data); return; }
     handleOffer(data);
@@ -119,7 +137,13 @@ function connectAndDo(action) {
   socket.on('reaction', (d) => {
     showReaction(d.emoji);
   });
+  socket.on('user-info', (d) => {
+    // mobile doesn't show peer labels, ignore
+  });
   socket.on('signal', (d) => {
+    if (d.type === 'user-info' && d.name) {
+      // mobile doesn't show peer labels
+    }
     if (d.type === 'screen-started') {
       sharerId = d.from;
       $('screenContainer').style.display = 'block';
@@ -153,7 +177,7 @@ function connectAndDo(action) {
 function showRoom() {
   $('landing').style.display = 'none';
   $('room').style.display = 'flex';
-  $('roomCode').textContent = 'Палата № ' + roomId;
+  $('roomCode').textContent = (userName || 'Чат') + ' • Палата № ' + roomId;
   updatePeerCount();
   $('camBtn').classList.add('on');
   $('micBtn').classList.add('on');
@@ -435,13 +459,12 @@ function sendChat() {
   const text = input.value.trim();
   if (!text || !socket) return;
   input.value = '';
-  const name = 'Я';
   const el = document.createElement('div');
   el.className = 'chat-msg chat-msg-self';
   el.innerHTML = '<span class="chat-msg-text">' + escapeHtml(text) + '</span>';
   $('chatMessages').appendChild(el);
   $('chatMessages').scrollTop = $('chatMessages').scrollHeight;
-  socket.emit('chat-message', { text: text, name: 'Я' });
+  socket.emit('chat-message', { text: text, name: userName || 'РЇ' });
 }
 function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -472,6 +495,35 @@ $('installBtn').onclick = async () => {
   installPrompt = null;
   $('installBtn').style.display = 'none';
 };
+
+// Name prompt
+function showMobileNameModal(prefill) {
+  const input = $('mobileNameInput');
+  if (input) input.value = prefill || '';
+  const modal = $('namePromptModal');
+  if (modal) modal.style.display = 'flex';
+  if (input) setTimeout(() => { input.focus(); input.select(); }, 300);
+}
+function applyMobileName(val) {
+  if (val && val.trim()) { userName = val.trim(); localStorage.setItem('mobileUserName', val.trim()); }
+  else { userName = getRandomName(); }
+  $('namePromptModal').style.display = 'none';
+  const display = $('mobileNameDisplay');
+  if (display) display.textContent = userName;
+  const bar = $('mobileNameBar');
+  if (bar) bar.style.display = 'flex';
+}
+if (!ensureUserName()) showMobileNameModal('');
+else applyMobileName(userName);
+$('mobileNameConfirm').onclick = () => { applyMobileName($('mobileNameInput').value); };
+$('mobileNameSkip').onclick = () => { applyMobileName(''); };
+$('mobileNameInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') $('mobileNameConfirm').click();
+});
+$('namePromptModal').onclick = (e) => {
+  if (e.target === $('namePromptModal')) applyMobileName('');
+};
+$('mobileNameEditBtn').onclick = () => { showMobileNameModal(userName); };
 
 // Help modal
 $('helpBtn').onclick = () => $('helpModal').style.display = 'flex';

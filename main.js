@@ -92,6 +92,7 @@ function startSignalingServer() {
       console.log('[Server] create-room: roomId=' + roomId + ' socket=' + socket.id);
       rooms[roomId] = [socket.id];
       socket.join(roomId);
+      socket.roomId = roomId;
       socket.emit('room-created', roomId);
     });
     socket.on('join-room', (roomId) => {
@@ -101,6 +102,7 @@ function startSignalingServer() {
       if (rooms[roomId].length >= 5) { socket.emit('error-msg', 'Комната уже заполнена'); return; }
       rooms[roomId].push(socket.id);
       socket.join(roomId);
+      socket.roomId = roomId;
       socket.emit('joined', roomId);
       const others = rooms[roomId].filter(id => id !== socket.id);
       socket.emit('room-users', others);
@@ -117,7 +119,17 @@ function startSignalingServer() {
       socket.to(data.to).emit('ice-candidate', { from: socket.id, candidate: data.candidate, type: data.type });
     });
     socket.on('signal', (data) => {
-      socket.to(data.to).emit('signal', { from: socket.id, type: data.signalType });
+      socket.to(data.to).emit('signal', { from: socket.id, type: data.signalType, name: data.name });
+    });
+    socket.on('chat-message', (data) => {
+      if (socket.roomId) {
+        socket.to(socket.roomId).emit('chat-message', { from: socket.id, text: data.text, name: data.name || 'Хомячок', time: Date.now() });
+      }
+    });
+    socket.on('reaction', (data) => {
+      if (socket.roomId) {
+        socket.to(socket.roomId).emit('reaction', { from: socket.id, emoji: data.emoji });
+      }
     });
     socket.on('disconnect', () => {
       for (const roomId in rooms) {
@@ -386,8 +398,8 @@ ipcMain.handle('create-panel', (event) => {
   if (!mainWin || panelWindow) return;
 
   panelWindow = new BrowserWindow({
-    width: 310,
-    height: 78,
+    width: 560,
+    height: 70,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
@@ -407,8 +419,8 @@ ipcMain.handle('create-panel', (event) => {
   // Position bottom-center
   const { workArea } = require('electron').screen.getPrimaryDisplay();
   panelWindow.setPosition(
-    workArea.x + Math.round((workArea.width - 310) / 2),
-    workArea.y + workArea.height - 88
+    workArea.x + Math.round((workArea.width - 560) / 2),
+    workArea.y + workArea.height - 80
   );
 
   panelWindow.on('closed', () => { panelWindow = null; });
@@ -428,10 +440,70 @@ ipcMain.on('panel-update', (event, data) => {
   }
 });
 
+// Panel resize
+ipcMain.on('panel-resize', (event, height) => {
+  if (panelWindow && !panelWindow.isDestroyed()) {
+    panelWindow.setSize(560, height);
+    const { workArea } = require('electron').screen.getPrimaryDisplay();
+    panelWindow.setPosition(
+      workArea.x + Math.round((workArea.width - 560) / 2),
+      workArea.y + workArea.height - height - 10
+    );
+  }
+});
+
 // Bridge: panel → main renderer
-ipcMain.on('panel-action', (event, action) => {
+ipcMain.on('forward-reaction', (event, emoji) => {
+  const allWins = BrowserWindow.getAllWindows();
+  const fw = allWins.find(w => !w.isDestroyed() && w === facesWindow);
+  if (fw) fw.webContents.send('faces-reaction', emoji);
+});
+
+ipcMain.on('forward-chat', (event, data) => {
+  if (panelWindow && !panelWindow.isDestroyed()) {
+    panelWindow.webContents.send('panel-chat-msg', data);
+  }
+});
+
+ipcMain.on('panel-send-chat', (event, text) => {
+  const allWins = BrowserWindow.getAllWindows();
+  const win = allWins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
+  if (win) win.webContents.send('faces-send-chat', text);
+});
+
+ipcMain.on('faces-send-reaction', (event, emoji) => {
+  const allWins = BrowserWindow.getAllWindows();
+  const win = allWins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
+  if (win) win.webContents.send('faces-send-reaction', emoji);
+});
+
+ipcMain.on('panel-action', (event, action, data) => {
   const allWins = BrowserWindow.getAllWindows();
   const mainWin = allWins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
+  const fw = allWins.find(w => !w.isDestroyed() && w === facesWindow);
+  if (action === 'show-chat') {
+    if (panelWindow && !panelWindow.isDestroyed()) {
+      panelWindow.webContents.send('panel-chat-toggle');
+    }
+    return;
+  }
+  if (action === 'show-reaction') {
+    return;
+  }
+  if (action === 'send-reaction') {
+    if (mainWin) mainWin.webContents.send('faces-send-reaction', data);
+    // Show own reaction animation in faces window
+    if (fw && !fw.isDestroyed()) {
+      fw.webContents.send('faces-reaction', data);
+    }
+    return;
+  }
+  if (action === 'toast-chat') {
+    if (fw && !fw.isDestroyed()) {
+      fw.webContents.send('faces-chat-toast', data);
+    }
+    return;
+  }
   if (mainWin) {
     mainWin.webContents.send('panel-action', action);
   }
@@ -454,11 +526,12 @@ ipcMain.handle('create-faces', (event) => {
   if (!mainWin || facesWindow) return;
 
   const { workArea } = require('electron').screen.getPrimaryDisplay();
-  const fw = 400, fh = 160;
+  const fw = 400, fh = 200;
 
   facesWindow = new BrowserWindow({
     width: fw,
     height: fh,
+    minWidth: 340,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
