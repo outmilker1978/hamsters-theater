@@ -14,15 +14,15 @@ jobs:
           NOTES: ${{ github.event.release.body || 'Новый релиз с улучшениями' }}
           CHAT: '162363099'
         run: |
-          curl -s -o icon.png https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png
-          BG=$(convert icon.png -crop 1x1+0+0 -format '%[hex:u.p{0,0}]' info:-)
-          convert icon.png -alpha on -fuzz 25% -transparent "#$BG" -resize 220x220 icon.png
+          curl -s -o icon_raw.png https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png
+          BG=$(convert icon_raw.png -crop 1x1+0+0 -format '%[hex:u.p{0,0}]' info:-)
+          convert icon_raw.png -alpha on -fuzz 25% -transparent "#$BG" -resize 220x220 icon.png
 
-          convert -size 780x220 gradient:'#7c3aed'-'#c084fc' -font DejaVu-Sans-Bold \
-            -gravity northwest -pointsize 14 -fill '#e9d5ff' -annotate +260+10 'TV Hamsters' \
-            -gravity northwest -pointsize 40 -fill white -annotate +260+30 'НОВЫЙ РЕЛИЗ' \
-            -gravity northwest -pointsize 40 -fill '#f3e8ff' -annotate +260+85 "$TAG" \
-            -gravity east -pointsize 10 -fill '#e9d5ff' -annotate -20+0 'tvhamsters.outmilk.online' \
+          convert -size 780x260 gradient:'#7c3aed'-'#c084fc' -font DejaVu-Sans-Bold \
+            -gravity northwest -pointsize 14 -fill '#e9d5ff' -annotate +260+15 'TV Hamsters' \
+            -gravity northwest -pointsize 40 -fill white -annotate +260+40 'НОВЫЙ РЕЛИЗ' \
+            -gravity northwest -pointsize 40 -fill '#f3e8ff' -annotate +260+95 "$TAG" \
+            -gravity south -pointsize 12 -fill '#e9d5ff' -annotate +0+15 'tvhamsters.outmilk.online' \
             out.png
 
           composite -geometry +25+0 icon.png out.png out.png

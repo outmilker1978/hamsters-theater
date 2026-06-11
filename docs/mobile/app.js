@@ -23,6 +23,7 @@ let sharerId = null;
 let camsVisible = true;
 let myAction = null; // { type: 'create'|'join', code: roomId }
 let wasInRoom = false;
+let roomPeers = [];
 
 const $ = id => document.getElementById(id);
 let userName = localStorage.getItem('mobileUserName') || '';
@@ -101,9 +102,10 @@ function connectAndDo(action) {
     pendingOffers.forEach(o => handleOffer(o)); pendingOffers = [];
     pendingPeers.forEach(p => { createPC(p); socket.emit('signal', { to: p, signalType: 'request-offer', name: userName }); socket.emit('signal', { to: p, signalType: 'user-info', name: userName }); }); pendingPeers = [];
   });
-  socket.on('room-users', (users) => { users.forEach(pid => { createPC(pid); socket.emit('signal', { to: pid, signalType: 'request-offer' }); if (userName) socket.emit('signal', { to: pid, signalType: 'user-info', name: userName }); }); });
+  socket.on('room-users', (users) => { roomPeers = users; users.forEach(pid => { createPC(pid); socket.emit('signal', { to: pid, signalType: 'request-offer' }); if (userName) socket.emit('signal', { to: pid, signalType: 'user-info', name: userName }); }); });
   socket.on('peer-joined', (peerId) => {
     createOfferToPeer(peerId);
+    roomPeers.push(peerId);
     if (socket && socket.connected && userName) {
       socket.emit('signal', { to: peerId, signalType: 'user-info', name: userName });
     }
@@ -512,6 +514,11 @@ function applyMobileName(val) {
   if (display) display.textContent = userName;
   const bar = $('mobileNameBar');
   if (bar) bar.style.display = 'flex';
+  if (socket && socket.connected && userName) {
+    roomPeers.forEach(pid => {
+      socket.emit('signal', { to: pid, signalType: 'user-info', name: userName });
+    });
+  }
 }
 if (!ensureUserName()) showMobileNameModal('');
 else applyMobileName(userName);
