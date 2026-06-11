@@ -22,6 +22,7 @@ io.on('connection', (socket) => {
     const roomId = String(Math.floor(1000 + Math.random() * 9000));
     rooms[roomId] = [socket.id];
     socket.join(roomId);
+    socket.roomId = roomId;
     socket.emit('room-created', roomId);
   });
   socket.on('join-room', (roomId) => {
@@ -29,16 +30,28 @@ io.on('connection', (socket) => {
     if (rooms[roomId].length >= 5) { socket.emit('error-msg', 'Комната уже заполнена'); return; }
     rooms[roomId].push(socket.id);
     socket.join(roomId);
+    socket.roomId = roomId;
     socket.emit('joined', roomId);
     socket.emit('room-users', rooms[roomId].filter(id => id !== socket.id));
     socket.to(roomId).emit('user-joined', socket.id);
     socket.to(roomId).emit('peer-joined', socket.id);
+  });
+  socket.on('chat-message', (data) => {
+    if (socket.roomId) {
+      socket.to(socket.roomId).emit('chat-message', { from: socket.id, text: data.text, name: data.name || 'Хомячок', time: Date.now() });
+    }
+  });
+  socket.on('reaction', (data) => {
+    if (socket.roomId) {
+      socket.to(socket.roomId).emit('reaction', { emoji: data.emoji, from: socket.id });
+    }
   });
   socket.on('offer', (data) => { socket.to(data.to).emit('offer', { from: socket.id, sdp: data.sdp, type: data.type }); });
   socket.on('answer', (data) => { socket.to(data.to).emit('answer', { from: socket.id, sdp: data.sdp, type: data.type }); });
   socket.on('ice-candidate', (data) => { socket.to(data.to).emit('ice-candidate', { from: socket.id, candidate: data.candidate, type: data.type }); });
   socket.on('signal', (data) => { socket.to(data.to).emit('signal', { from: socket.id, type: data.signalType, hasAudio: data.hasAudio }); });
   socket.on('disconnect', () => {
+    delete socket.roomId;
     for (const roomId in rooms) {
       const idx = rooms[roomId].indexOf(socket.id);
       if (idx !== -1) {

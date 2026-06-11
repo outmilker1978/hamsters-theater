@@ -106,6 +106,17 @@ function connectAndDo(action) {
     if (pc && data.candidate) pc.addIceCandidate(new RTCIceCandidate(data.candidate)).catch(e => log('ice err: ' + e.message));
   });
   socket.on('peer-disconnected', removePeer);
+  socket.on('chat-message', (d) => {
+    const el = document.createElement('div');
+    el.className = 'chat-msg';
+    el.innerHTML = '<span class="chat-msg-author">' + escapeHtml(d.name) + '</span><span class="chat-msg-text">' + escapeHtml(d.text) + '</span>';
+    $('chatMessages').appendChild(el);
+    $('chatMessages').scrollTop = $('chatMessages').scrollHeight;
+    if ($('chatOverlay').style.display !== 'flex' && d.from !== socket.id) toast('Чат: ' + d.name + ' написал(а)');
+  });
+  socket.on('reaction', (d) => {
+    showReaction(d.emoji);
+  });
   socket.on('signal', (d) => {
     if (d.type === 'screen-started') {
       sharerId = d.from;
@@ -177,6 +188,9 @@ function leaveRoom() {
   $('controls').classList.remove('overlay');
   $('toggleCamsBtn').classList.add('screen-only');
   if ($('screenVideo')) $('screenVideo').srcObject = null;
+  $('chatOverlay').style.display = 'none';
+  $('chatMessages').innerHTML = '';
+  $('chatInput').value = '';
 }
 
 function createPC(peerId) {
@@ -403,6 +417,49 @@ function showControls() {
 $('faces').addEventListener('touchstart', showControls);
 $('screenContainer').addEventListener('touchstart', showControls);
 $('controls').addEventListener('touchstart', (e) => { e.stopPropagation(); showControls(); });
+
+// Chat
+$('chatBtn').onclick = () => {
+  $('chatOverlay').style.display = 'flex';
+  $('chatInput').focus();
+};
+$('chatCloseBtn').onclick = () => $('chatOverlay').style.display = 'none';
+$('chatInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendChat(); });
+$('chatSendBtn').onclick = sendChat;
+function sendChat() {
+  const input = $('chatInput');
+  const text = input.value.trim();
+  if (!text || !socket) return;
+  input.value = '';
+  const name = 'Я';
+  const el = document.createElement('div');
+  el.className = 'chat-msg chat-msg-self';
+  el.innerHTML = '<span class="chat-msg-text">' + escapeHtml(text) + '</span>';
+  $('chatMessages').appendChild(el);
+  $('chatMessages').scrollTop = $('chatMessages').scrollHeight;
+  socket.emit('chat-message', { text: text, name: 'Я' });
+}
+function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Reactions
+$('reactionBtn').onclick = () => {
+  $('reactionPicker').style.display = $('reactionPicker').style.display === 'flex' ? 'none' : 'flex';
+};
+document.querySelectorAll('.reaction-emoji').forEach(btn => {
+  btn.onclick = () => {
+    const emoji = btn.dataset.emoji;
+    $('reactionPicker').style.display = 'none';
+    showReaction(emoji);
+    if (socket && socket.connected) socket.emit('reaction', { emoji: emoji });
+  };
+});
+function showReaction(emoji) {
+  const el = document.createElement('div');
+  el.className = 'reaction-float';
+  el.textContent = emoji;
+  $('faces').appendChild(el);
+  setTimeout(() => el.remove(), 2000);
+}
 
 // PWA Install
 $('installBtn').onclick = async () => {
