@@ -12,7 +12,7 @@ jobs:
         env:
           TAG: ${{ github.event.release.tag_name || 'v1.7.7' }}
           NOTES: ${{ github.event.release.body || 'Новый релиз с улучшениями' }}
-          CHAT: '162363099'
+          CHAT: '-1003813372615'
         run: |
           curl -s -o icon_raw.png https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png
           BG=$(convert icon_raw.png -crop 1x1+0+0 -format '%[hex:u.p{0,0}]' info:-)
