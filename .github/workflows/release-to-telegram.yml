@@ -6,7 +6,6 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "workflow works"
       - name: Install ImageMagick
         run: sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick fonts-dejavu-core
       - name: Generate + send
@@ -15,19 +14,26 @@ jobs:
           NOTES: ${{ github.event.release.body || 'Новый релиз с улучшениями' }}
         run: |
           curl -s -o icon.png https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png
-          convert -size 780x440 gradient:'#1a1a2e'-'#0f0f1a' \
+
+          # Яркий фиолетово-розовый фон
+          convert -size 780x440 \
+            gradient:'#7c3aed'-'#ec4899' \
             -font DejaVu-Sans-Bold \
-            -pointsize 22 -fill '#b088f0' -gravity north -annotate +0+25 'TV Hamsters' \
+            -pointsize 22 -fill '#fbbf24' -gravity north -annotate +0+25 'TV Hamsters' \
             -pointsize 52 -fill white -gravity center -annotate +0-20 "$TAG" \
-            -pointsize 18 -fill '#aaaaaa' -gravity center -annotate +0+40 'Новый релиз' \
-            -pointsize 14 -fill '#666666' -gravity south -annotate +0+20 'tvhamsters.outmilk.online' \
+            -pointsize 18 -fill '#fce7f3' -gravity center -annotate +0+40 'Новый релиз' \
+            -pointsize 14 -fill '#e9d5ff' -gravity south -annotate +0+20 'tvhamsters.outmilk.online' \
             out.png
+
+          # Иконка поверх (левый верх)
           composite -geometry +25+18 icon.png out.png out.png
+
           cat > cap.txt << EOF
           <b>$TAG</b>
           $(echo "$NOTES" | head -1)
           tvhamsters.outmilk.online
           EOF
+
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
             -F chat_id="162363099" -F photo="@out.png" -F parse_mode="HTML" \
             --form-string "caption=$(cat cap.txt)"
