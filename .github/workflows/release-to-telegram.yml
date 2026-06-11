@@ -1,51 +1,33 @@
 name: Release to Telegram
-
 on:
-  release:
-    types: [published]
-  workflow_dispatch:
-
+  release: {types: [published]}
+  workflow_dispatch: {}
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
+      - run: echo "workflow works"
       - name: Install ImageMagick
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq imagemagick fonts-dejavu-core
-      - name: Generate image and send
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick fonts-dejavu-core
+      - name: Generate + send
         env:
           TAG: ${{ github.event.release.tag_name || 'v1.7.5' }}
           NOTES: ${{ github.event.release.body || 'Новый релиз с улучшениями' }}
         run: |
-          # Лого
           curl -s -o icon.png https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png
-
-          # Градиент + текст
-          convert -size 780x440 \
-            gradient:'#1a1a2e'-'#0f0f1a' \
+          convert -size 780x440 gradient:'#1a1a2e'-'#0f0f1a' \
             -font DejaVu-Sans-Bold \
             -pointsize 22 -fill '#b088f0' -gravity north -annotate +0+25 'TV Hamsters' \
             -pointsize 52 -fill white -gravity center -annotate +0-20 "$TAG" \
             -pointsize 18 -fill '#aaaaaa' -gravity center -annotate +0+40 'Новый релиз' \
             -pointsize 14 -fill '#666666' -gravity south -annotate +0+20 'tvhamsters.outmilk.online' \
             out.png
-
-          # Иконка поверх (левый верх)
           composite -geometry +25+18 icon.png out.png out.png
-
-          # Капшен в файл (избегаем shell eat)
-          SUMMARY=$(echo "$NOTES" | head -1)
           cat > cap.txt << EOF
           <b>$TAG</b>
-
-          $SUMMARY
-
-          🔗 tvhamsters.outmilk.online
-EOF
-
+          $(echo "$NOTES" | head -1)
+          tvhamsters.outmilk.online
+          EOF
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
-            -F chat_id="162363099" \
-            -F photo="@out.png" \
-            -F parse_mode="HTML" \
+            -F chat_id="162363099" -F photo="@out.png" -F parse_mode="HTML" \
             --form-string "caption=$(cat cap.txt)"
