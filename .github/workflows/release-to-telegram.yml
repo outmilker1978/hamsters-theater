@@ -15,10 +15,10 @@ jobs:
         run: |
           curl -s -o icon.png https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png
 
-          # Убираем фон у иконки: оставляем только белое
-          convert icon.png -alpha on \
-            \( +clone -colorspace gray -threshold 60% \) \
-            -compose CopyOpacity -composite icon-clear.png
+          # Берём цвет фона из угла и удаляем его с запасом
+          BG=$(convert icon.png -crop 1x1+0+0 -format '%[hex:p{0,0}]' info:-)
+          echo "Background color: #$BG"
+          convert icon.png -alpha on -fuzz 25% -transparent "#$BG" icon-clear.png
 
           # Фон: фиолетово-сиреневый градиент
           convert -size 780x440 \
