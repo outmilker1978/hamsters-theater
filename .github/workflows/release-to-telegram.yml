@@ -16,16 +16,16 @@ jobs:
         run: |
           curl -s -o icon.png https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png
           BG=$(convert icon.png -crop 1x1+0+0 -format '%[hex:u.p{0,0}]' info:-)
-          convert icon.png -alpha on -fuzz 25% -transparent "#$BG" -resize 220x220 icon-med.png
+          convert icon.png -alpha on -fuzz 25% -transparent "#$BG" -resize 160x120 icon-small.png
 
           convert -size 780x440 gradient:'#7c3aed'-'#c084fc' -font DejaVu-Sans-Bold \
-            -gravity northwest -pointsize 14 -fill '#e9d5ff' -annotate +260+22 'TV Hamsters' \
-            -gravity northwest -pointsize 52 -fill white -annotate +260+50 'НОВЫЙ РЕЛИЗ' \
-            -gravity center -pointsize 52 -fill '#f3e8ff' -annotate +0+70 "$TAG" \
+            -gravity northwest -pointsize 14 -fill '#e9d5ff' -annotate +200+18 'TV Hamsters' \
+            -gravity northwest -pointsize 52 -fill white -annotate +200+45 'НОВЫЙ РЕЛИЗ' \
+            -gravity northwest -pointsize 52 -fill '#f3e8ff' -annotate +200+118 "$TAG" \
             -gravity south -pointsize 14 -fill '#e9d5ff' -annotate +0+20 'tvhamsters.outmilk.online' \
             out.png
 
-          composite -geometry +25+18 icon-med.png out.png out.png
+          composite -geometry +25+18 icon-small.png out.png out.png
 
           cat > cap.txt << EOF
           <b>TV Hamsters $TAG</b>

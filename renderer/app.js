@@ -344,7 +344,9 @@ function addPeerVideo(peerId) {
   const label = document.createElement('div');
   label.className = 'face-label';
   label.id = 'label-' + peerId;
-  label.textContent = peerNames[peerId] || '\u0425\u043e\u043c\u044f\u0447\u043e\u043a ' + Object.keys(peers).length;
+  const nameFromStore = peerNames[peerId];
+  label.textContent = nameFromStore || '\u0425\u043e\u043c\u044f\u0447\u043e\u043a ' + Object.keys(peers).length;
+  console.log('addPeerVideo for ' + peerId + ': name=' + (nameFromStore || '(fallback)'));
   wrapper.appendChild(video);
   wrapper.appendChild(label);
   // Volume slider
@@ -578,9 +580,11 @@ function handleSignal(data) {
     if (localStream) createOfferToPeer(data.from);
   }
   if (data.type === 'user-info' && data.name) {
+    console.log('user-info: from=' + data.from + ' name=' + data.name);
     peerNames[data.from] = data.name;
     const label = document.getElementById('label-' + data.from);
-    if (label) label.textContent = data.name;
+    if (label) { label.textContent = data.name; console.log('label updated for ' + data.from); }
+    else console.log('label not found for ' + data.from);
   }
 }
 

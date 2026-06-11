@@ -101,7 +101,7 @@ function connectAndDo(action) {
     pendingOffers.forEach(o => handleOffer(o)); pendingOffers = [];
     pendingPeers.forEach(p => { createPC(p); socket.emit('signal', { to: p, signalType: 'request-offer', name: userName }); socket.emit('signal', { to: p, signalType: 'user-info', name: userName }); }); pendingPeers = [];
   });
-  socket.on('room-users', (users) => { users.forEach(pid => { createPC(pid); socket.emit('signal', { to: pid, signalType: 'request-offer' }); }); });
+  socket.on('room-users', (users) => { users.forEach(pid => { createPC(pid); socket.emit('signal', { to: pid, signalType: 'request-offer' }); if (userName) socket.emit('signal', { to: pid, signalType: 'user-info', name: userName }); }); });
   socket.on('peer-joined', (peerId) => {
     createOfferToPeer(peerId);
     if (socket && socket.connected && userName) {
