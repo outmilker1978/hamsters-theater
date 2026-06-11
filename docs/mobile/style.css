@@ -21,7 +21,8 @@ body {
 .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
 .brand-icon { width: 40px; height: 40px; border-radius: 8px; }
 .brand-name { font-size: 22px; font-weight: 700; color: #c285e4; }
-.brand-sub { font-size: 13px; color: #6b5b7a; margin-bottom: 24px; }
+.brand-sub { font-size: 13px; color: #6b5b7a; margin-bottom: 4px; }
+.brand-hint { font-size: 11px; color: #4a3d54; margin-bottom: 24px; }
 .code-section {
   display: flex;
   flex-direction: column;
