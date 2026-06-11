@@ -184,9 +184,15 @@ function createPC(peerId) {
   const pc = new RTCPeerConnection(RTC);
   peers[peerId] = { pc };
   updatePeerCount();
-  if (localStream) localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+  if (localStream) {
+    localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+  } else {
+    pc.addTransceiver('video', { direction: 'recvonly' });
+    pc.addTransceiver('audio', { direction: 'recvonly' });
+  }
   pc.onicecandidate = (e) => { if (e.candidate) socket.emit('ice-candidate', { to: peerId, candidate: e.candidate }); };
   pc.ontrack = (e) => {
+    log('ontrack ' + peerId + ' kind=' + e.track.kind);
     let v = document.getElementById('v_' + peerId);
     if (!v) {
       const w = document.createElement('div');
@@ -198,23 +204,19 @@ function createPC(peerId) {
     if (e.streams[0] && v.srcObject !== e.streams[0]) v.srcObject = e.streams[0];
   };
   pc.oniceconnectionstatechange = () => {
-    log('pc ice ' + peerId + ': ' + pc.iceConnectionState);
+    log('iceState ' + peerId + ': ' + pc.iceConnectionState);
     if (pc.iceConnectionState === 'failed') {
-      log('ICE failed for ' + peerId + ', restarting...');
+      log('ICE restarting for ' + peerId);
       pc.restartIce();
     }
   };
   pc.onconnectionstatechange = () => {
-    log('pc ' + peerId + ': ' + pc.connectionState);
+    log('connState ' + peerId + ': ' + pc.connectionState);
     if (pc.connectionState === 'connected') toast('Хомячок подключился');
-    if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
-      log('Connection lost for ' + peerId + ', will retry');
-      setTimeout(() => {
-        if (socket && socket.connected && localStream) {
-          log('Retrying connection to ' + peerId);
-          if (!peers[peerId]) createOfferToPeer(peerId);
-        }
-      }, 3000);
+    if (pc.connectionState === 'failed') {
+      log('conn failed for ' + peerId + ', recreating...');
+      removePeer(peerId);
+      setTimeout(() => { if (myAction) socket.emit('signal', { to: peerId, signalType: 'request-offer' }); }, 2000);
     }
   };
   return pc;
