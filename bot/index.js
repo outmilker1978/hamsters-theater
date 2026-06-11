@@ -46,8 +46,8 @@ io.on('connection', (socket) => {
       socket.to(socket.roomId).emit('reaction', { emoji: data.emoji, from: socket.id });
     }
   });
-  socket.on('offer', (data) => { socket.to(data.to).emit('offer', { from: socket.id, sdp: data.sdp, type: data.type }); });
-  socket.on('answer', (data) => { socket.to(data.to).emit('answer', { from: socket.id, sdp: data.sdp, type: data.type }); });
+  socket.on('offer', (data) => { socket.to(data.to).emit('offer', { from: socket.id, sdp: data.sdp, type: data.type, name: data.name }); });
+  socket.on('answer', (data) => { socket.to(data.to).emit('answer', { from: socket.id, sdp: data.sdp, type: data.type, name: data.name }); });
   socket.on('ice-candidate', (data) => { socket.to(data.to).emit('ice-candidate', { from: socket.id, candidate: data.candidate, type: data.type }); });
   socket.on('signal', (data) => { socket.to(data.to).emit('signal', { from: socket.id, type: data.signalType, hasAudio: data.hasAudio, name: data.name }); });
   socket.on('disconnect', () => {

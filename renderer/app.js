@@ -460,6 +460,11 @@ function handleOffer(data) {
   const fromId = data.from;
   log('handleOffer from: ' + fromId);
   if (!peers[fromId]) { peers[fromId] = createPeerEntry(fromId); addPeerVideo(fromId); }
+  if (data.name) {
+    peerNames[fromId] = data.name;
+    const label = document.getElementById('label-' + fromId);
+    if (label) label.textContent = data.name;
+  }
   const peer = peers[fromId];
   if (peer.pc) { peer.pc.close(); }
   peer.pc = createPC(fromId);
@@ -577,11 +582,14 @@ function handleSignal(data) {
   if (data.type === 'request-offer') {
     if (localStream) createOfferToPeer(data.from);
   }
-  if (data.type === 'user-info' && data.name) {
-    peerNames[data.from] = data.name;
-    const label = document.getElementById('label-' + data.from);
-    if (label) { label.textContent = data.name; }
-    else { console.log('user-info: label for ' + data.from + ' not found'); }
+  if (data.type === 'user-info') {
+    console.log('user-info: name="' + data.name + '" from=' + data.from);
+    if (data.name) {
+      peerNames[data.from] = data.name;
+      const label = document.getElementById('label-' + data.from);
+      if (label) { label.textContent = data.name; }
+      else { console.log('user-info: label for ' + data.from + ' not found'); }
+    }
   }
 }
 

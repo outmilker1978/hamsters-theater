@@ -282,7 +282,7 @@ function createScreenPC(peerId) {
 
 function createOfferToPeer(peerId) {
   const pc = createPC(peerId);
-  pc.createOffer().then(o => { pc.setLocalDescription(o); socket.emit('offer', { to: peerId, sdp: o, type: 'video' }); }).catch(e => log('offer err: ' + e.message));
+  pc.createOffer().then(o => { pc.setLocalDescription(o); socket.emit('offer', { to: peerId, sdp: o, type: 'video', name: userName || '' }); }).catch(e => log('offer err: ' + e.message));
 }
 
 function handleOffer(data) {
