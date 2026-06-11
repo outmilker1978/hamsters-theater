@@ -9,24 +9,40 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Send to Telegram
+      - name: Generate image and send
         env:
           TAG: ${{ github.event.release.tag_name || 'v1.7.5' }}
-          VERSION: ${{ github.event.release.tag_name || '1.7.5' }}
-          NOTES: ${{ github.event.release.body || 'Новые возможности и улучшения' }}
+          NOTES: ${{ github.event.release.body || 'Новый релиз с улучшениями' }}
         run: |
-          SUMMARY=$(echo "$NOTES" | head -1)
-          cat > cap.txt << EOF
-          <b>⚡ TV Hamsters $VERSION</b>
-
-          $SUMMARY
-
-          🔗 Скачать: https://github.com/outmilker1978/hamsters-theater/releases/tag/$TAG
-          🌐 Сайт: tvhamsters.outmilk.online
-          EOF
+          # Скачиваем лого
+          curl -s -o icon.png "https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png"
           
+          # Создаём картинку 780x440
+          # Фон: тёмный градиент (как на сайте)
+          convert -size 780x440 \
+            -define gradient:direction=south \
+            gradient:'#1a1a2e'-'#0f0f1a' \
+            -font DejaVu-Sans-Bold \
+            -pointsize 22 -fill '#b088f0' \
+            -gravity north -annotate +0+25 'TV Hamsters' \
+            -pointsize 52 -fill white \
+            -gravity center -annotate +0-20 "$TAG" \
+            -pointsize 18 -fill '#aaaaaa' \
+            -gravity center -annotate +0+40 'Новый релиз' \
+            -pointsize 14 -fill '#666666' \
+            -gravity south -annotate +0+20 'tvhamsters.outmilk.online' \
+            out.png
+          
+          # Вставляем лого в левый верхний угол
+          composite -geometry +25+18 icon.png out.png out.png
+          
+          # Отправляем
+          SUMMARY=$(echo "$NOTES" | head -1)
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
             -F chat_id="162363099" \
-            -F photo="https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png" \
+            -F photo="@out.png" \
             -F parse_mode="HTML" \
-            --form-string "caption=$(cat cap.txt)"
+            -F caption="<b>$TAG</b>
+          $SUMMARY
+
+          🔗 tvhamsters.outmilk.online"
