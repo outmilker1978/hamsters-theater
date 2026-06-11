@@ -86,11 +86,11 @@ function connectAndDo(action) {
     pendingOffers.forEach(o => handleOffer(o)); pendingOffers = [];
     pendingPeers.forEach(p => { createPC(p); socket.emit('signal', { to: p, signalType: 'request-offer' }); }); pendingPeers = [];
   });
-  socket.on('room-users', (users) => { users.forEach(pid => { if (localStream) { createPC(pid); socket.emit('signal', { to: pid, signalType: 'request-offer' }); } else pendingPeers.push(pid); }); });
-  socket.on('peer-joined', (peerId) => { if (localStream) createOfferToPeer(peerId); else pendingPeers.push(peerId); });
+  socket.on('room-users', (users) => { users.forEach(pid => { createPC(pid); socket.emit('signal', { to: pid, signalType: 'request-offer' }); }); });
+  socket.on('peer-joined', (peerId) => { createOfferToPeer(peerId); });
   socket.on('offer', (data) => {
     if (data.type === 'screen') { handleScreenOffer(data); return; }
-    if (localStream) handleOffer(data); else pendingOffers.push(data);
+    handleOffer(data);
   });
   socket.on('answer', (data) => {
     if (data.type === 'screen') {
