@@ -30,7 +30,10 @@ jobs:
           cat > cap.txt << EOF
           <b>TV Hamsters $TAG</b>
           $(echo "$NOTES" | head -1)
-          tvhamsters.outmilk.online
+
+          🌐 Сайт: https://tvhamsters.outmilk.online
+          💻 Windows: https://github.com/outmilker1978/hamsters-theater/releases/tag/$TAG
+          📱 Android (веб): https://tvhamsters.outmilk.online/mobile/
           EOF
 
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
