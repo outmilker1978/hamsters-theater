@@ -502,7 +502,6 @@ function createOfferToPeer(peerId) {
   peer.pc = createPC(peerId);
   const q = getQualityPreset();
   localStream.getTracks().forEach(t => {
-    if (sharingScreen && t.kind === 'video') return;
     const sender = peer.pc.addTrack(t, localStream);
     if (t.kind === 'video') setTimeout(() => {
       try {
@@ -769,7 +768,6 @@ async function switchCameraResolution(targetConstraints) {
 async function doStartScreenShare(stream) {
   screenStream = stream;
   sharingScreen = true;
-  await switchCameraResolution({ width: { ideal: 320 }, height: { ideal: 240 }, frameRate: { ideal: 10 } });
   syncQuality();
   updateCamGrid();
   el('screenshareVideo').style.display = 'block';
@@ -813,10 +811,7 @@ function createScreenOffer(peerId, stream) {
 
 async function stopScreenShare() {
   sharingScreen = false;
-  if (localStream) {
-    await switchCameraResolution(getCameraConstraints().video);
-    syncQuality();
-  }
+  syncQuality();
   updateCamGrid();
   if (screenStream) { screenStream.getTracks().forEach(t => t.stop()); screenStream = null; }
   for (const peerId of Object.keys(peers)) {
