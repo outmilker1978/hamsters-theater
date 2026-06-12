@@ -93,12 +93,12 @@ function connectAndDo(action) {
     if (!myAction) myAction = { type: 'create', code: id };
     sessionStorage.setItem('hamsters_room', JSON.stringify(myAction));
     showRoom();
-    if (localStream) $('localVideo').srcObject = localStream;
+    if (localStream) { $('localVideo').srcObject = localStream; $('localVideo').play().catch(function(){}); }
   });
   socket.on('joined', () => {
     if (myAction) sessionStorage.setItem('hamsters_room', JSON.stringify(myAction));
     showRoom();
-    if (localStream) $('localVideo').srcObject = localStream;
+    if (localStream) { $('localVideo').srcObject = localStream; $('localVideo').play().catch(function(){}); }
     pendingOffers.forEach(o => handleOffer(o)); pendingOffers = [];
     pendingPeers.forEach(p => { createPC(p); socket.emit('signal', { to: p, signalType: 'request-offer', name: userName }); socket.emit('signal', { to: p, signalType: 'user-info', name: userName }); }); pendingPeers = [];
   });

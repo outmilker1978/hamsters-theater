@@ -251,7 +251,7 @@ body {
   background: #000;
   transform: scaleX(-1);
   object-fit: cover;
-  order: 99;
+  order: -1;
 }
 #peerList {
   display: flex;

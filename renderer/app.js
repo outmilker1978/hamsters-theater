@@ -780,7 +780,6 @@ function createScreenOffer(peerId, stream) {
     applyQualityToSender(peer.screenPC, 'video', q.screenBitrate, q.screenScale);
   }).catch(e => log('screen offer error: ' + e.message));
 }
-}
 
 async function stopScreenShare() {
   sharingScreen = false;
@@ -1174,9 +1173,11 @@ function startFacesTimer() {
         c.width = v.videoWidth || 160;
         c.height = v.videoHeight || 120;
         c.getContext('2d').drawImage(v, 0, 0);
-        frames.push({ id: v.dataset.peerId || '', data: c.toDataURL('image/jpeg', 0.3) });
+        const pid = v.dataset.peerId || '';
+      frames.push({ id: pid, data: c.toDataURL('image/jpeg', 0.3), name: peerNames[pid] || '' });
       } else {
-        frames.push({ id: v.dataset.peerId || '', data: '' });
+        const pid = v.dataset.peerId || '';
+        frames.push({ id: pid, data: '', name: peerNames[pid] || '' });
       }
     });
     ipcRenderer.send('faces-frames', frames);
@@ -1351,7 +1352,7 @@ function showReaction(emoji) {
 
 // First-launch shortcut prompt (shows once per version)
 (function() {
-  const ver = '1.7.10';
+  const ver = '1.7.11';
   // Set version in UI
   const verEls = document.querySelectorAll('#versionDisplay, .modal-version, title');
   verEls.forEach(el => {

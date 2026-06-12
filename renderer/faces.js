@@ -27,7 +27,7 @@ ipcRenderer.on('faces-frames', (event, frames) => {
       const label = document.createElement('div');
       label.className = 'label';
       label.id = 'lbl-' + f.id;
-      label.textContent = f.isLocal ? '\u0412\u044B' : '\u0425\u043E\u043C\u044F\u0447\u043E\u043A';
+      label.textContent = f.isLocal ? '\u0412\u044B' : (f.name || '\u0425\u043E\u043C\u044F\u0447\u043E\u043A');
       card.appendChild(label);
       const volContainer = document.createElement('div');
       volContainer.className = 'vol-container';
