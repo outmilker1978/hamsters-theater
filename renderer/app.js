@@ -958,6 +958,8 @@ function cleanupCall() {
   }
   peers = {};
   peerNames = {};
+  pendingPeers = [];
+  pendingOffers = [];
   // Clear all peer video elements from DOM
   const facesContainer = el('remote-faces');
   if (facesContainer) facesContainer.innerHTML = '';
