@@ -231,7 +231,7 @@
           html += '<h2>' + ver + '</h2>';
           if (date) html += '<div class="blog-date">' + date + '</div>';
           if (body) html += '<div class="blog-body">' + displayBody + '</div>';
-          if (downloadUrl) {
+          if (downloadUrl && i === 0) {
             html += '<div class="blog-download"><a href="' + downloadUrl + '">' +
               (currentLang === 'ru'
                 ? 'Скачать .exe' + (sizeMB ? ' (' + sizeMB + ' МБ)' : '')
