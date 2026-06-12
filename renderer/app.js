@@ -437,19 +437,10 @@ function createPC(peerId) {
     log('Remote track from ' + peerId + ': ' + e.track.kind);
   };
   conn.oniceconnectionstatechange = () => {
-    if (conn.iceConnectionState === 'failed') {
-      log('ICE failed to ' + peerId + ' – restarting');
-      conn.restartIce();
-    }
-    if (['disconnected', 'failed'].includes(conn.iceConnectionState)) {
-      const peer = peers[peerId];
-      if (peer && !peer.remoteStream && peerId) {
-        log('Initial connection failed to ' + peerId + ' – retrying');
-        conn.close();
-        if (peers[peerId]) peers[peerId].pc = null;
-        socket.emit('signal', { to: peerId, signalType: 'request-offer' });
-      }
-    }
+    log('iceState[' + peerId + ']=' + conn.iceConnectionState);
+  };
+  conn.onconnectionstatechange = () => {
+    log('connState[' + peerId + ']=' + conn.connectionState);
   };
   return conn;
 }

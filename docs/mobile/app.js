@@ -256,11 +256,6 @@ function createPC(peerId) {
   pc.onconnectionstatechange = () => {
     log('connState ' + peerId + ': ' + pc.connectionState);
     if (pc.connectionState === 'connected') toast('\u0425\u043E\u043C\u044F\u0447\u043E\u043A \u043F\u043E\u0434\u043A\u043B\u044E\u0447\u0438\u043B\u0441\u044F');
-    if (pc.connectionState === 'failed') {
-      log('conn failed for ' + peerId + ', recreating...');
-      removePeer(peerId);
-      setTimeout(() => { if (myAction) socket.emit('signal', { to: peerId, signalType: 'request-offer' }); }, 2000);
-    }
   };
   return pc;
 }
