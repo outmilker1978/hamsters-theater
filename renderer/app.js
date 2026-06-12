@@ -589,24 +589,24 @@ function handleScreenAnswer(data) {
 }
 
 function handleIceCandidate(data) {
-  if (!data.type || !data.candidate || !data.from) return;
-  const fromId = data.from;
-  if (!peers[fromId]) { peers[fromId] = createPeerEntry(fromId); addPeerVideo(fromId); }
-  const peer = peers[fromId];
-  if (data.type === 'screen') {
-    if (peer.screenPC && peer.screenPC.remoteDescription && peer.screenPC.remoteDescription.type) {
-      peer.screenPC.addIceCandidate(new RTCIceCandidate(data.candidate));
+    if (!data.candidate || !data.from) return;
+    const fromId = data.from;
+    if (!peers[fromId]) { peers[fromId] = createPeerEntry(fromId); addPeerVideo(fromId); }
+    const peer = peers[fromId];
+    if (data.type === 'screen') {
+      if (peer.screenPC && peer.screenPC.remoteDescription && peer.screenPC.remoteDescription.type) {
+        peer.screenPC.addIceCandidate(new RTCIceCandidate(data.candidate));
+      } else {
+        peer.screenCandidates.push(data.candidate);
+      }
     } else {
-      peer.screenCandidates.push(data.candidate);
-    }
-  } else {
-    if (peer.pc && peer.pc.remoteDescription && peer.pc.remoteDescription.type) {
-      peer.pc.addIceCandidate(new RTCIceCandidate(data.candidate));
-    } else {
-      peer.cameraCandidates.push(data.candidate);
+      if (peer.pc && peer.pc.remoteDescription && peer.pc.remoteDescription.type) {
+        peer.pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+      } else {
+        peer.cameraCandidates.push(data.candidate);
+      }
     }
   }
-}
 
 function handleSignal(data) {
   log('handleSignal: ' + data.type + ' from=' + data.from);
