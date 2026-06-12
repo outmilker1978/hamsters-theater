@@ -120,7 +120,7 @@ function getQualityPreset() {
 
 function getCameraConstraints() {
   return {
-    video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 20 } },
+    video: true,
     audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
   };
 }
@@ -442,10 +442,15 @@ function createPC(peerId) {
     log('Remote track from ' + peerId + ': ' + e.track.kind);
   };
   conn.oniceconnectionstatechange = () => {
-    log('iceState[' + peerId + ']=' + conn.iceConnectionState);
-  };
-  conn.onconnectionstatechange = () => {
-    log('connState[' + peerId + ']=' + conn.connectionState);
+    if (['disconnected', 'failed'].includes(conn.iceConnectionState)) {
+      const peer = peers[peerId];
+      if (peer && !peer.remoteStream && peerId) {
+        log('Initial connection failed to ' + peerId + ' – retrying');
+        conn.close();
+        if (peers[peerId]) peers[peerId].pc = null;
+        socket.emit('signal', { to: peerId, signalType: 'request-offer' });
+      }
+    }
   };
   return conn;
 }
@@ -624,7 +629,7 @@ function handleSignal(data) {
     updateCamGrid();
   }
   if (data.type === 'request-offer') {
-    if (localStream && !peers[data.from]?.pc) createOfferToPeer(data.from);
+    if (localStream) createOfferToPeer(data.from);
   }
   if (data.type === 'user-info') {
     console.log('user-info: name="' + data.name + '" from=' + data.from);
