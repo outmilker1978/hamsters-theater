@@ -16,8 +16,12 @@ function getRTCConfig() {
   const servers = [
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },
-    { urls: 'stun:stun.cloudflare.com:3478' },
-    { urls: 'stun:stun.xten.com:3478' }
+    { urls: 'stun:stun2.l.google.com:19302' },
+    { urls: 'stun:stun3.l.google.com:19302' },
+    { urls: 'stun:stun4.l.google.com:19302' },
+    { urls: 'stun:stun.xten.com:3478' },
+    { urls: 'stun:stun.voiparound.com' },
+    { urls: 'stun:stun.cloudflare.com:3478' }
   ];
   if (useRelay) {
     servers.push(
@@ -507,10 +511,7 @@ function handleOffer(data) {
   const peer = peers[fromId];
   if (peer.pc) { peer.pc.close(); }
   peer.pc = createPC(fromId);
-  if (localStream) localStream.getTracks().forEach(t => {
-    if (sharingScreen && t.kind === 'video') return;
-    peer.pc.addTrack(t, localStream);
-  });
+  if (localStream) localStream.getTracks().forEach(t => peer.pc.addTrack(t, localStream));
   peer.pc.setRemoteDescription(new RTCSessionDescription(data.sdp))
     .then(() => {
       peer.cameraCandidates.forEach(c => {

@@ -233,7 +233,7 @@ function createPC(peerId) {
     pc.addTransceiver('video', { direction: 'recvonly' });
     pc.addTransceiver('audio', { direction: 'recvonly' });
   }
-  pc.onicecandidate = (e) => { if (e.candidate) socket.emit('ice-candidate', { to: peerId, candidate: e.candidate, type: 'camera' }); };
+  pc.onicecandidate = (e) => { if (e.candidate) socket.emit('ice-candidate', { to: peerId, candidate: e.candidate }); };
   pc.ontrack = (e) => {
     log('ontrack ' + peerId + ' kind=' + e.track.kind);
     let v = document.getElementById('v_' + peerId);
