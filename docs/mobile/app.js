@@ -100,11 +100,11 @@ function connectAndDo(action) {
     showRoom();
     if (localStream) $('localVideo').srcObject = localStream;
     pendingOffers.forEach(o => handleOffer(o)); pendingOffers = [];
-    pendingPeers.forEach(p => { createPC(p); socket.emit('signal', { to: p, signalType: 'request-offer', name: userName }); socket.emit('signal', { to: p, signalType: 'user-info', name: userName }); }); pendingPeers = [];
+    pendingPeers.forEach(p => { createPC(p); if (userName) socket.emit('signal', { to: p, signalType: 'user-info', name: userName }); }); pendingPeers = [];
   });
-  socket.on('room-users', (users) => { roomPeers = users; users.forEach(pid => { createPC(pid); socket.emit('signal', { to: pid, signalType: 'request-offer' }); if (userName) socket.emit('signal', { to: pid, signalType: 'user-info', name: userName }); }); });
+  socket.on('room-users', (users) => { roomPeers = users; users.forEach(pid => { if (userName) socket.emit('signal', { to: pid, signalType: 'user-info', name: userName }); }); });
   socket.on('peer-joined', (peerId) => {
-    createOfferToPeer(peerId);
+    if (!peers[peerId]) { createPC(peerId); createOfferToPeer(peerId); }
     roomPeers.push(peerId);
     if (socket && socket.connected && userName) {
       socket.emit('signal', { to: peerId, signalType: 'user-info', name: userName });
@@ -156,7 +156,7 @@ function connectAndDo(action) {
       $('toggleCamsBtn').classList.remove('screen-only');
       toast('\u041A\u0442\u043E-\u0442\u043E \u0434\u0435\u043B\u0438\u0442\u0441\u044F \u044D\u043A\u0440\u0430\u043D\u043E\u043C');
     }
-    if (d.type === 'request-offer') { if (localStream) createOfferToPeer(d.from); }
+    if (d.type === 'request-offer') { if (localStream && !peers[d.from]?.pc) { createPC(d.from); createOfferToPeer(d.from); } }
     if (d.type === 'screen-stopped') {
       sharerId = null;
       $('screenContainer').style.display = 'none';

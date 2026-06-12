@@ -492,18 +492,7 @@ function createOfferToPeer(peerId) {
   const peer = peers[peerId];
   if (peer.pc) { peer.pc.close(); }
   peer.pc = createPC(peerId);
-  const q = getQualityPreset();
-  localStream.getTracks().forEach(t => {
-    const sender = peer.pc.addTrack(t, localStream);
-    if (t.kind === 'video') setTimeout(() => {
-      try {
-        const p = sender.getParameters();
-        if (!p.encodings || p.encodings.length === 0) p.encodings = [{}];
-        p.encodings[0].maxBitrate = q.camBitrate;
-        sender.setParameters(p).catch(() => {});
-      } catch (e) {}
-    }, 500);
-  });
+  localStream.getTracks().forEach(t => peer.pc.addTrack(t, localStream));
   peer.pc.createOffer().then(offer => {
     peer.pc.setLocalDescription(offer);
     socket.emit('offer', { to: peerId, sdp: offer, type: 'camera' });
@@ -527,18 +516,9 @@ function handleOffer(data) {
   const peer = peers[fromId];
   if (peer.pc) { peer.pc.close(); }
   peer.pc = createPC(fromId);
-  const q = getQualityPreset();
   if (localStream) localStream.getTracks().forEach(t => {
     if (sharingScreen && t.kind === 'video') return;
-    const sender = peer.pc.addTrack(t, localStream);
-    if (t.kind === 'video') setTimeout(() => {
-      try {
-        const p = sender.getParameters();
-        if (!p.encodings || p.encodings.length === 0) p.encodings = [{}];
-        p.encodings[0].maxBitrate = q.camBitrate;
-        sender.setParameters(p).catch(() => {});
-      } catch (e) {}
-    }, 500);
+    peer.pc.addTrack(t, localStream);
   });
   peer.pc.setRemoteDescription(new RTCSessionDescription(data.sdp))
     .then(() => {
@@ -651,7 +631,7 @@ function handleSignal(data) {
     updateCamGrid();
   }
   if (data.type === 'request-offer') {
-    if (localStream) createOfferToPeer(data.from);
+    if (localStream && !peers[data.from]?.pc) createOfferToPeer(data.from);
   }
   if (data.type === 'user-info') {
     console.log('user-info: name="' + data.name + '" from=' + data.from);
