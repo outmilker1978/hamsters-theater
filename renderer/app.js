@@ -21,11 +21,12 @@ function getRTCConfig() {
     { urls: 'stun:stun4.l.google.com:19302' },
     { urls: 'stun:stun.xten.com:3478' },
     { urls: 'stun:stun.voiparound.com' },
-    { urls: 'stun:stun.cloudflare.com:3478' }
+    { urls: 'stun:stun.cloudflare.com:3478' },
+    // TURN relay — всегда включён как в v1.7.8
+    { urls: 'turn:relay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' }
   ];
   if (useRelay) {
     servers.push(
-      { urls: 'turn:relay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
       { urls: 'turn:relay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
       { urls: 'turn:relay.metered.ca:80?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' }
     );
