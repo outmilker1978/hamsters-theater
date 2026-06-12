@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "online.outmilk.tvhamsters.twa",
+        "sha256_cert_fingerprints": ["CD:03:E6:3B:8F:4C:F1:34:B6:1A:4A:EC:74:03:C7:95:AF:D0:9D:03:4A:AB:F1:9A:C8:F7:00:C1:AC:56:A2:F1"]
+      }
+    }]

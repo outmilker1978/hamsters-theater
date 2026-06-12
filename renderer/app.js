@@ -10,23 +10,24 @@ function getServerUrl() {
   return 'http://' + val.replace(/^https?:\/\//, '');
 }
 
-const RTC_CONFIG = {
-  iceServers: [
+let useRelay = localStorage.getItem('useRelay') === 'true';
+
+function getRTCConfig() {
+  const servers = [
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },
-    { urls: 'stun:stun2.l.google.com:19302' },
-    { urls: 'stun:stun3.l.google.com:19302' },
-    { urls: 'stun:stun4.l.google.com:19302' },
-    { urls: 'stun:stun.xten.com:3478' },
-    { urls: 'stun:stun.voiparound.com' },
     { urls: 'stun:stun.cloudflare.com:3478' },
-    {
-      urls: 'turn:relay.metered.ca:80',
-      username: 'openrelayproject',
-      credential: 'openrelayproject'
-    }
-  ]
-};
+    { urls: 'stun:stun.xten.com:3478' }
+  ];
+  if (useRelay) {
+    servers.push(
+      { urls: 'turn:relay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
+      { urls: 'turn:relay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
+      { urls: 'turn:relay.metered.ca:80?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' }
+    );
+  }
+  return { iceServers: servers };
+}
 
 let socket = null;
 let localStream = null;
@@ -46,6 +47,7 @@ let prevMicOn = true;
 let camOn = true;
 let micOn = true;
 let micMode = 'normal'; // 'normal' | 'ptt'
+let qualityLevel = localStorage.getItem('qualityLevel') || 'medium';
 let pendingPeers = [];
 let pendingOffers = [];
 let userName = localStorage.getItem('userName') || '';
@@ -99,6 +101,58 @@ const el = (id) => document.getElementById(id);
 const showError = (msg) => { const e = el('errorMsg'); if (e) e.textContent = msg; };
 const log = (msg) => console.log('[NT]', msg);
 const appDebug = (msg) => {}; // placeholder
+
+// --- Quality / Bandwidth settings ---
+const QUALITY_PRESETS = {
+  low:   { cam: { width: 320, height: 240, frameRate: 15 }, camBitrate: 250_000, screenBitrate: 800_000 },
+  medium:{ cam: { width: 640, height: 480, frameRate: 20 }, camBitrate: 500_000, screenBitrate: 1_500_000 },
+  high:  { cam: { width: 1280, height: 720, frameRate: 24 }, camBitrate: 1_000_000, screenBitrate: 3_000_000 }
+};
+
+function getQualityPreset() {
+  return QUALITY_PRESETS[qualityLevel] || QUALITY_PRESETS.medium;
+}
+
+function getCameraConstraints() {
+  const q = getQualityPreset();
+  if (sharingScreen) {
+    return {
+      video: { width: { ideal: 320 }, height: { ideal: 240 }, frameRate: { ideal: 10 } },
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+    };
+  }
+  return {
+    video: { width: { ideal: q.cam.width }, height: { ideal: q.cam.height }, frameRate: { ideal: q.cam.frameRate } },
+    audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+  };
+}
+
+function setSenderBitrate(pc, kind, maxBps) {
+  setTimeout(() => {
+    const sender = pc.getSenders().find(s => s.track && s.track.kind === kind);
+    if (!sender) return;
+    try {
+      const params = sender.getParameters();
+      if (!params.encodings || params.encodings.length === 0) params.encodings = [{}];
+      params.encodings[0].maxBitrate = maxBps;
+      sender.setParameters(params).catch(e => log('setBitrate err: ' + e.message));
+    } catch (e) { log('setBitrate err: ' + e.message); }
+  }, 500);
+}
+
+function setAllSenderBitrates(kind, maxBps) {
+  for (const peerId of Object.keys(peers)) {
+    const p = peers[peerId];
+    if (p.pc) setSenderBitrate(p.pc, kind, maxBps);
+    if (p.screenPC) setSenderBitrate(p.screenPC, kind, maxBps);
+  }
+}
+
+function syncQuality() {
+  const q = getQualityPreset();
+  setAllSenderBitrates('video', q.camBitrate);
+  setAllSenderBitrates('audio', 64_000);
+}
 
 function copyAddress() {
   const text = isCloudMode ? CLOUD_SERVER_URL : t('copy.server_prefix') + localAddress;
@@ -276,11 +330,12 @@ el('joinRoomBtn').onclick = () => {
   });
   socket.on('room-users', (users) => {
     log('room-users: ' + JSON.stringify(users));
-    if (userName && socket && socket.connected) {
-      users.forEach(pid => {
+    users.forEach(pid => {
+      if (userName && socket && socket.connected) {
         socket.emit('signal', { to: pid, signalType: 'user-info', name: userName });
-      });
-    }
+      }
+      socket.emit('signal', { to: pid, signalType: 'request-offer' });
+    });
   });
 };
 
@@ -292,10 +347,7 @@ function showRoom() {
 // --- Camera ---
 async function startCamera() {
   try {
-    localStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-    });
+    localStream = await navigator.mediaDevices.getUserMedia(getCameraConstraints());
     // Ensure echo cancellation is applied
     localStream.getAudioTracks().forEach(t => {
       try { t.applyConstraints({ echoCancellation: true, noiseSuppression: true, autoGainControl: true }); } catch(e) {}
@@ -376,7 +428,7 @@ function removePeerVideo(peerId) {
 
 // --- Peer Connection ---
 function createPC(peerId) {
-  const conn = new RTCPeerConnection(RTC_CONFIG);
+  const conn = new RTCPeerConnection(getRTCConfig());
   conn.onicecandidate = (e) => {
     if (e.candidate && peerId)
       socket.emit('ice-candidate', { to: peerId, candidate: e.candidate, type: 'camera' });
@@ -393,6 +445,10 @@ function createPC(peerId) {
     log('Remote track from ' + peerId + ': ' + e.track.kind);
   };
   conn.oniceconnectionstatechange = () => {
+    if (conn.iceConnectionState === 'failed') {
+      log('ICE failed to ' + peerId + ' – restarting');
+      conn.restartIce();
+    }
     if (['disconnected', 'failed'].includes(conn.iceConnectionState)) {
       const peer = peers[peerId];
       if (peer && !peer.remoteStream && peerId) {
@@ -407,7 +463,7 @@ function createPC(peerId) {
 }
 
 function createScreenPC(peerId) {
-  const conn = new RTCPeerConnection(RTC_CONFIG);
+  const conn = new RTCPeerConnection(getRTCConfig());
   conn.onicecandidate = (e) => {
     if (e.candidate && peerId)
       socket.emit('ice-candidate', { to: peerId, candidate: e.candidate, type: 'screen' });
@@ -444,7 +500,19 @@ function createOfferToPeer(peerId) {
   const peer = peers[peerId];
   if (peer.pc) { peer.pc.close(); }
   peer.pc = createPC(peerId);
-  localStream.getTracks().forEach(t => peer.pc.addTrack(t, localStream));
+  const q = getQualityPreset();
+  localStream.getTracks().forEach(t => {
+    if (sharingScreen && t.kind === 'video') return;
+    const sender = peer.pc.addTrack(t, localStream);
+    if (t.kind === 'video') setTimeout(() => {
+      try {
+        const p = sender.getParameters();
+        if (!p.encodings || p.encodings.length === 0) p.encodings = [{}];
+        p.encodings[0].maxBitrate = q.camBitrate;
+        sender.setParameters(p).catch(() => {});
+      } catch (e) {}
+    }, 500);
+  });
   peer.pc.createOffer().then(offer => {
     peer.pc.setLocalDescription(offer);
     socket.emit('offer', { to: peerId, sdp: offer, type: 'camera' });
@@ -468,7 +536,19 @@ function handleOffer(data) {
   const peer = peers[fromId];
   if (peer.pc) { peer.pc.close(); }
   peer.pc = createPC(fromId);
-  if (localStream) localStream.getTracks().forEach(t => peer.pc.addTrack(t, localStream));
+  const q = getQualityPreset();
+  if (localStream) localStream.getTracks().forEach(t => {
+    if (sharingScreen && t.kind === 'video') return;
+    const sender = peer.pc.addTrack(t, localStream);
+    if (t.kind === 'video') setTimeout(() => {
+      try {
+        const p = sender.getParameters();
+        if (!p.encodings || p.encodings.length === 0) p.encodings = [{}];
+        p.encodings[0].maxBitrate = q.camBitrate;
+        sender.setParameters(p).catch(() => {});
+      } catch (e) {}
+    }, 500);
+  });
   peer.pc.setRemoteDescription(new RTCSessionDescription(data.sdp))
     .then(() => {
       peer.cameraCandidates.forEach(c => {
@@ -663,24 +743,55 @@ el('shareScreenBtn').onclick = openSourcePicker;
 el('closeSourcePickerBtn').onclick = () => el('sourcePickerModal').style.display = 'none';
 el('sourcePickerModal').onclick = (e) => { if (e.target === el('sourcePickerModal')) el('sourcePickerModal').style.display = 'none'; };
 
+function replacePeerVideo(replaceWith) {
+  for (const pid of Object.keys(peers)) {
+    const p = peers[pid];
+    if (p.pc) {
+      const sender = p.pc.getSenders().find(s => s.track && s.track.kind === 'video');
+      if (sender) sender.replaceTrack(replaceWith).catch(() => {});
+    }
+  }
+  if (localStream) {
+    const vt = localStream.getVideoTracks()[0];
+    if (vt) vt.enabled = !!replaceWith;
+  }
+}
+
 async function doStartScreenShare(stream) {
   screenStream = stream;
   sharingScreen = true;
+  replacePeerVideo(null);
+  if (localStream) {
+    try {
+      const newStream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 320 }, height: { ideal: 240 }, frameRate: { ideal: 10 } }, audio: false });
+      const oldCamTrack = localStream.getVideoTracks()[0];
+      if (oldCamTrack) { oldCamTrack.stop(); localStream.removeTrack(oldCamTrack); }
+      localStream.addTrack(newStream.getVideoTracks()[0]);
+      el('localVideo').srcObject = localStream;
+    } catch (e) { log('cam downscale err: ' + e.message); }
+  }
+  syncQuality();
   updateCamGrid();
   el('screenshareVideo').style.display = 'block';
   el('screenshare-placeholder').style.display = 'none';
   el('screenshareVideo').srcObject = stream;
   el('screenshareVideo').muted = true;
   el('shareScreenBtn').classList.add('sharing');
-  // Minimize main window, show panel + faces
   await ipcRenderer.invoke('window-mode', 'minimized');
   await ipcRenderer.invoke('create-panel');
   await ipcRenderer.invoke('create-faces');
   startFacesTimer();
   updateControlTooltips();
+  const q = getQualityPreset();
   for (const peerId of Object.keys(peers)) {
     createScreenOffer(peerId, stream);
   }
+  setTimeout(() => {
+    for (const pid of Object.keys(peers)) {
+      const p = peers[pid];
+      if (p.screenPC) setSenderBitrate(p.screenPC, 'video', q.screenBitrate);
+    }
+  }, 1000);
   broadcastSignal('screen-started', { hasAudio: stream.getAudioTracks().length > 0 });
   if (stream.getVideoTracks().length) {
     stream.getVideoTracks()[0].onended = () => stopScreenShare();
@@ -700,8 +811,22 @@ function createScreenOffer(peerId, stream) {
   }).catch(e => log('screen offer error: ' + e.message));
 }
 
-function stopScreenShare() {
+async function stopScreenShare() {
   sharingScreen = false;
+  if (localStream) {
+    const vt = localStream.getVideoTracks()[0];
+    if (localStream.getVideoTracks().length > 0) {
+      try {
+        const restored = await navigator.mediaDevices.getUserMedia(getCameraConstraints());
+        const oldCamTrack = localStream.getVideoTracks()[0];
+        if (oldCamTrack) { oldCamTrack.stop(); localStream.removeTrack(oldCamTrack); }
+        localStream.addTrack(restored.getVideoTracks()[0]);
+        el('localVideo').srcObject = localStream;
+      } catch (e) { log('cam restore err: ' + e.message); }
+    }
+    replacePeerVideo(localStream.getVideoTracks()[0] || null);
+    syncQuality();
+  }
   updateCamGrid();
   if (screenStream) { screenStream.getTracks().forEach(t => t.stop()); screenStream = null; }
   for (const peerId of Object.keys(peers)) {
@@ -1006,6 +1131,39 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
   };
 });
 
+// Settings - Quality
+document.querySelectorAll('.quality-btn').forEach(btn => {
+  btn.onclick = () => {
+    qualityLevel = btn.getAttribute('data-quality');
+    localStorage.setItem('qualityLevel', qualityLevel);
+    document.querySelectorAll('.quality-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (localStream) {
+      const vt = localStream.getVideoTracks()[0];
+      if (vt) {
+        vt.applyConstraints(getCameraConstraints().video).catch(() => {});
+      }
+    }
+    syncQuality();
+  };
+});
+if (qualityLevel) {
+  const activeBtn = document.querySelector(`.quality-btn[data-quality="${qualityLevel}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+}
+
+// Settings - Relay
+document.querySelectorAll('.relay-btn').forEach(btn => {
+  btn.onclick = () => {
+    useRelay = btn.getAttribute('data-relay') === 'on';
+    localStorage.setItem('useRelay', useRelay);
+    document.querySelectorAll('.relay-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  };
+});
+const relayBtn = document.querySelector(`.relay-btn[data-relay="${useRelay ? 'on' : 'off'}"]`);
+if (relayBtn) relayBtn.classList.add('active');
+
 // Settings - Desktop Shortcut
 window.createDesktopShortcut = async () => {
   const ok = await ipcRenderer.invoke('create-desktop-shortcut');
@@ -1239,7 +1397,7 @@ function showReaction(emoji) {
 
 // First-launch shortcut prompt (shows once per version)
 (function() {
-  const ver = '1.7.8';
+  const ver = '1.7.9';
   // Set version in UI
   const verEls = document.querySelectorAll('#versionDisplay, .modal-version, title');
   verEls.forEach(el => {
