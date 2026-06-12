@@ -1,6 +1,6 @@
 {
   "name": "tv-hamsters",
-  "version": "1.7.9",
+  "version": "1.7.10",
   "description": "TV Hamsters — смотрите видео вместе с голосовым чатом, видеочатом и рацией",
   "main": "main.js",
   "scripts": {

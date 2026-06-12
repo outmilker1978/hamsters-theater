@@ -323,12 +323,11 @@ el('joinRoomBtn').onclick = () => {
   });
   socket.on('room-users', (users) => {
     log('room-users: ' + JSON.stringify(users));
-    users.forEach(pid => {
-      if (userName && socket && socket.connected) {
+    if (userName && socket && socket.connected) {
+      users.forEach(pid => {
         socket.emit('signal', { to: pid, signalType: 'user-info', name: userName });
-      }
-      socket.emit('signal', { to: pid, signalType: 'request-offer' });
-    });
+      });
+    }
   });
 };
 
@@ -1369,7 +1368,7 @@ function showReaction(emoji) {
 
 // First-launch shortcut prompt (shows once per version)
 (function() {
-  const ver = '1.7.9';
+  const ver = '1.7.10';
   // Set version in UI
   const verEls = document.querySelectorAll('#versionDisplay, .modal-version, title');
   verEls.forEach(el => {
