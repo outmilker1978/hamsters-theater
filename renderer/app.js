@@ -109,9 +109,9 @@ const appDebug = (msg) => {}; // placeholder
 
 // --- Quality / Bandwidth settings ---
 const QUALITY_PRESETS = {
-  low:   { camBitrate: 400_000, screenBitrate: 1_000_000 },
-  medium:{ camBitrate: 700_000, screenBitrate: 2_000_000 },
-  high:  { camBitrate: 1_200_000, screenBitrate: 4_000_000 }
+  low:   { camScale: 0.5,  screenScale: 0.5,  camBitrate: 200_000, screenBitrate: 1_000_000 },
+  medium:{ camScale: 0.75, screenScale: 0.75, camBitrate: 400_000, screenBitrate: 2_000_000 },
+  high:  { camScale: 1.0,  screenScale: 1.0,  camBitrate: 700_000, screenBitrate: 4_000_000 }
 };
 
 function getQualityPreset() {
@@ -120,36 +120,37 @@ function getQualityPreset() {
 
 function getCameraConstraints() {
   return {
-    video: true,
+    video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 20 } },
     audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
   };
 }
 
-function setSenderBitrate(pc, kind, maxBps) {
+function applyQualityToSender(pc, kind, bitrate, scale) {
   setTimeout(() => {
     const sender = pc.getSenders().find(s => s.track && s.track.kind === kind);
     if (!sender) return;
     try {
       const params = sender.getParameters();
       if (!params.encodings || params.encodings.length === 0) params.encodings = [{}];
-      params.encodings[0].maxBitrate = maxBps;
-      sender.setParameters(params).catch(e => log('setBitrate err: ' + e.message));
-    } catch (e) { log('setBitrate err: ' + e.message); }
+      params.encodings[0].maxBitrate = bitrate;
+      if (scale) params.encodings[0].scaleResolutionDownBy = scale;
+      sender.setParameters(params).catch(e => log('setParams err: ' + e.message));
+    } catch (e) { log('setParams err: ' + e.message); }
   }, 500);
-}
-
-function setAllSenderBitrates(kind, maxBps) {
-  for (const peerId of Object.keys(peers)) {
-    const p = peers[peerId];
-    if (p.pc) setSenderBitrate(p.pc, kind, maxBps);
-    if (p.screenPC) setSenderBitrate(p.screenPC, kind, maxBps);
-  }
 }
 
 function syncQuality() {
   const q = getQualityPreset();
-  setAllSenderBitrates('video', q.camBitrate);
-  setAllSenderBitrates('audio', 64_000);
+  for (const peerId of Object.keys(peers)) {
+    const p = peers[peerId];
+    if (p.pc) {
+      applyQualityToSender(p.pc, 'video', q.camBitrate, q.camScale);
+      applyQualityToSender(p.pc, 'audio', 64_000, null);
+    }
+    if (p.screenPC) {
+      applyQualityToSender(p.screenPC, 'video', q.screenBitrate, q.screenScale);
+    }
+  }
 }
 
 function copyAddress() {
@@ -498,6 +499,9 @@ function createOfferToPeer(peerId) {
     peer.pc.setLocalDescription(offer);
     socket.emit('offer', { to: peerId, sdp: offer, type: 'camera' });
     log('Offer sent to ' + peerId);
+    const q = getQualityPreset();
+    applyQualityToSender(peer.pc, 'video', q.camBitrate, q.camScale);
+    applyQualityToSender(peer.pc, 'audio', 64_000, null);
   });
   if (sharingScreen && screenStream) {
     createScreenOffer(peerId, screenStream);
@@ -530,6 +534,9 @@ function handleOffer(data) {
       peer.pc.setLocalDescription(answer);
       socket.emit('answer', { to: fromId, sdp: answer, type: 'camera' });
       log('Answer sent to ' + fromId);
+      const q = getQualityPreset();
+      applyQualityToSender(peer.pc, 'video', q.camBitrate, q.camScale);
+      applyQualityToSender(peer.pc, 'audio', 64_000, null);
     });
 }
 
@@ -750,16 +757,9 @@ async function doStartScreenShare(stream) {
   await ipcRenderer.invoke('create-faces');
   startFacesTimer();
   updateControlTooltips();
-  const q = getQualityPreset();
   for (const peerId of Object.keys(peers)) {
     createScreenOffer(peerId, stream);
   }
-  setTimeout(() => {
-    for (const pid of Object.keys(peers)) {
-      const p = peers[pid];
-      if (p.screenPC) setSenderBitrate(p.screenPC, 'video', q.screenBitrate);
-    }
-  }, 1000);
   broadcastSignal('screen-started', { hasAudio: stream.getAudioTracks().length > 0 });
   if (stream.getVideoTracks().length) {
     stream.getVideoTracks()[0].onended = () => stopScreenShare();
@@ -776,7 +776,10 @@ function createScreenOffer(peerId, stream) {
     peer.screenPC.setLocalDescription(offer);
     socket.emit('offer', { to: peerId, sdp: offer, type: 'screen' });
     log('Screen offer sent to ' + peerId);
+    const q = getQualityPreset();
+    applyQualityToSender(peer.screenPC, 'video', q.screenBitrate, q.screenScale);
   }).catch(e => log('screen offer error: ' + e.message));
+}
 }
 
 async function stopScreenShare() {
