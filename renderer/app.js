@@ -743,33 +743,33 @@ el('shareScreenBtn').onclick = openSourcePicker;
 el('closeSourcePickerBtn').onclick = () => el('sourcePickerModal').style.display = 'none';
 el('sourcePickerModal').onclick = (e) => { if (e.target === el('sourcePickerModal')) el('sourcePickerModal').style.display = 'none'; };
 
-function replacePeerVideo(replaceWith) {
+function replacePeerVideoTrack(newTrack) {
   for (const pid of Object.keys(peers)) {
     const p = peers[pid];
     if (p.pc) {
       const sender = p.pc.getSenders().find(s => s.track && s.track.kind === 'video');
-      if (sender) sender.replaceTrack(replaceWith).catch(() => {});
+      if (sender) sender.replaceTrack(newTrack).catch(() => {});
     }
   }
-  if (localStream) {
-    const vt = localStream.getVideoTracks()[0];
-    if (vt) vt.enabled = !!replaceWith;
-  }
+}
+
+async function switchCameraResolution(targetConstraints) {
+  if (!localStream) return;
+  try {
+    const newStream = await navigator.mediaDevices.getUserMedia({ video: targetConstraints, audio: false });
+    const oldTrack = localStream.getVideoTracks()[0];
+    const newTrack = newStream.getVideoTracks()[0];
+    if (oldTrack) { localStream.removeTrack(oldTrack); oldTrack.stop(); }
+    localStream.addTrack(newTrack);
+    replacePeerVideoTrack(newTrack);
+    el('localVideo').srcObject = localStream;
+  } catch (e) { log('camera switch err: ' + e.message); }
 }
 
 async function doStartScreenShare(stream) {
   screenStream = stream;
   sharingScreen = true;
-  replacePeerVideo(null);
-  if (localStream) {
-    try {
-      const newStream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 320 }, height: { ideal: 240 }, frameRate: { ideal: 10 } }, audio: false });
-      const oldCamTrack = localStream.getVideoTracks()[0];
-      if (oldCamTrack) { oldCamTrack.stop(); localStream.removeTrack(oldCamTrack); }
-      localStream.addTrack(newStream.getVideoTracks()[0]);
-      el('localVideo').srcObject = localStream;
-    } catch (e) { log('cam downscale err: ' + e.message); }
-  }
+  await switchCameraResolution({ width: { ideal: 320 }, height: { ideal: 240 }, frameRate: { ideal: 10 } });
   syncQuality();
   updateCamGrid();
   el('screenshareVideo').style.display = 'block';
@@ -814,17 +814,7 @@ function createScreenOffer(peerId, stream) {
 async function stopScreenShare() {
   sharingScreen = false;
   if (localStream) {
-    const vt = localStream.getVideoTracks()[0];
-    if (localStream.getVideoTracks().length > 0) {
-      try {
-        const restored = await navigator.mediaDevices.getUserMedia(getCameraConstraints());
-        const oldCamTrack = localStream.getVideoTracks()[0];
-        if (oldCamTrack) { oldCamTrack.stop(); localStream.removeTrack(oldCamTrack); }
-        localStream.addTrack(restored.getVideoTracks()[0]);
-        el('localVideo').srcObject = localStream;
-      } catch (e) { log('cam restore err: ' + e.message); }
-    }
-    replacePeerVideo(localStream.getVideoTracks()[0] || null);
+    await switchCameraResolution(getCameraConstraints().video);
     syncQuality();
   }
   updateCamGrid();
