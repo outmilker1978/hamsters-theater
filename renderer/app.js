@@ -104,9 +104,9 @@ const appDebug = (msg) => {}; // placeholder
 
 // --- Quality / Bandwidth settings ---
 const QUALITY_PRESETS = {
-  low:   { cam: { width: 320, height: 240, frameRate: 15 }, camBitrate: 250_000, screenBitrate: 800_000 },
-  medium:{ cam: { width: 640, height: 480, frameRate: 20 }, camBitrate: 500_000, screenBitrate: 1_500_000 },
-  high:  { cam: { width: 1280, height: 720, frameRate: 24 }, camBitrate: 1_000_000, screenBitrate: 3_000_000 }
+  low:   { camBitrate: 400_000, screenBitrate: 1_000_000 },
+  medium:{ camBitrate: 700_000, screenBitrate: 2_000_000 },
+  high:  { camBitrate: 1_200_000, screenBitrate: 4_000_000 }
 };
 
 function getQualityPreset() {
@@ -114,15 +114,8 @@ function getQualityPreset() {
 }
 
 function getCameraConstraints() {
-  const q = getQualityPreset();
-  if (sharingScreen) {
-    return {
-      video: { width: { ideal: 320 }, height: { ideal: 240 }, frameRate: { ideal: 10 } },
-      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-    };
-  }
   return {
-    video: { width: { ideal: q.cam.width }, height: { ideal: q.cam.height }, frameRate: { ideal: q.cam.frameRate } },
+    video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 20 } },
     audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
   };
 }
@@ -1123,12 +1116,6 @@ document.querySelectorAll('.quality-btn').forEach(btn => {
     localStorage.setItem('qualityLevel', qualityLevel);
     document.querySelectorAll('.quality-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    if (localStream) {
-      const vt = localStream.getVideoTracks()[0];
-      if (vt) {
-        vt.applyConstraints(getCameraConstraints().video).catch(() => {});
-      }
-    }
     syncQuality();
   };
 });
