@@ -8,10 +8,27 @@ jobs:
     steps:
       - name: Install ImageMagick
         run: sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick fonts-dejavu-core
+      - name: Fetch release data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -n "${{ github.event.release.tag_name }}" ]; then
+            echo "TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+            echo "NOTES<<NOTESEOF" >> $GITHUB_ENV
+            echo "${{ github.event.release.body }}" >> $GITHUB_ENV
+            echo "NOTESEOF" >> $GITHUB_ENV
+          else
+            echo "fetching latest release..."
+            LATEST=$(curl -s -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/outmilker1978/hamsters-theater/releases/latest)
+            TAG=$(echo "$LATEST" | jq -r '.tag_name')
+            BODY=$(echo "$LATEST" | jq -r '.body | if . then . else "" end')
+            echo "TAG=$TAG" >> $GITHUB_ENV
+            echo "NOTES<<NOTESEOF" >> $GITHUB_ENV
+            echo "$BODY" >> $GITHUB_ENV
+            echo "NOTESEOF" >> $GITHUB_ENV
+          fi
       - name: Generate + send
         env:
-          TAG: ${{ github.event.release.tag_name || 'v1.7.7' }}
-          NOTES: ${{ github.event.release.body || 'Новый релиз с улучшениями' }}
           CHAT: '-1003813372615'
         run: |
           curl -s -o icon_raw.png https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png
