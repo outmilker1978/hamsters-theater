@@ -36,11 +36,9 @@ jobs:
           BG=$(convert icon_raw.png -crop 1x1+0+0 -format '%[hex:u.p{0,0}]' info:-)
           convert icon_raw.png -alpha on -fuzz 25% -transparent "#$BG" -resize 220x220 icon.png
 
-          LABEL=$(printf '\xd0\x9d\xd0\x9e\xd0\x92\xd0\xab\xd0\x99 \xd0\xa0\xd0\x95\xd0\x9b\xd0\x98\xd0\x97')
-
           convert -size 780x260 gradient:'#7c3aed'-'#c084fc' -font DejaVu-Sans-Bold \
             -gravity northwest -pointsize 14 -fill '#e9d5ff' -annotate +260+15 'TV Hamsters' \
-            -gravity northwest -pointsize 40 -fill white -annotate +260+40 "$LABEL" \
+            -gravity northwest -pointsize 40 -fill white -annotate +260+40 'НОВЫЙ РЕЛИЗ' \
             -gravity northwest -pointsize 40 -fill '#f3e8ff' -annotate +260+95 "$TAG" \
             -gravity south -pointsize 12 -fill '#e9d5ff' -annotate +0+15 'tvhamsters.outmilk.online' \
             out.png
@@ -71,45 +69,15 @@ jobs:
           head -c 200 cap.txt
           echo ""
 
-          python3 << 'PYEOF'
-import urllib.request, json, os
+          # Remove non-UTF-8 chars, re-encode to UTF-8
+          iconv -f UTF-8 -t UTF-8 cap.txt -o cap_utf8.txt 2>/dev/null || cat cap.txt > cap_utf8.txt
+          sed -i 's/[^[:print:]\t]//g' cap_utf8.txt
 
-chat_id = os.environ['CHAT'].encode()
-token = os.environ['TELEGRAM_BOT_TOKEN']
-
-with open('cap.txt', 'rb') as f: caption = f.read()
-with open('out.png', 'rb') as f: photo = f.read()
-
-boundary = b'----Boundary7MA4YW'
-crlf = b'\r\n'
-
-body = b'--' + boundary + crlf
-body += b'Content-Disposition: form-data; name="chat_id"' + crlf + crlf
-body += chat_id + crlf
-
-body += b'--' + boundary + crlf
-body += b'Content-Disposition: form-data; name="parse_mode"' + crlf + crlf
-body += b'HTML' + crlf
-
-body += b'--' + boundary + crlf
-body += b'Content-Disposition: form-data; name="caption"' + crlf + crlf
-body += caption + crlf
-
-body += b'--' + boundary + crlf
-body += b'Content-Disposition: form-data; name="photo"; filename="photo.png"' + crlf
-body += b'Content-Type: application/octet-stream' + crlf + crlf
-body += photo + crlf
-
-body += b'--' + boundary + b'--' + crlf
-
-url = 'https://api.telegram.org/bot' + token + '/sendPhoto'
-req = urllib.request.Request(url, data=body, headers={b'Content-Type': b'multipart/form-data; boundary=' + boundary})
-try:
-    resp = urllib.request.urlopen(req)
-    print('HTTP:', resp.getcode())
-    print(resp.read().decode('utf-8'))
-except urllib.error.HTTPError as e:
-    print('HTTP:', e.code)
-    print(e.read().decode('utf-8'))
-    exit(1)
-PYEOF
+          HTTP=$(curl -s -w "%{http_code}" -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendPhoto" \
+            -F chat_id="$CHAT" \
+            -F photo="@out.png" \
+            -F parse_mode="HTML" \
+            -F "caption=<cap_utf8.txt" -o resp.json)
+          echo "HTTP: $HTTP"
+          cat resp.json
+          if [ "$HTTP" != "200" ]; then exit 1; fi
