@@ -55,7 +55,7 @@ jobs:
             -F chat_id="$CHAT" \
             -F photo="@out.png" \
             -F parse_mode="HTML" \
-            --form-string "caption=$(cat cap.txt)" -o resp.json)
+            -F "caption=<cap.txt" -o resp.json)
           echo "HTTP: $HTTP"
           cat resp.json
           if [ "$HTTP" != "200" ]; then exit 1; fi
