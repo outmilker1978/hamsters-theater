@@ -45,8 +45,17 @@ jobs:
           📱 Android (веб): https://tvhamsters.outmilk.online/mobile/
           EOF
 
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
+          echo "=== caption length ==="
+          wc -c cap.txt
+          echo "=== caption preview ==="
+          head -c 200 cap.txt
+          echo ""
+
+          HTTP=$(curl -s -w "%{http_code}" -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
             -F chat_id="$CHAT" \
             -F photo="@out.png" \
             -F parse_mode="HTML" \
-            --form-string "caption=$(cat cap.txt)"
+            --form-string "caption=$(cat cap.txt)" -o resp.json)
+          echo "HTTP: $HTTP"
+          cat resp.json
+          if [ "$HTTP" != "200" ]; then exit 1; fi
