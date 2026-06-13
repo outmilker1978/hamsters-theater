@@ -2,15 +2,8 @@ const CLOUD = 'https://tv-hamsters-bot.onrender.com';
 const TURN_CRED = { username: 'openrelayproject', credential: 'openrelayproject' };
 const RTC = {
   iceServers: [
-    { urls: 'stun:stun.l.google.com:19302' },
-    { urls: 'stun:stun1.l.google.com:19302' },
-    { urls: 'stun:stun2.l.google.com:19302' },
-    { urls: 'stun:stun3.l.google.com:19302' },
-    { urls: 'stun:stun4.l.google.com:19302' },
-    { urls: 'stun:stun.cloudflare.com:3478' },
-    { urls: 'turn:relay.metered.ca:80', ...TURN_CRED },
+    { urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] },
     { urls: 'turn:relay.metered.ca:443', ...TURN_CRED },
-    { urls: 'turn:relay.metered.ca:443?transport=tcp', ...TURN_CRED },
   ]
 };
 const MEDIA = { video: { facingMode: 'user', width: { ideal: 240 }, height: { ideal: 180 }, frameRate: { ideal: 15, max: 20 } }, audio: { echoCancellation: true, noiseSuppression: true } };
@@ -486,9 +479,26 @@ function showReaction(emoji) {
   const el = document.createElement('div');
   el.className = 'reaction-float';
   el.textContent = emoji;
+  const startX = 10 + Math.random() * 70;
+  const driftX = (Math.random() - 0.5) * 140;
+  const driftY = -160 - Math.random() * 120;
+  const rotate = (Math.random() - 0.5) * 50;
+  const duration = 1500 + Math.random() * 1500;
+  el.style.left = startX + '%';
   $('faces').appendChild(el);
-  setTimeout(() => el.remove(), 2000);
+  el.animate([
+    { opacity: 1, transform: 'translateY(0) translateX(0) rotate(0deg) scale(0.4)' },
+    { opacity: 0, transform: 'translateY('+driftY+'px) translateX('+driftX+'px) rotate('+rotate+'deg) scale(1.3)' }
+  ], { duration: duration, easing: 'ease-out', fill: 'forwards' }).onfinish = () => el.remove();
 }
+
+// Pause remote videos when app is in background (saves battery/heat)
+document.addEventListener('visibilitychange', () => {
+  document.querySelectorAll('.remote-peer video').forEach(v => {
+    if (document.hidden) { if (!v.paused) v.dataset.wasPlaying = '1'; v.pause(); }
+    else if (v.dataset.wasPlaying) { v.play().catch(function(){}); delete v.dataset.wasPlaying; }
+  });
+});
 
 // PWA Install
 $('installBtn').onclick = async () => {

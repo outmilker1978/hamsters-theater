@@ -755,6 +755,7 @@ async function doStartScreenShare(stream) {
   await ipcRenderer.invoke('window-mode', 'minimized');
   await ipcRenderer.invoke('create-panel');
   await ipcRenderer.invoke('create-faces');
+  ipcRenderer.invoke('create-reactions-overlay');
   startFacesTimer();
   updateControlTooltips();
   for (const peerId of Object.keys(peers)) {
@@ -796,6 +797,7 @@ async function stopScreenShare() {
   el('shareScreenBtn').classList.remove('sharing');
   ipcRenderer.invoke('close-panel');
   ipcRenderer.invoke('close-faces');
+  ipcRenderer.invoke('close-reactions-overlay');
   stopFacesTimer();
   ipcRenderer.invoke('window-mode', 'restore');
   updateControlTooltips();
@@ -974,6 +976,7 @@ function cleanupCall() {
   el('shareScreenBtn').classList.remove('sharing');
   ipcRenderer.invoke('close-panel');
   ipcRenderer.invoke('close-faces');
+  ipcRenderer.invoke('close-reactions-overlay');
   stopFacesTimer();
   ipcRenderer.invoke('window-mode', 'restore');
   el('shareScreenBtn').disabled = false;
@@ -1039,8 +1042,8 @@ el('toggleMicBtn').oncontextmenu = (e) => {
 };
 updateMicButtonUI();
 
-window.addEventListener('mousedown', (e) => {
-  if (e.button === 1) { log('Middle-click → toggle fullscreen'); ipcRenderer.send('toggle-fullscreen'); }
+window.addEventListener('auxclick', (e) => {
+  if (e.button === 1) { e.preventDefault(); log('Middle-click → toggle fullscreen'); ipcRenderer.send('toggle-fullscreen'); }
 }, true);
 
 // --- Modals ---
@@ -1261,6 +1264,7 @@ ipcRenderer.on('faces-send-reaction', (event, emoji) => {
   if (socket && socket.connected) {
     socket.emit('reaction', { emoji: emoji });
   }
+  try { ipcRenderer.send('forward-reaction', emoji); } catch(e) {}
 });
 
 // Start panel timer when sharing starts, stop when sharing stops
@@ -1311,7 +1315,10 @@ document.getElementById('nameEditBtn').onclick = () => {
 };
 
 // Chat
-el('chatBtn').onclick = () => el('chatOverlay').style.display = 'flex';
+el('chatBtn').onclick = () => {
+  el('chatOverlay').style.display = 'flex';
+  setTimeout(() => el('chatInput').focus(), 100);
+};
 el('chatOverlay').onclick = (e) => { if (e.target === el('chatOverlay')) el('chatOverlay').style.display = 'none'; };
 el('chatCloseBtn').onclick = () => el('chatOverlay').style.display = 'none';
 el('chatInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendChat(); });
@@ -1337,17 +1344,21 @@ el('reactionBtn').onclick = () => {
 document.querySelectorAll('.reaction-emoji').forEach(btn => {
   btn.onclick = () => {
     const emoji = btn.dataset.emoji;
-    el('reactionPicker').style.display = 'none';
     showReaction(emoji);
     if (socket && socket.connected) socket.emit('reaction', { emoji: emoji });
+    try { ipcRenderer.send('forward-reaction', emoji); } catch(e) {}
   };
 });
+el('reactionClose').onclick = () => { el('reactionPicker').style.display = 'none'; };
 function showReaction(emoji) {
   const elm = document.createElement('div');
   elm.className = 'reaction-float';
   elm.textContent = emoji;
-  el('faces').appendChild(elm);
-  setTimeout(() => elm.remove(), 2000);
+  elm.style.left = (10 + Math.random() * 80) + '%';
+  elm.style.bottom = (50 + Math.random() * 50) + 'px';
+  elm.style.animation = 'floatBubble ' + (5 + Math.random() * 3) + 's cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards';
+  document.body.appendChild(elm);
+  setTimeout(() => elm.remove(), 8500);
 }
 
 // First-launch shortcut prompt (shows once per version)

@@ -414,6 +414,7 @@ input, textarea, [contenteditable], .copyable {
   background: #0a080c;
   justify-content: center;
   align-items: center;
+  align-content: center;
   padding: 24px;
   gap: 16px;
 }
@@ -421,14 +422,20 @@ input, textarea, [contenteditable], .copyable {
   display: contents;
 }
 #faces.faces-full .face-wrapper {
-  width: 320px;
-  height: 240px;
-  flex: 0 1 auto;
+  width: auto;
+  height: auto;
+  flex: 1 1 280px;
+  max-width: 480px;
+  min-width: 200px;
+  aspect-ratio: 4/3;
 }
 #faces.faces-full #localFace {
-  width: 320px;
-  height: 240px;
-  flex: 0 1 auto;
+  width: auto;
+  height: auto;
+  flex: 1 1 280px;
+  max-width: 480px;
+  min-width: 200px;
+  aspect-ratio: 4/3;
 }
 #faces.faces-full .volume-slider {
   display: none;
@@ -1299,18 +1306,18 @@ input, textarea, [contenteditable], .copyable {
 /* Floating Reactions */
 .reaction-float {
   position: fixed;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%);
   font-size: 48px;
   pointer-events: none;
   z-index: 99999;
-  animation: floatUp 2s ease-out forwards;
+  animation: floatBubble 6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
-@keyframes floatUp {
-  0% { opacity: 1; transform: translateX(-50%) translateY(0) scale(0.5); }
-  50% { opacity: 1; transform: translateX(-50%) translateY(-80px) scale(1); }
-  100% { opacity: 0; transform: translateX(-50%) translateY(-160px) scale(1.2); }
+@keyframes floatBubble {
+  0% { opacity: 1; transform: translateX(0) translateY(0) scale(0.3) rotate(0deg); }
+  20% { opacity: 1; transform: translateX(30px) translateY(-60px) scale(0.7) rotate(8deg); }
+  40% { transform: translateX(-25px) translateY(-130px) scale(0.95) rotate(-5deg); }
+  60% { transform: translateX(20px) translateY(-200px) scale(1.05) rotate(4deg); }
+  80% { opacity: 0.5; transform: translateX(-10px) translateY(-260px) scale(0.85) rotate(-3deg); }
+  100% { opacity: 0; transform: translateX(0) translateY(-320px) scale(0.4) rotate(0deg); }
 }
 
 

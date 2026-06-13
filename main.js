@@ -259,6 +259,8 @@ function rebuildMenus(win) {
   });
 }
 
+let sharingActive = false;
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 480,
@@ -282,6 +284,29 @@ function createWindow() {
   win.on('close', () => {
     if (panelWindow) { panelWindow.close(); panelWindow = null; }
     if (facesWindow) { facesWindow.close(); facesWindow = null; }
+    if (reactionsWindow) { reactionsWindow.close(); reactionsWindow = null; }
+    if (panelChatWindow) { panelChatWindow.close(); panelChatWindow = null; }
+    if (panelReactionsWindow) { panelReactionsWindow.close(); panelReactionsWindow = null; }
+  });
+
+  win.on('minimize', () => {
+    if (sharingActive) {
+      if (panelWindow && !panelWindow.isDestroyed()) panelWindow.show();
+      if (panelChatWindow && !panelChatWindow.isDestroyed()) panelChatWindow.show();
+      if (panelReactionsWindow && !panelReactionsWindow.isDestroyed()) panelReactionsWindow.show();
+      if (facesWindow && !facesWindow.isDestroyed()) facesWindow.show();
+      if (reactionsWindow && !reactionsWindow.isDestroyed()) reactionsWindow.show();
+    }
+  });
+
+  win.on('restore', () => {
+    if (sharingActive) {
+      if (panelWindow && !panelWindow.isDestroyed()) panelWindow.hide();
+      if (panelChatWindow && !panelChatWindow.isDestroyed()) panelChatWindow.hide();
+      if (panelReactionsWindow && !panelReactionsWindow.isDestroyed()) panelReactionsWindow.hide();
+      if (facesWindow && !facesWindow.isDestroyed()) facesWindow.hide();
+      if (reactionsWindow && !reactionsWindow.isDestroyed()) reactionsWindow.hide();
+    }
   });
 
   win.webContents.on('before-input-event', (event, input) => {
@@ -399,9 +424,10 @@ ipcMain.handle('create-panel', (event) => {
 
   panelWindow = new BrowserWindow({
     width: 560,
-    height: 70,
+    height: 90,
     frame: false,
-    transparent: true,
+    transparent: false,
+    backgroundColor: '#120e14',
     alwaysOnTop: true,
     skipTaskbar: true,
     resizable: false,
@@ -413,6 +439,7 @@ ipcMain.handle('create-panel', (event) => {
   });
 
   panelWindow.loadFile('renderer/panel.html');
+  sharingActive = true;
   panelWindow.once('ready-to-show', () => panelWindow.show());
   panelWindow.setAlwaysOnTop(true, 'pop-up-menu');
 
@@ -420,16 +447,25 @@ ipcMain.handle('create-panel', (event) => {
   const { workArea } = require('electron').screen.getPrimaryDisplay();
   panelWindow.setPosition(
     workArea.x + Math.round((workArea.width - 560) / 2),
-    workArea.y + workArea.height - 80
+    workArea.y + workArea.height - 10 - 90
   );
 
-  panelWindow.on('closed', () => { panelWindow = null; });
+  panelWindow.on('closed', () => {
+    stopChildPoll();
+    if (panelChatWindow) { panelChatWindow.close(); panelChatWindow = null; }
+    if (panelReactionsWindow) { panelReactionsWindow.close(); panelReactionsWindow = null; }
+    panelWindow = null; sharingActive = false;
+  });
 });
 
 ipcMain.handle('close-panel', () => {
+  stopChildPoll();
+  if (panelChatWindow) { panelChatWindow.close(); panelChatWindow = null; }
+  if (panelReactionsWindow) { panelReactionsWindow.close(); panelReactionsWindow = null; }
   if (panelWindow) {
     panelWindow.close();
     panelWindow = null;
+    sharingActive = false;
   }
 });
 
@@ -440,15 +476,153 @@ ipcMain.on('panel-update', (event, data) => {
   }
 });
 
-// Panel resize
-ipcMain.on('panel-resize', (event, height) => {
-  if (panelWindow && !panelWindow.isDestroyed()) {
-    panelWindow.setSize(560, height);
-    const { workArea } = require('electron').screen.getPrimaryDisplay();
-    panelWindow.setPosition(
-      workArea.x + Math.round((workArea.width - 560) / 2),
-      workArea.y + workArea.height - height - 10
-    );
+// --- Child windows for chat and reactions (follow panel) ---
+let panelChatWindow = null;
+let panelReactionsWindow = null;
+let panelChildPoll = null;
+let chatHistory = [];
+const CHAT_HISTORY_MAX = 200;
+
+function updatePanelChildren() {
+  if (!panelWindow || panelWindow.isDestroyed()) return;
+  const [px, py] = panelWindow.getPosition();
+  if (panelChatWindow && !panelChatWindow.isDestroyed()) {
+    panelChatWindow.setPosition(px, py - 190);
+  }
+  if (panelReactionsWindow && !panelReactionsWindow.isDestroyed()) {
+    panelReactionsWindow.setPosition(px, py - 56);
+  }
+}
+
+function startChildPoll() {
+  if (panelChildPoll) return;
+  panelChildPoll = setInterval(updatePanelChildren, 50);
+}
+
+function stopChildPoll() {
+  if (panelChildPoll) {
+    clearInterval(panelChildPoll);
+    panelChildPoll = null;
+  }
+}
+
+ipcMain.handle('open-chat-window', () => {
+  if (panelChatWindow || !panelWindow) return;
+  if (panelWindow && !panelWindow.isDestroyed()) panelWindow.webContents.send('panel-child-opened');
+  const [px, py] = panelWindow.getPosition();
+  panelChatWindow = new BrowserWindow({
+    width: 560, height: 190,
+    parent: panelWindow,
+    frame: false, transparent: false, backgroundColor: '#120e14', alwaysOnTop: true, skipTaskbar: true, resizable: false, show: false,
+    webPreferences: { nodeIntegration: true, contextIsolation: false }
+  });
+  panelChatWindow.setPosition(px, py - 190);
+  panelChatWindow.loadFile('renderer/panel-chat.html');
+  panelChatWindow.once('ready-to-show', () => {
+    panelChatWindow.show();
+    panelChatWindow.webContents.send('panel-chat-history', chatHistory);
+  });
+  startChildPoll();
+  panelChatWindow.on('closed', () => {
+    panelChatWindow = null;
+    if (!panelReactionsWindow) stopChildPoll();
+    if (panelWindow && !panelWindow.isDestroyed()) panelWindow.webContents.send('panel-child-closed');
+  });
+});
+
+ipcMain.handle('close-chat-window', () => {
+  if (panelChatWindow) { panelChatWindow.close(); panelChatWindow = null; }
+  if (!panelReactionsWindow) stopChildPoll();
+  if (panelWindow && !panelWindow.isDestroyed()) panelWindow.webContents.send('panel-child-closed');
+});
+ipcMain.handle('has-chat-window', () => panelChatWindow !== null && !panelChatWindow.isDestroyed());
+
+ipcMain.handle('open-reactions-window', () => {
+  if (panelReactionsWindow || !panelWindow) return;
+  if (panelWindow && !panelWindow.isDestroyed()) panelWindow.webContents.send('panel-child-opened');
+  const [px, py] = panelWindow.getPosition();
+  panelReactionsWindow = new BrowserWindow({
+    width: 560, height: 56,
+    parent: panelWindow,
+    frame: false, transparent: false, backgroundColor: '#120e14', alwaysOnTop: true, skipTaskbar: true, resizable: false, show: false,
+    webPreferences: { nodeIntegration: true, contextIsolation: false }
+  });
+  panelReactionsWindow.setPosition(px, py - 56);
+  panelReactionsWindow.loadFile('renderer/panel-reactions.html');
+  panelReactionsWindow.once('ready-to-show', () => { panelReactionsWindow.show(); });
+  startChildPoll();
+  panelReactionsWindow.on('closed', () => {
+    panelReactionsWindow = null;
+    if (!panelChatWindow) stopChildPoll();
+    if (panelWindow && !panelWindow.isDestroyed()) panelWindow.webContents.send('panel-child-closed');
+  });
+});
+
+ipcMain.handle('close-reactions-window', () => {
+  if (panelReactionsWindow) { panelReactionsWindow.close(); panelReactionsWindow = null; }
+  if (!panelChatWindow) stopChildPoll();
+  if (panelWindow && !panelWindow.isDestroyed()) panelWindow.webContents.send('panel-child-closed');
+});
+ipcMain.handle('has-reactions-window', () => panelReactionsWindow !== null && !panelReactionsWindow.isDestroyed());
+
+// Bridge: chat from chat window → main renderer
+ipcMain.on('panel-chat-send', (event, text) => {
+  chatHistory.push({ name: '\u042F', text, time: Date.now() });
+  if (chatHistory.length > CHAT_HISTORY_MAX) chatHistory.shift();
+  const wins = BrowserWindow.getAllWindows();
+  const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow && w !== reactionsWindow && w !== panelChatWindow && w !== panelReactionsWindow);
+  if (mainWin) mainWin.webContents.send('faces-send-chat', text);
+});
+ipcMain.on('panel-chat-msg', (event, data) => {
+  if (panelChatWindow && !panelChatWindow.isDestroyed()) {
+    panelChatWindow.webContents.send('panel-chat-msg', data);
+  }
+});
+
+// Bridge: reactions from reactions window → all targets
+ipcMain.on('panel-reaction', (event, emoji) => {
+  const wins = BrowserWindow.getAllWindows();
+  const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow && w !== reactionsWindow && w !== panelChatWindow && w !== panelReactionsWindow);
+  if (mainWin) mainWin.webContents.send('faces-send-reaction', emoji);
+  const fw = wins.find(w => !w.isDestroyed() && w === facesWindow);
+  if (fw) fw.webContents.send('faces-reaction', emoji);
+  const rw = wins.find(w => !w.isDestroyed() && w === reactionsWindow);
+  if (rw) rw.webContents.send('show-overlay-reaction', emoji);
+});
+
+// --- Reaction overlay window (fullscreen, transparent) ---
+let reactionsWindow = null;
+
+ipcMain.handle('create-reactions-overlay', (event) => {
+  if (reactionsWindow) return;
+  const { workArea } = require('electron').screen.getPrimaryDisplay();
+  reactionsWindow = new BrowserWindow({
+    width: workArea.width,
+    height: workArea.height,
+    x: workArea.x,
+    y: workArea.y,
+    frame: false,
+    transparent: true,
+    backgroundColor: '#00000000',
+    alwaysOnTop: true,
+    skipTaskbar: true,
+    resizable: false,
+    show: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    }
+  });
+  reactionsWindow.loadFile('renderer/reactions.html');
+  reactionsWindow.once('ready-to-show', () => reactionsWindow.show());
+  reactionsWindow.setIgnoreMouseEvents(true);
+  reactionsWindow.on('closed', () => { reactionsWindow = null; });
+});
+
+ipcMain.handle('close-reactions-overlay', () => {
+  if (reactionsWindow) {
+    reactionsWindow.close();
+    reactionsWindow = null;
   }
 });
 
@@ -457,29 +631,35 @@ ipcMain.on('forward-reaction', (event, emoji) => {
   const allWins = BrowserWindow.getAllWindows();
   const fw = allWins.find(w => !w.isDestroyed() && w === facesWindow);
   if (fw) fw.webContents.send('faces-reaction', emoji);
+  const rw = allWins.find(w => !w.isDestroyed() && w === reactionsWindow);
+  if (rw) rw.webContents.send('show-overlay-reaction', emoji);
 });
 
 ipcMain.on('forward-chat', (event, data) => {
-  if (panelWindow && !panelWindow.isDestroyed()) {
-    panelWindow.webContents.send('panel-chat-msg', data);
+  chatHistory.push(data);
+  if (chatHistory.length > CHAT_HISTORY_MAX) chatHistory.shift();
+  if (panelChatWindow && !panelChatWindow.isDestroyed()) {
+    panelChatWindow.webContents.send('panel-chat-msg', data);
   }
 });
 
 ipcMain.on('panel-send-chat', (event, text) => {
+  chatHistory.push({ name: '\u042F', text, time: Date.now() });
+  if (chatHistory.length > CHAT_HISTORY_MAX) chatHistory.shift();
   const allWins = BrowserWindow.getAllWindows();
-  const win = allWins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
+  const win = allWins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow && w !== reactionsWindow && w !== panelChatWindow && w !== panelReactionsWindow);
   if (win) win.webContents.send('faces-send-chat', text);
 });
 
 ipcMain.on('faces-send-reaction', (event, emoji) => {
   const allWins = BrowserWindow.getAllWindows();
-  const win = allWins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
+  const win = allWins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow && w !== reactionsWindow && w !== panelChatWindow && w !== panelReactionsWindow);
   if (win) win.webContents.send('faces-send-reaction', emoji);
 });
 
 ipcMain.on('panel-action', (event, action, data) => {
   const allWins = BrowserWindow.getAllWindows();
-  const mainWin = allWins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
+  const mainWin = allWins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow && w !== reactionsWindow && w !== panelChatWindow && w !== panelReactionsWindow);
   const fw = allWins.find(w => !w.isDestroyed() && w === facesWindow);
   if (action === 'show-chat') {
     if (panelWindow && !panelWindow.isDestroyed()) {
@@ -492,10 +672,11 @@ ipcMain.on('panel-action', (event, action, data) => {
   }
   if (action === 'send-reaction') {
     if (mainWin) mainWin.webContents.send('faces-send-reaction', data);
-    // Show own reaction animation in faces window
     if (fw && !fw.isDestroyed()) {
       fw.webContents.send('faces-reaction', data);
     }
+    const rw = allWins.find(w => !w.isDestroyed() && w === reactionsWindow);
+    if (rw) rw.webContents.send('show-overlay-reaction', data);
     return;
   }
   if (action === 'toast-chat') {
@@ -532,11 +713,13 @@ ipcMain.handle('create-faces', (event) => {
     width: fw,
     height: fh,
     minWidth: 340,
+    minHeight: 120,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
     skipTaskbar: true,
-    resizable: false,
+    resizable: true,
+    hasShadow: true,
     show: false,
     webPreferences: {
       nodeIntegration: true,
@@ -564,6 +747,38 @@ ipcMain.handle('close-faces', () => {
   }
 });
 
+ipcMain.on('reset-faces-size', () => {
+  if (facesWindow && !facesWindow.isDestroyed()) {
+    facesWindow.setSize(400, 200);
+    const { workArea } = require('electron').screen.getPrimaryDisplay();
+    facesWindow.setPosition(
+      workArea.x + workArea.width - 400 - 8,
+      workArea.y + workArea.height - 200 - 8
+    );
+  }
+});
+
+ipcMain.on('reset-panel-pos', () => {
+  stopChildPoll();
+  if (panelChatWindow) { panelChatWindow.close(); panelChatWindow = null; }
+  if (panelReactionsWindow) { panelReactionsWindow.close(); panelReactionsWindow = null; }
+  if (panelWindow && !panelWindow.isDestroyed()) {
+    const { workArea } = require('electron').screen.getPrimaryDisplay();
+    const x = workArea.x + Math.round((workArea.width - 560) / 2);
+    panelWindow.setPosition(x, workArea.y + workArea.height - 10 - 90);
+    panelWindow.webContents.send('panel-reset');
+  }
+});
+ipcMain.on('drag-panel-pos', (e, dx, dy) => {
+  if (panelWindow && !panelWindow.isDestroyed()) {
+    const [x, y] = panelWindow.getPosition();
+    const { workArea } = require('electron').screen.getPrimaryDisplay();
+    const clampedX = Math.max(workArea.x, Math.min(x + dx, workArea.x + workArea.width - 560));
+    const clampedY = Math.max(workArea.y, Math.min(y + dy, workArea.y + workArea.height - 90));
+    panelWindow.setPosition(clampedX, clampedY);
+  }
+});
+
 // Bridge: main renderer → faces window
 ipcMain.on('faces-frames', (event, frames) => {
   if (facesWindow && !facesWindow.isDestroyed()) {
@@ -574,7 +789,7 @@ ipcMain.on('faces-frames', (event, frames) => {
 // Bridge: faces window → main renderer
 ipcMain.on('faces-volume', (event, data) => {
   const wins = BrowserWindow.getAllWindows();
-  const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
+  const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow && w !== reactionsWindow && w !== panelChatWindow && w !== panelReactionsWindow);
   if (mainWin) {
     mainWin.webContents.send('faces-volume', data);
   }
@@ -582,7 +797,7 @@ ipcMain.on('faces-volume', (event, data) => {
 
 ipcMain.on('faces-mic-volume', (event, data) => {
   const wins = BrowserWindow.getAllWindows();
-  const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow);
+  const mainWin = wins.find(w => !w.isDestroyed() && w !== panelWindow && w !== facesWindow && w !== reactionsWindow && w !== panelChatWindow && w !== panelReactionsWindow);
   if (mainWin) {
     mainWin.webContents.send('faces-mic-volume', data);
   }
@@ -642,7 +857,10 @@ app.on('window-all-closed', () => {
 
 app.on('will-quit', () => {
   if (panelWindow) { panelWindow.close(); panelWindow = null; }
+  if (panelChatWindow) { panelChatWindow.close(); panelChatWindow = null; }
+  if (panelReactionsWindow) { panelReactionsWindow.close(); panelReactionsWindow = null; }
   if (facesWindow) { facesWindow.close(); facesWindow = null; }
+  if (reactionsWindow) { reactionsWindow.close(); reactionsWindow = null; }
   removeUPnPMapping();
   if (signalingServer) { signalingServer.close(); signalingServer = null; }
   if (deepLinkServer) { deepLinkServer.close(); deepLinkServer = null; }

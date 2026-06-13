@@ -695,16 +695,9 @@ body {
 /* Floating Reactions */
 .reaction-float {
   position: absolute;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 48px;
+  bottom: 30%;
+  font-size: 40px;
   pointer-events: none;
   z-index: 98;
-  animation: floatUp 2s ease-out forwards;
-}
-@keyframes floatUp {
-  0% { opacity: 1; transform: translateX(-50%) translateY(0) scale(0.5); }
-  50% { opacity: 1; transform: translateX(-50%) translateY(-80px) scale(1); }
-  100% { opacity: 0; transform: translateX(-50%) translateY(-160px) scale(1.2); }
+  will-change: transform, opacity;
 }

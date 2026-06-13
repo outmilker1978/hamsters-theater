@@ -1,6 +1,29 @@
 const { ipcRenderer } = require('electron');
 const container = document.getElementById('faces-container');
+const handle = document.getElementById('drag-handle');
 let faceData = {};
+let hideTimer = null;
+
+// Middle-click reset to default size
+document.addEventListener('auxclick', (e) => {
+  if (e.button === 1) {
+    e.preventDefault();
+    ipcRenderer.send('reset-faces-size');
+  }
+});
+
+// Hover show/hide for drag handle and border
+document.body.addEventListener('mouseenter', () => {
+  clearTimeout(hideTimer);
+  handle.classList.add('show');
+  document.body.classList.add('hover');
+});
+document.body.addEventListener('mouseleave', () => {
+  hideTimer = setTimeout(() => {
+    handle.classList.remove('show');
+    document.body.classList.remove('hover');
+  }, 800);
+});
 
 ipcRenderer.on('faces-frames', (event, frames) => {
   if (!frames || !frames.length) {
