@@ -106,6 +106,7 @@ const LOCALES = {
     'name.prompt_text': 'Введите ваше имя или пропустите — получите случайное имя',
     'name.confirm': 'Готово!',
     'name.skip': 'Пропустить',
+    'release.1_8_0': 'Desktop: плавающие панели чата и реакций — отдельные frameless-окна, кастомный drag без блокировки кликов, middle-click сброс позиции. Окно Лица масштабируется под любое количество участников, видео без обрезки, подписи всегда видны. Реакции на весь экран. Исправлена история чата в панели. Исправлен режим рации (PTT). Mobile: перевод на русский и английский, реакции-фейерверк, новый хедер, оптимизация. Пройдено нагрузочное тестирование.',
   },
   en: {
     'app.title': 'TV Hamsters',
@@ -212,10 +213,11 @@ const LOCALES = {
     'name.prompt_text': 'Enter your name or skip — get a random funny name',
     'name.confirm': 'Done!',
     'name.skip': 'Skip',
+    'release.1_8_0': 'Desktop: floating chat and reactions panels — separate frameless windows, custom drag without click blocking, middle-click position reset. Faces panel scales to any number of participants, video without cropping, labels always visible. Full-screen reaction animations. Fixed chat history in panel. Fixed PTT mode switching (right-click mic). Mobile: full Russian and English translation — auto-detect language and switch in settings. Mobile: reaction fireworks — each emoji flies a unique random path! Mobile: compact two-line header, optimized servers for less battery drain, video pause when minimized. Load testing completed — everything works stably.',
   }
 };
 
-let currentLang = localStorage.getItem('nt_lang') || 'ru';
+var currentLang = localStorage.getItem('nt_lang') || 'ru';
 
 function t(key) {
   return LOCALES[currentLang]?.[key] || LOCALES['ru']?.[key] || key;

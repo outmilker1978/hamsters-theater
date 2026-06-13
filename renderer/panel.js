@@ -47,7 +47,10 @@ document.getElementById('btn-reaction').onclick = () => {
 
 const micBtn = document.getElementById('btn-mic');
 if (micBtn) {
-  micBtn.oncontextmenu = (e) => { e.preventDefault(); try { ipcRenderer.send('panel-action', 'toggle-mic-mode'); } catch(e) {} };
+  micBtn.addEventListener('mousedown', (e) => {
+    if (e.button === 2) { e.preventDefault(); try { ipcRenderer.send('panel-action', 'toggle-mic-mode'); } catch(e) {} }
+  });
+  micBtn.addEventListener('contextmenu', (e) => { e.preventDefault(); });
 }
 
 const pttBtn = document.getElementById('btn-ptt');
@@ -68,12 +71,13 @@ ipcRenderer.on('panel-reset', () => {
 });
 
 ipcRenderer.on('panel-update', (e, state) => {
+  micMode = state.micMode || 'normal';
   const m = document.getElementById('btn-mic');
   if (m) { m.className = 'control-btn' + (state.micOn ? ' active' : '') + (micMode === 'ptt' ? ' ptt' : ''); }
   const c = document.getElementById('btn-cam');
   if (c) { c.className = 'control-btn' + (state.camOn ? ' active' : ''); }
   const pt = document.getElementById('btn-ptt');
-  if (pt) { pt.style.display = (state.pttActive && micMode === 'ptt') ? 'flex' : 'none'; }
+  if (pt) { pt.style.display = (micMode === 'ptt') ? 'flex' : 'none'; }
   const s = document.getElementById('btn-screen');
   if (s) { s.className = 'control-btn' + (state.sharingScreen ? ' active' : ''); }
 });

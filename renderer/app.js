@@ -180,6 +180,9 @@ function applyLangToUI() {
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
   });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    el.innerHTML = t(el.getAttribute('data-i18n-html'));
+  });
   document.querySelectorAll('[data-tooltip-i18n]').forEach(el => {
     el.setAttribute('data-tooltip', t(el.getAttribute('data-tooltip-i18n')));
   });
@@ -266,8 +269,8 @@ function setupSocketListeners() {
     msgDiv.innerHTML = '<span class="chat-msg-author">' + escapeHtml(d.name) + '</span><span class="chat-msg-text">' + escapeHtml(d.text) + '</span>';
     el('chatMessages').appendChild(msgDiv);
     el('chatMessages').scrollTop = el('chatMessages').scrollHeight;
-    if (el('chatOverlay').style.display !== 'flex' && d.from !== socket.id) {
-      showToast(d.name + ': ' + d.text, 4000);
+    if (d.from !== socket.id) {
+      if (el('chatOverlay').style.display !== 'flex') showToast(d.name + ': ' + d.text, 4000);
       try { ipcRenderer.send('forward-chat', { name: d.name, text: d.text }); } catch(e) {}
     }
   });
@@ -1055,15 +1058,20 @@ function closeAllModals() {
 el('helpBtn').onclick = () => { closeAllModals(); el('helpModal').style.display = 'flex'; };
 el('closeHelpBtn').onclick = () => el('helpModal').style.display = 'none';
 el('helpModal').onclick = (e) => { if (e.target === el('helpModal')) el('helpModal').style.display = 'none'; };
-ipcRenderer.on('show-help', () => { closeAllModals(); el('helpModal').style.display = 'flex'; });
+ipcRenderer.on('show-help', () => { closeAllModals(); el('helpModal').style.display = 'flex'; setLang(currentLang); });
+// External links
+document.addEventListener('click', (e) => {
+  const link = e.target.closest('.easter-link');
+  if (link) { e.preventDefault(); ipcRenderer.invoke('open-url', link.href); }
+});
 
 el('closeReleaseBtn').onclick = () => el('releaseNotesModal').style.display = 'none';
 el('releaseNotesModal').onclick = (e) => { if (e.target === el('releaseNotesModal')) el('releaseNotesModal').style.display = 'none'; };
-ipcRenderer.on('show-release-notes', () => { closeAllModals(); el('releaseNotesModal').style.display = 'flex'; });
+ipcRenderer.on('show-release-notes', () => { closeAllModals(); el('releaseNotesModal').style.display = 'flex'; setLang(currentLang); });
 
 el('closeSettingsBtn').onclick = () => el('settingsModal').style.display = 'none';
 el('settingsModal').onclick = (e) => { if (e.target === el('settingsModal')) el('settingsModal').style.display = 'none'; };
-ipcRenderer.on('show-settings', () => { closeAllModals(); el('settingsModal').style.display = 'flex'; });
+ipcRenderer.on('show-settings', () => { closeAllModals(); el('settingsModal').style.display = 'flex'; setLang(currentLang); });
 ipcRenderer.on('close-all-modals', closeAllModals);
 
 // Deep link handler: hamsters://join?code=XXXX
@@ -1254,6 +1262,11 @@ ipcRenderer.on('panel-action', (event, action) => {
 });
 
 ipcRenderer.on('faces-send-chat', (event, text) => {
+  const msgDiv = document.createElement('div');
+  msgDiv.className = 'chat-msg';
+  msgDiv.innerHTML = '<span class="chat-msg-author">' + escapeHtml(userName || 'РЇ') + '</span><span class="chat-msg-text">' + escapeHtml(text) + '</span>';
+  el('chatMessages').appendChild(msgDiv);
+  el('chatMessages').scrollTop = el('chatMessages').scrollHeight;
   if (socket && socket.connected) {
     socket.emit('chat-message', { text: text, name: userName || 'РЇ' });
   }
@@ -1333,6 +1346,7 @@ function sendChat() {
   elMsg.innerHTML = '<span class="chat-msg-text">' + escapeHtml(text) + '</span>';
   el('chatMessages').appendChild(elMsg);
   el('chatMessages').scrollTop = el('chatMessages').scrollHeight;
+  try { ipcRenderer.send('main-chat-send', text); } catch(e) {}
   socket.emit('chat-message', { text: text, name: userName || 'РЇ' });
 }
 function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -1363,7 +1377,7 @@ function showReaction(emoji) {
 
 // First-launch shortcut prompt (shows once per version)
 (function() {
-  const ver = '1.7.11';
+  const ver = '1.8.0';
   // Set version in UI
   const verEls = document.querySelectorAll('#versionDisplay, .modal-version, title');
   verEls.forEach(el => {
@@ -1391,3 +1405,5 @@ function showReaction(emoji) {
   };
   modal.onclick = (e) => { if (e.target === modal) done(); };
 })();
+
+setTimeout(() => { try { setLang(currentLang); } catch(e) {} }, 100);

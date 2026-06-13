@@ -42,4 +42,10 @@ ipcRenderer.on('panel-chat-history', (event, messages) => {
   }
 });
 
+ipcRenderer.invoke('get-chat-history').then(messages => {
+  if (messages && messages.length) {
+    for (const msg of messages) addMsg(msg.name, msg.text);
+  }
+});
+
 function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }

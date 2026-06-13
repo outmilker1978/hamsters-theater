@@ -506,6 +506,8 @@ function stopChildPoll() {
   }
 }
 
+ipcMain.handle('get-chat-history', () => chatHistory);
+
 ipcMain.handle('open-chat-window', () => {
   if (panelChatWindow || !panelWindow) return;
   if (panelWindow && !panelWindow.isDestroyed()) panelWindow.webContents.send('panel-child-opened');
@@ -565,7 +567,16 @@ ipcMain.handle('close-reactions-window', () => {
 });
 ipcMain.handle('has-reactions-window', () => panelReactionsWindow !== null && !panelReactionsWindow.isDestroyed());
 
-// Bridge: chat from chat window → main renderer
+// Bridge: chat from main window → history + panel
+ipcMain.on('main-chat-send', (event, text) => {
+  chatHistory.push({ name: '\u042F', text, time: Date.now() });
+  if (chatHistory.length > CHAT_HISTORY_MAX) chatHistory.shift();
+  if (panelChatWindow && !panelChatWindow.isDestroyed()) {
+    panelChatWindow.webContents.send('panel-chat-msg', { name: '\u042F', text });
+  }
+});
+
+// Bridge: chat from panel chat window → main renderer + history
 ipcMain.on('panel-chat-send', (event, text) => {
   chatHistory.push({ name: '\u042F', text, time: Date.now() });
   if (chatHistory.length > CHAT_HISTORY_MAX) chatHistory.shift();

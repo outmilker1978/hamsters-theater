@@ -24,14 +24,26 @@
 ## Сборка
 
 ```bash
-npm run build       # prebuild (архив) → electron-builder --win --x64
-npm run build-portable  # из dist/win-unpacked → portable .exe
+npm run build       # prebuild (архив) → electron-builder --win --x64 (полная сборка)
+npm run build-portable  # из dist/win-unpacked → portable .exe (только упаковка!)
 ```
 
 - Результат: `dist/TV Hamsters X.Y.Z.exe`
 - Старый .exe автоматически перемещается в `dist/Archive/`
 - winCodeSign extraction fails на Windows (symlink issue) — не влияет на portable, только на подпись кода
 - Новое имя файла при каждой сборке, чтобы избежать блокировки Windows Defender
+
+### ⚠️ КРИТИЧЕСКАЯ ОШИБКА СБОРКИ
+
+`npm run build-portable` / `npx electron-builder --prepackaged dist/win-unpacked --win portable` **НЕ обновляет код** — он просто перепаковывает уже существующий `dist/win-unpacked` в portable .exe.
+
+**Всегда делать полную сборку перед portable:**
+```bash
+npm run build   # создаёт свежий dist/win-unpacked (даже если winCodeSign падает — packaging уже прошёл)
+npx electron-builder --prepackaged dist/win-unpacked --win portable   # portable из свежего
+```
+
+Проверять: `(Get-Item dist\TV.Hamsters.*.exe).LastWriteTime` должен быть после времени последнего изменения кода.
 
 ## Основные фишки (для описания программы)
 
@@ -119,6 +131,66 @@ npm run build-portable  # из dist/win-unpacked → portable .exe
 6. **Описание программы** — для «хомячков», без техтерминов. Фокус на главной фишке.
 7. **Перед редактированием — прочитать** текущее содержимое файла.
 8. **Не добавлять комментарии** в код без необходимости.
+
+## ⚠️ Известные проблемы и ворэраунды
+
+### 1. `let` vs `var` — переменная не видна между скриптами
+В браузере/Electron каждый `<script>` — отдельный scope для `let`/`const`. Переменная, объявленная через `let` в одном скрипте, НЕ видна из другого.
+
+**Симптом:** `setLang(currentLang)` из app.js передаёт `undefined`, перевод не работает.
+**Причина:** `let currentLang` в i18n.js — module-scoped, не глобальная.
+**Фикс:** Использовать `var` для переменных, которые нужны в других скриптах:
+```js
+var currentLang = localStorage.getItem('nt_lang') || 'ru';  // OK — глобальная
+let currentLang = localStorage.getItem('nt_lang') || 'ru';  // BAD — не видна из app.js
+```
+
+### 2. `--prepackaged` не обновляет код (см. Сборка выше)
+Никогда не делать только `build-portable` после изменений. Всегда сначала полная сборка.
+
+### 3. winCodeSign — ошибка симлинков на Windows
+7-Zip не может создать symbolic link (libcrypto.dylib/libssl.dylib для macOS). Ошибка в логах, но:
+- `packaging` (appOutDir) УЖЕ прошёл — код собран правильно
+- portable собирается из dist/win-unpacked без подписи (signing skipped)
+- Игнорировать ошибку, если `packaging platform=win32... appOutDir=dist\win-unpacked` есть в логах
+
+### 4. i18n — модалки не переводятся при открытии
+Модалки статичны в HTML (`display: none`), но `querySelectorAll` находит их. Проблема была в п.1 (currentLang не виден). Дополнительно: вызывать `setLang(currentLang)` при открытии каждой модалки:
+```js
+ipcRenderer.on('show-help', () => { ... setLang(currentLang); });
+ipcRenderer.on('show-release-notes', () => { ... setLang(currentLang); });
+ipcRenderer.on('show-settings', () => { ... setLang(currentLang); });
+```
+
+### 5. Чат — три IPC-канала, нет эха от сервера
+Сервер НЕ шлёт эхо отправителю (`socket.to(roomId)`). Self-сообщения форвардятся через IPC:
+- `main-chat-send` (из главного окна → history + panel)
+- `panel-chat-send` (из панели → history + main renderer)
+- `forward-chat` (с сервера → history + panel)
+- `get-chat-history` IPC invoke (safety net при ready-to-show)
+- `faces-send-chat` добавляет сообщение в DOM главного окна (раньше только socket.emit)
+
+### 6. PTT — `state.micMode` вместо локальной переменной
+В panel.js обработчик `panel-update` должен читать `state.micMode`, а не локальную `micMode`.
+
+### 7. Faces — обрезка видео
+`.face-card` → `flex-direction: column`, `.img-wrap` с `flex: 1`, `object-fit: contain`, `.label` `flex-shrink: 0` внизу. faces.js использует `.img-wrap` обёртку.
+
+## ПРЕД-СБОРОЧНЫЙ ЧЕКЛИСТ (обязательно)
+
+- [ ] Ничего не сломал из работавшего? Проверить diff всех изменённых файлов
+- [ ] EN-перевод добавлен для всех новых i18n-ключей?
+- [ ] Версия обновлена во всех местах (package.json, app.js, index.html)?
+- [ ] Release notes обновлены?
+- [ ] После сборки — проверить что .exe создался и не zero-size
+
+## ТЕСТИРОВАНИЕ (проверять самому на коде, не гонять пользователя)
+
+1. **Прочитать код** — убедиться, что логика корректна, нет undefined reference, нет `let`-скопинга
+2. **Проверить import/export** — если переменная из script A нужна в script B, она должна быть `var` или на `window`
+3. **Проверить сборку** — `dist/win-unpacked` должен быть свежее, чем изменения в коде
+4. **После сборки** — открыть `.exe` и проверить: перевод, чат, PTT, лица (видео без обрезки), экран
+5. **Не отправлять пользователю, пока не проверил сам** — пользователь устал быть тестировщиком
 
 ## История версий (кратко)
 

@@ -4,7 +4,6 @@ const handle = document.getElementById('drag-handle');
 let faceData = {};
 let hideTimer = null;
 
-// Middle-click reset to default size
 document.addEventListener('auxclick', (e) => {
   if (e.button === 1) {
     e.preventDefault();
@@ -12,7 +11,6 @@ document.addEventListener('auxclick', (e) => {
   }
 });
 
-// Hover show/hide for drag handle and border
 document.body.addEventListener('mouseenter', () => {
   clearTimeout(hideTimer);
   handle.classList.add('show');
@@ -43,10 +41,13 @@ ipcRenderer.on('faces-frames', (event, frames) => {
       const card = document.createElement('div');
       card.className = 'face-card';
       card.id = 'face-' + f.id;
+      const wrap = document.createElement('div');
+      wrap.className = 'img-wrap';
       const img = document.createElement('img');
       img.id = 'img-' + f.id;
       img.alt = '';
-      card.appendChild(img);
+      wrap.appendChild(img);
+      card.appendChild(wrap);
       const label = document.createElement('div');
       label.className = 'label';
       label.id = 'lbl-' + f.id;
@@ -72,7 +73,10 @@ ipcRenderer.on('faces-frames', (event, frames) => {
       volContainer.appendChild(slider);
       card.appendChild(volContainer);
       container.appendChild(card);
-      faceData[f.id] = { card, img, label, slider };
+      faceData[f.id] = { card, wrap, img, label, slider };
+    } else {
+      const entry = faceData[f.id];
+      if (entry.label) entry.label.textContent = f.isLocal ? '\u0412\u042B' : (f.name || '\u0425\u043E\u043C\u044F\u0447\u043E\u043A');
     }
     if (f.data) {
       faceData[f.id].img.src = f.data;
