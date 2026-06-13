@@ -18,10 +18,10 @@ if len(paras_first.encode('utf-8')) > 700:
 
 caption = '<b>TV Hamsters ' + TAG + '</b>\n'
 caption += paras_first + '\n\n'
-caption += '--- Подробнее: https://tvhamsters.outmilk.online/blog.html\n\n'
-caption += 'Site: https://tvhamsters.outmilk.online\n'
-caption += 'Windows: https://github.com/outmilker1978/hamsters-theater/releases/tag/' + TAG + '\n'
-caption += 'Mobile: https://tvhamsters.outmilk.online/mobile/'
+caption += '\U0001f4d6 Подробнее: https://tvhamsters.outmilk.online/blog.html\n\n'
+caption += '\U0001f310 Сайт: https://tvhamsters.outmilk.online\n'
+caption += '\U0001f4bb Windows: https://github.com/outmilker1978/hamsters-theater/releases/tag/' + TAG + '\n'
+caption += '\U0001f4f1 Android (веб): https://tvhamsters.outmilk.online/mobile/'
 
 with open('out.png', 'rb') as f: photo = f.read()
 

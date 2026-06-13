@@ -30,7 +30,7 @@ jobs:
           fi
       - name: Generate + send
         env:
-          CHAT: '162363099'
+          CHAT: '-1003813372615'
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         run: |
           curl -s -o icon_raw.png https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png
@@ -47,29 +47,5 @@ jobs:
             out.png
 
           composite -geometry +25+0 icon.png out.png out.png
-
-          PARAS=$(echo "$NOTES" | awk -v RS= -v ORS='\n\n' '{
-            if (NR == 1) print
-            else if (NR == 2) print
-            else if (NR == 3) { split($0,a,"\n"); print a[1] }
-            else exit
-          }' | head -c 700)
-
-          cat > cap.txt << EOF
-          <b>TV Hamsters $TAG</b>
-          $PARAS
-
-          --- Details: https://tvhamsters.outmilk.online/blog.html
-
-          Site: https://tvhamsters.outmilk.online
-          Windows: https://github.com/outmilker1978/hamsters-theater/releases/tag/$TAG
-          Mobile: https://tvhamsters.outmilk.online/mobile/
-          EOF
-
-          echo "=== caption length ==="
-          wc -c cap.txt
-          echo "=== caption preview ==="
-          head -c 200 cap.txt
-          echo ""
 
           python3 .github/send_telegram.py
