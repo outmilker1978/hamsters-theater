@@ -27,9 +27,18 @@ jobs:
 
           composite -geometry +25+0 icon.png out.png out.png
 
+          PARAS=$(echo "$NOTES" | awk -v RS= -v ORS='\n\n' '{
+            if (NR == 1) print
+            else if (NR == 2) print
+            else if (NR == 3) { split($0,a,"\n"); print a[1] }
+            else exit
+          }' | head -c 700)
+
           cat > cap.txt << EOF
           <b>TV Hamsters $TAG</b>
-          $(echo "$NOTES" | head -c 800)
+          $PARAS
+
+          📖 Подробнее: https://tvhamsters.outmilk.online/blog.html
 
           🌐 Сайт: https://tvhamsters.outmilk.online
           💻 Windows: https://github.com/outmilker1978/hamsters-theater/releases/tag/$TAG
