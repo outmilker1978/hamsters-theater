@@ -36,9 +36,11 @@ jobs:
           BG=$(convert icon_raw.png -crop 1x1+0+0 -format '%[hex:u.p{0,0}]' info:-)
           convert icon_raw.png -alpha on -fuzz 25% -transparent "#$BG" -resize 220x220 icon.png
 
+          LABEL=$(printf '\xd0\x9d\xd0\x9e\xd0\x92\xd0\xab\xd0\x99 \xd0\xa0\xd0\x95\xd0\x9b\xd0\x98\xd0\x97')
+
           convert -size 780x260 gradient:'#7c3aed'-'#c084fc' -font DejaVu-Sans-Bold \
             -gravity northwest -pointsize 14 -fill '#e9d5ff' -annotate +260+15 'TV Hamsters' \
-            -gravity northwest -pointsize 40 -fill white -annotate +260+40 'НОВЫЙ РЕЛИЗ' \
+            -gravity northwest -pointsize 40 -fill white -annotate +260+40 "$LABEL" \
             -gravity northwest -pointsize 40 -fill '#f3e8ff' -annotate +260+95 "$TAG" \
             -gravity south -pointsize 12 -fill '#e9d5ff' -annotate +0+15 'tvhamsters.outmilk.online' \
             out.png
@@ -56,11 +58,11 @@ jobs:
           <b>TV Hamsters $TAG</b>
           $PARAS
 
-          -> Подробнее: https://tvhamsters.outmilk.online/blog.html
+          --- Details: https://tvhamsters.outmilk.online/blog.html
 
-          Сайт: https://tvhamsters.outmilk.online
+          Site: https://tvhamsters.outmilk.online
           Windows: https://github.com/outmilker1978/hamsters-theater/releases/tag/$TAG
-          Android (веб): https://tvhamsters.outmilk.online/mobile/
+          Mobile: https://tvhamsters.outmilk.online/mobile/
           EOF
 
           echo "=== caption length ==="
@@ -69,15 +71,11 @@ jobs:
           head -c 200 cap.txt
           echo ""
 
-          # Remove non-UTF-8 chars, re-encode to UTF-8
-          iconv -f UTF-8 -t UTF-8 cap.txt -o cap_utf8.txt 2>/dev/null || cat cap.txt > cap_utf8.txt
-          sed -i 's/[^[:print:]\t]//g' cap_utf8.txt
-
           HTTP=$(curl -s -w "%{http_code}" -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendPhoto" \
             -F chat_id="$CHAT" \
             -F photo="@out.png" \
             -F parse_mode="HTML" \
-            -F "caption=<cap_utf8.txt" -o resp.json)
+            -F "caption=<cap.txt" -o resp.json)
           echo "HTTP: $HTTP"
           cat resp.json
           if [ "$HTTP" != "200" ]; then exit 1; fi
