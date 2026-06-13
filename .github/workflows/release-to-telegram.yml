@@ -30,6 +30,7 @@ jobs:
       - name: Generate + send
         env:
           CHAT: '162363099'
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         run: |
           curl -s -o icon_raw.png https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png
           BG=$(convert icon_raw.png -crop 1x1+0+0 -format '%[hex:u.p{0,0}]' info:-)
