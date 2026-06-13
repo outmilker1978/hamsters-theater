@@ -701,3 +701,23 @@ body {
   z-index: 98;
   will-change: transform, opacity;
 }
+
+.lang-switch {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(30,25,38,0.7);
+  border: 1px solid rgba(124,58,237,0.25);
+  border-radius: 10px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #c285e4;
+  cursor: pointer;
+  z-index: 50;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: background 0.2s;
+}
+.lang-switch:active { background: rgba(124,58,237,0.2); }
