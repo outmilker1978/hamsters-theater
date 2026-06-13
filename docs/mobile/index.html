@@ -79,11 +79,16 @@
 
 <div id="room">
   <div id="roomHeader">
-    <div class="header-left">
-      <span id="roomCode"></span>
-      <span id="roomPeers" class="room-peers"></span>
+    <div class="header-row">
+      <span id="roomName" class="room-name"></span>
+      <div class="header-right">
+        <span id="roomPeers" class="room-peers"></span>
+        <button id="leaveBtn" data-i18n="leaveBtn">&#x412;&#x44B;&#x439;&#x442;&#x438;</button>
+      </div>
     </div>
-    <button id="leaveBtn" data-i18n="leaveBtn">&#x412;&#x44B;&#x439;&#x442;&#x438;</button>
+    <div class="header-row">
+      <span id="roomSuffix" class="room-suffix"></span>
+    </div>
   </div>
   <div id="faces">
     <video id="localVideo" autoplay muted playsinline></video>

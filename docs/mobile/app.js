@@ -190,8 +190,10 @@ function pluralHamsters(n) {
     : (n===1?'hamster':'hamsters'));
 }
 function updateRoomHeader() {
-  const el = $('roomCode');
-  if (el) el.textContent = (userName || t('roomPrefix')) + ' \u2022 ' + t('roomSuffix') + ' ' + roomId;
+  const nameEl = $('roomName');
+  if (nameEl) nameEl.textContent = (userName || t('roomPrefix'));
+  const suffixEl = $('roomSuffix');
+  if (suffixEl) suffixEl.textContent = t('roomSuffix') + ' ' + roomId;
 }
 
 function leaveRoom() {
