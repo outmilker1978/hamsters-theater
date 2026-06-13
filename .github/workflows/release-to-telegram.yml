@@ -29,7 +29,7 @@ jobs:
           fi
       - name: Generate + send
         env:
-          CHAT: '-1003813372615'
+          CHAT: '162363099'
         run: |
           curl -s -o icon_raw.png https://raw.githubusercontent.com/outmilker1978/hamsters-theater/master/icon.png
           BG=$(convert icon_raw.png -crop 1x1+0+0 -format '%[hex:u.p{0,0}]' info:-)
@@ -68,11 +68,45 @@ jobs:
           head -c 200 cap.txt
           echo ""
 
-          HTTP=$(cat cap.txt | curl -s -w "%{http_code}" -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendPhoto" \
-            -F chat_id="$CHAT" \
-            -F photo="@out.png" \
-            -F parse_mode="HTML" \
-            -F "caption=@-" -o resp.json)
-          echo "HTTP: $HTTP"
-          cat resp.json
-          if [ "$HTTP" != "200" ]; then exit 1; fi
+          python3 << 'PYEOF'
+import urllib.request, json, os
+
+chat_id = os.environ['CHAT'].encode()
+token = os.environ['TELEGRAM_BOT_TOKEN']
+
+with open('cap.txt', 'rb') as f: caption = f.read()
+with open('out.png', 'rb') as f: photo = f.read()
+
+boundary = b'----Boundary7MA4YW'
+crlf = b'\r\n'
+
+body = b'--' + boundary + crlf
+body += b'Content-Disposition: form-data; name="chat_id"' + crlf + crlf
+body += chat_id + crlf
+
+body += b'--' + boundary + crlf
+body += b'Content-Disposition: form-data; name="parse_mode"' + crlf + crlf
+body += b'HTML' + crlf
+
+body += b'--' + boundary + crlf
+body += b'Content-Disposition: form-data; name="caption"' + crlf + crlf
+body += caption + crlf
+
+body += b'--' + boundary + crlf
+body += b'Content-Disposition: form-data; name="photo"; filename="photo.png"' + crlf
+body += b'Content-Type: application/octet-stream' + crlf + crlf
+body += photo + crlf
+
+body += b'--' + boundary + b'--' + crlf
+
+url = 'https://api.telegram.org/bot' + token + '/sendPhoto'
+req = urllib.request.Request(url, data=body, headers={b'Content-Type': b'multipart/form-data; boundary=' + boundary})
+try:
+    resp = urllib.request.urlopen(req)
+    print('HTTP:', resp.getcode())
+    print(resp.read().decode('utf-8'))
+except urllib.error.HTTPError as e:
+    print('HTTP:', e.code)
+    print(e.read().decode('utf-8'))
+    exit(1)
+PYEOF
