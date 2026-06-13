@@ -1,4 +1,4 @@
-name: Release to Telegram
+﻿name: Release to Telegram
 on:
   release: {types: [published]}
   workflow_dispatch: {}
