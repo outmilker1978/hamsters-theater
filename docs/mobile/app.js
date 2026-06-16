@@ -490,12 +490,12 @@ function sendChat() {
 function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 var scrimerImages = [
-  'mobile/scrimer/screamer_1.png',
-  'mobile/scrimer/screamer_2.png',
-  'mobile/scrimer/screamer_3.png',
-  'mobile/scrimer/screamer_4.png'
+  'scrimer/screamer_1.png',
+  'scrimer/screamer_2.png',
+  'scrimer/screamer_3.png',
+  'scrimer/screamer_4.png'
 ];
-var scrimerAudio = new Audio('mobile/scrimer/jumpscare.mp3');
+var scrimerAudio = new Audio('scrimer/jumpscare.mp3');
 scrimerAudio.preload = 'auto';
 
 function showMobileScrimer() {
