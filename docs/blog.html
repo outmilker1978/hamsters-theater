@@ -246,32 +246,56 @@
     .ideas-banner {
       background: linear-gradient(135deg, #1e1e28, #23232e);
       border: 1px solid #3a3a4a;
-      border-radius: 14px;
-      padding: 28px 32px;
+      border-radius: 12px;
+      padding: 14px 20px;
       margin-bottom: 24px;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
     }
     .ideas-banner-text {
-      font-size: 18px;
+      font-size: 14px;
       color: #c4b5fd;
       font-weight: 600;
-      margin-bottom: 16px;
-      line-height: 1.5;
+      line-height: 1.4;
     }
     .ideas-banner-btn {
-      display: inline-block;
+      flex-shrink: 0;
       background: linear-gradient(135deg, #7c3aed, #a855f7);
       color: #fff;
       font-weight: 700;
-      font-size: 15px;
-      padding: 12px 28px;
-      border-radius: 10px;
+      font-size: 13px;
+      padding: 8px 18px;
+      border-radius: 8px;
       text-decoration: none;
       transition: transform .1s, box-shadow .15s;
+      white-space: nowrap;
     }
     .ideas-banner-btn:hover {
       transform: scale(1.03);
       box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+    }
+    @media (max-width: 600px) {
+      .ideas-banner { flex-direction: column; text-align: center; }
+    }
+    .blog-readmore {
+      margin-top: 12px;
+    }
+    .blog-readmore a {
+      color: #a78bfa;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .blog-readmore a:hover {
+      text-decoration: underline;
+    }
+    .blog-preview-body {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #bbb;
     }
     .idea-body { flex: 1; min-width: 0; }
     .idea-body h3 {
@@ -538,17 +562,70 @@
       }
       return html;
     }
+    function stripHtml(s) {
+      return s.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&[a-z]+;/g, ' ').trim();
+    }
+    function truncate(s, max) {
+      if (s.length <= max) return s;
+      return s.substr(0, max).replace(/\s+\S*$/, '') + '...';
+    }
+    function bannerHtml() {
+      var bnKey = 'ideas.banner';
+      var bnBtnKey = 'ideas.banner_btn';
+      return '<div class="ideas-banner">' +
+        '<div class="ideas-banner-text">' + lang[currentLang][bnKey] + '</div>' +
+        '<a class="ideas-banner-btn" href="/#feedbackForm">' + lang[currentLang][bnBtnKey] + '</a>' +
+        '</div>';
+    }
+    function renderPreviews() {
+      var articles = currentLang === 'en' ? articlesEN : articlesRU;
+      var ideas = currentLang === 'en' ? ideasEN : ideasRU;
+      var html = '<div class="section-sub-articles" style="margin-bottom:16px">' +
+        lang[currentLang]['tab.articles'] + '</div>';
+
+      for (var a = 0; a < articles.length; a++) {
+        var stripped = stripHtml(articles[a].content);
+        html += '<div class="article-card" style="padding:20px 24px">';
+        html += '<div class="article-badge">' + (currentLang === 'ru' ? '\u0421\u0442\u0430\u0442\u044C\u044F' : 'Article') + '</div>';
+        html += '<h2 style="font-size:20px">' + articles[a].title + '</h2>';
+        html += '<div class="blog-date">' + articles[a].date + '</div>';
+        html += '<div class="blog-preview-body">' + truncate(stripped, 200) + '</div>';
+        html += '<div class="blog-readmore"><a class="tab-switch" data-tab="articles">' +
+          (currentLang === 'ru' ? '\u0427\u0438\u0442\u0430\u0442\u044C \u0434\u0430\u043B\u0435\u0435 \u2192' : 'Read more \u2192') +
+          '</a></div></div>';
+      }
+
+      html += '<div class="section-sub-articles" style="margin-top:28px;margin-bottom:16px">' +
+        lang[currentLang]['tab.releases'] + '</div>';
+      html += '<div class="blog-preview-body" style="margin-bottom:12px;color:#888">' +
+        (currentLang === 'ru' ? '\u041F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0435 \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F \u043F\u0440\u043E\u0435\u043A\u0442\u0430' : 'Latest project updates') +
+        '</div><div class="blog-readmore" style="margin-bottom:24px"><a class="tab-switch" data-tab="releases">' +
+        (currentLang === 'ru' ? '\u0412\u0441\u0435 \u0440\u0435\u043B\u0438\u0437\u044B \u2192' : 'All releases \u2192') +
+        '</a></div>';
+
+      html += '<div class="section-sub-articles" style="margin-top:28px;margin-bottom:16px">' +
+        lang[currentLang]['tab.ideas'] + '</div>';
+      var count = Math.min(ideas.length, 4);
+      for (var i = 0; i < count; i++) {
+        html += '<div class="idea-card" style="padding:14px 20px">';
+        html += '<div class="idea-status ' + ideas[i].status + '" style="width:28px;height:28px;font-size:12px">' +
+          (ideas[i].status === 'done' ? '\u2713' : ideas[i].status === 'progress' ? '\u25CF' : '\u25CB') + '</div>';
+        html += '<div class="idea-body"><h3 style="font-size:15px">' + ideas[i].title + '</h3>';
+        if (ideas[i].desc) html += '<div class="idea-desc" style="font-size:13px">' + ideas[i].desc + '</div>';
+        html += '</div></div>';
+      }
+      html += '<div class="blog-readmore"><a class="tab-switch" data-tab="ideas">' +
+        (currentLang === 'ru' ? '\u0412\u0441\u0435 \u0438\u0434\u0435\u0438 \u2192' : 'All ideas \u2192') +
+        '</a></div>';
+
+      return html;
+    }
     function renderIdeas() {
       var ideas = currentLang === 'en' ? ideasEN : ideasRU;
       var statusLabel = currentLang === 'ru'
         ? { done: '\u2713 \u0421\u0434\u0435\u043B\u0430\u043D\u043E', progress: '\u25CF \u0412 \u0440\u0430\u0431\u043E\u0442\u0435', planned: '\u25CB \u0412 \u043F\u043B\u0430\u043D\u0430\u0445' }
         : { done: '\u2713 Done', progress: '\u25CF In progress', planned: '\u25CB Planned' };
-      var bnKey = 'ideas.banner';
-      var bnBtnKey = 'ideas.banner_btn';
-      var html = '<div class="ideas-banner">' +
-        '<div class="ideas-banner-text">' + lang[currentLang][bnKey] + '</div>' +
-        '<a class="ideas-banner-btn" href="/#feedbackForm">' + lang[currentLang][bnBtnKey] + '</a>' +
-        '</div>';
+      var html = '';
       for (var i = 0; i < ideas.length; i++) {
         var st = ideas[i].status;
         var ver = ideas[i].version ? ' v' + ideas[i].version : '';
@@ -564,12 +641,15 @@
     }
     function renderBlog() {
       var list = document.getElementById('blogList');
+      var bn = bannerHtml();
       var articlesHtml = renderArticles();
       var ideasHtml = renderIdeas();
-      if (activeTab === 'articles') {
-        list.innerHTML = articlesHtml;
+      if (activeTab === 'all') {
+        list.innerHTML = bn + renderPreviews();
+      } else if (activeTab === 'articles') {
+        list.innerHTML = bn + articlesHtml;
       } else if (activeTab === 'ideas') {
-        list.innerHTML = ideasHtml;
+        list.innerHTML = bn + ideasHtml;
       } else if (activeTab === 'releases') {
         fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases?per_page=20')
           .then(function(r) { return r.json(); })
@@ -598,39 +678,39 @@
               }
               html += '</div>';
             }
-            list.innerHTML = html;
-          });
-      } else {
-        fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases?per_page=20')
-          .then(function(r) { return r.json(); })
-          .then(function(data) {
-            var html = '';
-            for (var i = 0; i < data.length; i++) {
-              var rel = data[i];
-              var ver = rel.tag_name;
-              var date = rel.published_at ? rel.published_at.slice(0, 10) : '';
-              var asset = rel.assets && rel.assets[0];
-              var downloadUrl = asset ? asset.browser_download_url : '';
-              var body = rel.body || '';
-              var bodyEN = releaseNotesEN[ver] || body;
-              var displayBody = currentLang === 'en' ? fmtRN(bodyEN) : fmtRN(body);
-              var sizeMB = asset ? (asset.size / 1024 / 1024).toFixed(1) : '';
-              html += '<div class="blog-card">';
-              html += '<h2>' + ver + '</h2>';
-              if (date) html += '<div class="blog-date">' + date + '</div>';
-              if (body) html += '<div class="blog-body">' + displayBody + '</div>';
-              if (downloadUrl && i === 0) {
-                html += '<div class="blog-download"><a href="' + downloadUrl + '">' +
-                  (currentLang === 'ru'
-                    ? '\u0421\u043A\u0430\u0447\u0430\u0442\u044C .exe' + (sizeMB ? ' (' + sizeMB + ' \u041C\u0411)' : '')
-                    : 'Download .exe' + (sizeMB ? ' (' + sizeMB + ' MB)' : '')) +
-                  '</a></div>';
+              list.innerHTML = bn + html;
+            });
+        } else {
+          fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases?per_page=20')
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+              var html = '';
+              for (var i = 0; i < data.length; i++) {
+                var rel = data[i];
+                var ver = rel.tag_name;
+                var date = rel.published_at ? rel.published_at.slice(0, 10) : '';
+                var asset = rel.assets && rel.assets[0];
+                var downloadUrl = asset ? asset.browser_download_url : '';
+                var body = rel.body || '';
+                var bodyEN = releaseNotesEN[ver] || body;
+                var displayBody = currentLang === 'en' ? fmtRN(bodyEN) : fmtRN(body);
+                var sizeMB = asset ? (asset.size / 1024 / 1024).toFixed(1) : '';
+                html += '<div class="blog-card">';
+                html += '<h2>' + ver + '</h2>';
+                if (date) html += '<div class="blog-date">' + date + '</div>';
+                if (body) html += '<div class="blog-body">' + displayBody + '</div>';
+                if (downloadUrl && i === 0) {
+                  html += '<div class="blog-download"><a href="' + downloadUrl + '">' +
+                    (currentLang === 'ru'
+                      ? '\u0421\u043A\u0430\u0447\u0430\u0442\u044C .exe' + (sizeMB ? ' (' + sizeMB + ' \u041C\u0411)' : '')
+                      : 'Download .exe' + (sizeMB ? ' (' + sizeMB + ' MB)' : '')) +
+                    '</a></div>';
+                }
+                html += '</div>';
               }
-              html += '</div>';
-            }
-            list.innerHTML = articlesHtml + html;
-          });
-      }
+              list.innerHTML = bn + articlesHtml + html;
+            });
+        }
       // i18n tab labels
       var tabBtns = document.querySelectorAll('.tab-btn');
       for (var i = 0; i < tabBtns.length; i++) {
@@ -640,17 +720,33 @@
         }
       }
     }
+    function switchTab(tab) {
+      activeTab = tab;
+      var allBtns = document.querySelectorAll('.tab-btn');
+      for (var j = 0; j < allBtns.length; j++) {
+        allBtns[j].classList.toggle('active', allBtns[j].getAttribute('data-tab') === tab);
+      }
+      renderBlog();
+    }
     // Tab switching
     var tabBtns = document.querySelectorAll('.tab-btn');
     for (var i = 0; i < tabBtns.length; i++) {
       tabBtns[i].addEventListener('click', function() {
-        activeTab = this.getAttribute('data-tab');
-        var allBtns = document.querySelectorAll('.tab-btn');
-        for (var j = 0; j < allBtns.length; j++) allBtns[j].classList.remove('active');
-        this.classList.add('active');
-        renderBlog();
+        switchTab(this.getAttribute('data-tab'));
       });
     }
+    // "Подробнее" links in previews
+    document.getElementById('blogList').addEventListener('click', function(e) {
+      var t = e.target;
+      while (t && t !== this) {
+        if (t.classList && t.classList.contains('tab-switch')) {
+          switchTab(t.getAttribute('data-tab'));
+          e.preventDefault();
+          return;
+        }
+        t = t.parentNode;
+      }
+    });
     // Override setLang to re-render
     var origSetLang2 = setLang;
     setLang = function(l) {
