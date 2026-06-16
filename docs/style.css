@@ -261,13 +261,13 @@ h1 {
 .pf-icon {
   width: 38px;
   height: 38px;
-  border-radius: 8px;
-  background: #1e1e24;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #a78bfa;
+  color: #fff;
 }
 
 .pf-icon-win {
@@ -832,13 +832,13 @@ h2 {
 .platform-icon {
   width: 44px;
   height: 44px;
-  border-radius: 10px;
-  background: #1e1e24;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #a78bfa;
+  color: #fff;
 }
 
 .platform-info {
