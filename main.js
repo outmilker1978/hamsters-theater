@@ -695,6 +695,8 @@ ipcMain.on('forward-chat', (event, data) => {
   if (panelChatWindow && !panelChatWindow.isDestroyed()) {
     panelChatWindow.webContents.send('panel-chat-msg', data);
   }
+  const fw = BrowserWindow.getAllWindows().find(w => !w.isDestroyed() && w === facesWindow);
+  if (fw) fw.webContents.send('faces-chat-toast', data);
 });
 
 ipcMain.on('panel-send-chat', (event, text) => {
