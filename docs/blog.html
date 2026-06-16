@@ -452,6 +452,8 @@
 
     var releaseNotesEN = {};
     releaseNotesEN['v1.7.2'] = 'TV Hamsters v1.7.2\n\nWhat\'s new\n\nWard No. Instead of boring "Room code: 1234" now "Ward No. 1234". Because hamsters gather in a ward, not in some "room".\nScenarios in the "About" modal Added a "Things to do" section with real use cases: home cinema, remote mentorship, connecting with those far away.\nDeep-link hamsters:// Registered the hamsters:// protocol. Now you can send friends links like hamsters://join?code=XXXX — the app will open and connect automatically. Handy for a future Telegram bot.\nDonations Two support buttons: Boosty and CloudTips — open in your system browser, not inside the app. We\'d appreciate any support for the project.\n\nFixes\n\nDonation links now open in the system browser (previously opened inside Electron, breaking auth).\nDesktop shortcut prompt now shows for the new version.';
+    var releaseNotesES = {};
+    releaseNotesES['v1.7.2'] = 'TV Hamsters v1.7.2\n\nQu\u00e9 hay de nuevo\n\nSala No. En lugar del aburrido "C\u00f3digo de sala: 1234" ahora "Sala No. 1234". Porque los h\u00e1msters se re\u00fanen en una sala, no en una "habitaci\u00f3n".\nEscenarios en el modal "Acerca de" Se a\u00f1adi\u00f3 una secci\u00f3n "Cosas que hacer" con casos de uso reales: cine en casa, mentor\u00eda remota, conectar con quienes est\u00e1n lejos.\nEnlace profundo hamsters:// Se registr\u00f3 el protocolo hamsters://. Ahora puedes enviar a tus amigos enlaces como hamsters://join?code=XXXX \u2014 la aplicaci\u00f3n se abrir\u00e1 y conectar\u00e1 autom\u00e1ticamente. \u00datil para un futuro bot de Telegram.\nDonaciones Dos botones de apoyo: Boosty y CloudTips \u2014 se abren en tu navegador del sistema, no dentro de la app. Agradecemos cualquier apoyo al proyecto.\n\nCorrecciones\n\nLos enlaces de donaci\u00f3n ahora se abren en el navegador del sistema (antes se abr\u00edan dentro de Electron, rompiendo la autenticaci\u00f3n).\nEl aviso de acceso directo ahora se muestra para la nueva versi\u00f3n.';
 
     var articlesRU = [
       {
@@ -511,6 +513,35 @@
         links: 'Site: \u003Ca href="https:\u002F\u002Ftvhamsters.outmilk.online\u002F"\u003Etvhamsters.outmilk.online\u003C\u002Fa\u003E \u2022 Telegram: \u003Ca href="https:\u002F\u002Ft.me\u002Ftvhamsters"\u003Et.me\u002Ftvhamsters\u003C\u002Fa\u003E \u2022 Code: \u003Ca href="https:\u002F\u002Fgithub.com\u002Foutmilker1978\u002Fhamsters-theater"\u003EGitHub\u003C\u002Fa\u003E'
       }
     ];
+    var articlesES = [
+      {
+        title: 'Familias en diferentes ciudades, pero queremos ver una pel\u00edcula juntos. Lo resolv\u00ed en un fin de semana.',
+        date: '2026-06-15',
+        content: '\u003Cp class="art-hook"\u003EMi familia vive en diferentes ciudades. Cada vez que intent\u00e1bamos ver una pel\u00edcula juntos en l\u00ednea, era un suplicio. T\u00fa tambi\u00e9n conoces este dolor.\u003C\u002Fp\u003E' +
+        '\u003Cp\u003E\u00ABVamos a ver algo\u00BB \u2014 y comienza la odisea. Zoom requiere registro, luego l\u00edmite de 40 minutos. Discord necesita configuraci\u00f3n. Teleparty est\u00e1 atado a servicios de streaming.\u003C\u002Fp\u003E' +
+        '\u003Cp\u003EDecid\u00ed solucionarlo. No encontr\u00e9 una herramienta lista \u2014 as\u00ed que cre\u00e9 la m\u00eda propia.\u003C\u002Fp\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp class="art-hook"\u003EC\u00f3mo funciona\u003C\u002Fp\u003E' +
+        '\u003Cp\u003EUna persona comparte su pantalla con el audio de la pel\u00edcula. Los dem\u00e1s ven el video y escuchan el sonido en tiempo real. Y todos pueden hablar al mismo tiempo \u2014 escucharse y verse. Como si estuvieran en el mismo sof\u00e1.\u003C\u002Fp\u003E' +
+        '\u003Cp\u003ESin registro. Sin servidores. Solo abre la aplicaci\u00f3n, crea una sala, comparte el enlace.\u003C\u002Fp\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp class="art-hook"\u003EPor qu\u00e9 es gratis\u003C\u002Fp\u003E' +
+        '\u003Cp\u003EPorque no vendemos tus datos ni alquilamos servidores. El video va directamente de una persona a otra \u2014 es P2P mesh. Sin intermediarios, sin facturas.\u003C\u002Fp\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp class="art-hook"\u003EPara qui\u00e9n es\u003C\u002Fp\u003E' +
+        '\u003Cul\u003E' +
+        '\u003Cli\u003EFamilias en diferentes ciudades \u2014 ver una pel\u00edcula juntos como antes\u003C\u002Fli\u003E' +
+        '\u003Cli\u003EGrupos de amigos \u2014 organizar una noche de cine en l\u00ednea\u003C\u002Fli\u003E' +
+        '\u003Cli\u003EColegas \u2014 discutir una presentaci\u00f3n o video\u003C\u002Fli\u003E' +
+        '\u003Cli\u003EParejas a distancia \u2014 pasar tiempo juntos aunque est\u00e9n lejos\u003C\u002Fli\u003E' +
+        '\u003C\u002Ful\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp\u003EHice TV Hamsters en un fin de semana porque realmente quer\u00eda una soluci\u00f3n simple para m\u00ed mismo. Result\u00f3 simple, gratuita y funcional. Ahora otros tambi\u00e9n la usan.\u003C\u002Fp\u003E' +
+        '\u003Cp\u003EPru\u00e9balo t\u00fa mismo. Es gratis y no te llevar\u00e1 mucho tiempo.\u003C\u002Fp\u003E' +
+        '\u003Ca class="art-cta" href="/"\u003EPru\u00e9balo gratis\u003C\u002Fa\u003E',
+        links: 'Sitio: \u003Ca href="https:\u002F\u002Ftvhamsters.outmilk.online\u002F"\u003Etvhamsters.outmilk.online\u003C\u002Fa\u003E \u2022 Telegram: \u003Ca href="https:\u002F\u002Ft.me\u002Ftvhamsters"\u003Et.me\u002Ftvhamsters\u003C\u002Fa\u003E \u2022 C\u00f3digo: \u003Ca href="https:\u002F\u002Fgithub.com\u002Foutmilker1978\u002Fhamsters-theater"\u003EGitHub\u003C\u002Fa\u003E'
+      }
+    ];
     var ideasRU = [
       { title: '\u0421\u043A\u0440\u0438\u043C\u0435\u0440\u044B \u0432 \u0447\u0430\u0442\u0435', status: 'planned', version: '', desc: '\u041F\u0430\u0441\u0445\u0430\u043B\u043A\u0438 \u0438 \u0432\u043D\u0435\u0437\u0430\u043F\u043D\u044B\u0435 \u043F\u0443\u0433\u0430\u043B\u043A\u0438 \u0432\u043E \u0432\u0440\u0435\u043C\u044F \u043F\u0440\u043E\u0441\u043C\u043E\u0442\u0440\u0430 \u0443\u0436\u0430\u0441\u0442\u0438\u043A\u043E\u0432 \u2014 \u0447\u0442\u043E\u0431\u044B \u0431\u044B\u043B\u043E \u0432\u0435\u0441\u0435\u043B\u0435\u0435' },
       { title: 'TURN-\u0441\u0435\u0440\u0432\u0435\u0440 \u0434\u043B\u044F \u0441\u043B\u043E\u0436\u043D\u044B\u0445 \u0441\u0435\u0442\u0435\u0439', status: 'planned', version: '', desc: '\u0420\u0435\u043B\u0435 \u0434\u043B\u044F \u043A\u043E\u0440\u043F\u043E\u0440\u0430\u0442\u0438\u0432\u043D\u044B\u0445 \u0441\u0435\u0442\u0435\u0439 \u0438 \u0441\u043B\u043E\u0436\u043D\u043E\u0433\u043E NAT' },
@@ -539,6 +570,20 @@
       { title: 'Screen sharing with audio', status: 'done', version: '1.1', desc: 'Show movies and videos with sound in real time' },
       { title: 'Dark theme', status: 'done', version: '1.0', desc: 'Full dark theme for comfortable evening viewing' },
     ];
+    var ideasES = [
+      { title: 'Sustos en el chat', status: 'planned', version: '', desc: 'Easter eggs de miedo durante noches de terror para hacerlo m\u00e1s divertido' },
+      { title: 'Servidor TURN para redes complejas', status: 'planned', version: '', desc: 'Retransmisi\u00f3n para redes corporativas y NAT estricto' },
+      { title: 'App iOS', status: 'planned', version: '', desc: 'Aplicaci\u00f3n nativa para iPhone y iPad' },
+      { title: 'Hasta 10 participantes', status: 'planned', version: '', desc: 'Red P2P mesh extendida' },
+      { title: 'Chat y reacciones', status: 'done', version: '1.8', desc: 'Chat de texto y reacciones con emoji a pantalla completa' },
+      { title: 'Ventana de c\u00e1maras', status: 'done', version: '1.7', desc: 'Ventana dedicada con vistas previas de c\u00e1mara y controles de volumen' },
+      { title: 'Push-to-Talk (walkie-talkie)', status: 'done', version: '1.6', desc: 'Habla solo mientras mantienes presionado el bot\u00f3n' },
+      { title: 'Panel flotante', status: 'done', version: '1.6', desc: 'Ventana siempre visible durante la transmisi\u00f3n de pantalla' },
+      { title: 'Idioma ingl\u00e9s', status: 'done', version: '1.5', desc: 'Localizaci\u00f3n completa de la interfaz' },
+      { title: 'Versi\u00f3n m\u00f3vil (PWA)', status: 'done', version: '1.2', desc: 'App web para tel\u00e9fonos, sin necesidad de instalaci\u00f3n' },
+      { title: 'Compartir pantalla con audio', status: 'done', version: '1.1', desc: 'Ver pel\u00edculas y videos con sonido en tiempo real' },
+      { title: 'Tema oscuro', status: 'done', version: '1.0', desc: 'Tema oscuro completo para ver c\u00f3modamente por la noche' },
+    ];
 
     function fmtRN(text) {
       text = text.replace(/[🏥🎬🔗💸🐛]/g, '').replace(/\u00A0/g, ' ').replace(/ +/g, ' ').trim();
@@ -549,7 +594,7 @@
         var line = lines[i].trim().replace(/:$/, '');
         if (/^TV Hamsters v/i.test(line)) {
           out.push('<span class="rn-h1">' + line + '</span>');
-        } else if (/^(Что нового|What'?s new|Исправления|Fixes)/i.test(line)) {
+        } else         if (/^(Что нового|What'?s new|Исправления|Fixes|Qu\u00e9 hay de nuevo|Correcciones)/i.test(line)) {
           out.push('<span class="rn-h2">' + line + '</span>');
         } else {
           out.push('<span class="rn-p">' + line + '</span>');
@@ -602,11 +647,11 @@
         '<svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a></div>';
     }
     function renderArticles() {
-      var articles = currentLang === 'ru' ? articlesRU : articlesEN;
+      var articles = currentLang === 'ru' ? articlesRU : (currentLang === 'es' ? articlesES : articlesEN);
       var html = '';
       for (var a = 0; a < articles.length; a++) {
         html += '<div class="article-card">';
-        html += '<div class="article-badge">' + (currentLang === 'ru' ? '\u0421\u0442\u0430\u0442\u044C\u044F' : 'Article') + '</div>';
+        html += '<div class="article-badge">' + (currentLang === 'ru' ? '\u0421\u0442\u0430\u0442\u044C\u044F' : (currentLang === 'es' ? 'Art\u00edculo' : 'Article')) + '</div>';
         html += '<h2>' + articles[a].title + '</h2>';
         html += '<div class="blog-date">' + articles[a].date + '</div>';
         html += '<div class="article-text">' + articles[a].content + '</div>';
@@ -632,29 +677,29 @@
         '</div>';
     }
     function renderPreviews() {
-      var articles = currentLang === 'ru' ? articlesRU : articlesEN;
-      var ideas = currentLang === 'ru' ? ideasRU : ideasEN;
+      var articles = currentLang === 'ru' ? articlesRU : (currentLang === 'es' ? articlesES : articlesEN);
+      var ideas = currentLang === 'ru' ? ideasRU : (currentLang === 'es' ? ideasES : ideasEN);
       var html = '<div class="section-sub-articles" style="margin-bottom:16px">' +
         lang[currentLang]['tab.articles'] + '</div>';
 
       for (var a = 0; a < articles.length; a++) {
         var stripped = stripHtml(articles[a].content);
         html += '<div class="article-card" style="padding:20px 24px">';
-        html += '<div class="article-badge">' + (currentLang === 'ru' ? '\u0421\u0442\u0430\u0442\u044C\u044F' : 'Article') + '</div>';
+        html += '<div class="article-badge">' + (currentLang === 'ru' ? '\u0421\u0442\u0430\u0442\u044C\u044F' : (currentLang === 'es' ? 'Art\u00edculo' : 'Article')) + '</div>';
         html += '<h2 style="font-size:20px">' + articles[a].title + '</h2>';
         html += '<div class="blog-date">' + articles[a].date + '</div>';
         html += '<div class="blog-preview-body">' + truncate(stripped, 200) + '</div>';
         html += '<div class="blog-readmore"><a class="tab-switch" data-tab="articles">' +
-          (currentLang === 'ru' ? '\u0427\u0438\u0442\u0430\u0442\u044C \u0434\u0430\u043B\u0435\u0435 \u2192' : 'Read more \u2192') +
+          (currentLang === 'ru' ? '\u0427\u0438\u0442\u0430\u0442\u044C \u0434\u0430\u043B\u0435\u0435 \u2192' : (currentLang === 'es' ? 'Leer m\u00e1s \u2192' : 'Read more \u2192')) +
           '</a></div>' + shareButtons(articles[a].title) + '</div>';
       }
 
       html += '<div class="section-sub-articles" style="margin-top:28px;margin-bottom:16px">' +
         lang[currentLang]['tab.releases'] + '</div>';
       html += '<div class="blog-preview-body" style="margin-bottom:12px;color:#888">' +
-        (currentLang === 'ru' ? '\u041F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0435 \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F \u043F\u0440\u043E\u0435\u043A\u0442\u0430' : 'Latest project updates') +
+        (currentLang === 'ru' ? '\u041F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0435 \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F \u043F\u0440\u043E\u0435\u043A\u0442\u0430' : (currentLang === 'es' ? '\u00DAltimas actualizaciones del proyecto' : 'Latest project updates')) +
         '</div><div class="blog-readmore" style="margin-bottom:24px"><a class="tab-switch" data-tab="releases">' +
-        (currentLang === 'ru' ? '\u0412\u0441\u0435 \u0440\u0435\u043B\u0438\u0437\u044B \u2192' : 'All releases \u2192') +
+        (currentLang === 'ru' ? '\u0412\u0441\u0435 \u0440\u0435\u043B\u0438\u0437\u044B \u2192' : (currentLang === 'es' ? 'Todos los lanzamientos \u2192' : 'All releases \u2192')) +
         '</a></div>';
 
       html += '<div class="section-sub-articles" style="margin-top:28px;margin-bottom:16px">' +
@@ -669,15 +714,17 @@
         html += '</div></div>';
       }
       html += '<div class="blog-readmore"><a class="tab-switch" data-tab="ideas">' +
-        (currentLang === 'ru' ? '\u0412\u0441\u0435 \u0438\u0434\u0435\u0438 \u2192' : 'All ideas \u2192') +
+        (currentLang === 'ru' ? '\u0412\u0441\u0435 \u0438\u0434\u0435\u0438 \u2192' : (currentLang === 'es' ? 'Todas las ideas \u2192' : 'All ideas \u2192')) +
         '</a></div>';
 
       return html;
     }
     function renderIdeas() {
-      var ideas = currentLang === 'ru' ? ideasRU : ideasEN;
+      var ideas = currentLang === 'ru' ? ideasRU : (currentLang === 'es' ? ideasES : ideasEN);
       var statusLabel = currentLang === 'ru'
         ? { done: '\u2713 \u0421\u0434\u0435\u043B\u0430\u043D\u043E', progress: '\u25CF \u0412 \u0440\u0430\u0431\u043E\u0442\u0435', planned: '\u25CB \u0412 \u043F\u043B\u0430\u043D\u0430\u0445' }
+        : currentLang === 'es'
+        ? { done: '\u2713 Hecho', progress: '\u25CF En progreso', planned: '\u25CB Planeado' }
         : { done: '\u2713 Done', progress: '\u25CF In progress', planned: '\u25CB Planned' };
       var html = '';
       for (var i = 0; i < ideas.length; i++) {
@@ -717,7 +764,7 @@
               var downloadUrl = asset ? asset.browser_download_url : '';
               var body = rel.body || '';
               var bodyEN = releaseNotesEN[ver] || body;
-              var displayBody = currentLang === 'ru' ? fmtRN(body) : fmtRN(bodyEN);
+              var displayBody = currentLang === 'ru' ? fmtRN(body) : (currentLang === 'es' && releaseNotesES[ver] ? fmtRN(releaseNotesES[ver]) : fmtRN(bodyEN));
               var sizeMB = asset ? (asset.size / 1024 / 1024).toFixed(1) : '';
               html += '<div class="blog-card">';
               html += '<h2>' + ver + '</h2>';
@@ -727,7 +774,9 @@
                 html += '<div class="blog-download"><a href="' + downloadUrl + '">' +
                   (currentLang === 'ru'
                     ? '\u0421\u043A\u0430\u0447\u0430\u0442\u044C .exe' + (sizeMB ? ' (' + sizeMB + ' \u041C\u0411)' : '')
-                    : 'Download .exe' + (sizeMB ? ' (' + sizeMB + ' MB)' : '')) +
+                    : (currentLang === 'es'
+                      ? 'Descargar .exe' + (sizeMB ? ' (' + sizeMB + ' MB)' : '')
+                      : 'Download .exe' + (sizeMB ? ' (' + sizeMB + ' MB)' : ''))) +
                   '</a></div>';
               }
               html += '</div>';
@@ -747,7 +796,7 @@
                 var downloadUrl = asset ? asset.browser_download_url : '';
                 var body = rel.body || '';
                 var bodyEN = releaseNotesEN[ver] || body;
-                var displayBody = currentLang === 'ru' ? fmtRN(body) : fmtRN(bodyEN);
+                var displayBody = currentLang === 'ru' ? fmtRN(body) : (currentLang === 'es' && releaseNotesES[ver] ? fmtRN(releaseNotesES[ver]) : fmtRN(bodyEN));
                 var sizeMB = asset ? (asset.size / 1024 / 1024).toFixed(1) : '';
                 html += '<div class="blog-card">';
                 html += '<h2>' + ver + '</h2>';
@@ -757,7 +806,9 @@
                   html += '<div class="blog-download"><a href="' + downloadUrl + '">' +
                     (currentLang === 'ru'
                       ? '\u0421\u043A\u0430\u0447\u0430\u0442\u044C .exe' + (sizeMB ? ' (' + sizeMB + ' \u041C\u0411)' : '')
-                      : 'Download .exe' + (sizeMB ? ' (' + sizeMB + ' MB)' : '')) +
+                      : (currentLang === 'es'
+                        ? 'Descargar .exe' + (sizeMB ? ' (' + sizeMB + ' MB)' : '')
+                        : 'Download .exe' + (sizeMB ? ' (' + sizeMB + ' MB)' : ''))) +
                     '</a></div>';
                 }
                 html += '</div>';
@@ -776,7 +827,7 @@
       generateSchema();
     }
     function generateSchema() {
-      var articles = currentLang === 'ru' ? articlesRU : articlesEN;
+      var articles = currentLang === 'ru' ? articlesRU : (currentLang === 'es' ? articlesES : articlesEN);
       var items = [];
       for (var i = 0; i < articles.length; i++) {
         items.push({
