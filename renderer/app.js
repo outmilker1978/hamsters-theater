@@ -60,7 +60,8 @@ const FUNNY_NAMES = [
   '\u043F\u0443\u0445\u043B\u044F\u043A', '\u043D\u0430 \u0441\u043F\u043E\u0440\u0442\u0435', '\u0436\u0443\u043B\u044C\u0431\u0430\u043D', '\u0448\u0438\u0432\u043E\u0440\u043E\u0442', '\u043A\u043E\u043B\u0431\u0430\u0441\u043A\u0430', '\u043F\u044B\u0445\u0442\u0435\u043B\u043A\u0438\u043D',
   '\u0449\u0438\u043F\u0430\u0447', '\u043B\u0430\u043F\u0448\u0430', '\u0448\u043C\u0435\u043B\u044C', '\u0431\u0443\u043B\u044C\u043A\u0430', '\u0441\u044B\u0440\u043D\u0438\u043A', '\u0445\u0440\u044F\u043A',
   '\u043F\u0443\u0448\u0438\u0441\u0442\u0430\u044F \u0436\u043E\u043F\u043A\u0430', '\u043D\u0430 \u043B\u0438\u043D\u044C\u043A\u0435', '\u043D\u0430 \u0437\u0430\u0436\u0438\u0440\u043E\u0432\u043A\u0435', '\u0447\u0443\u0431\u0438\u043A', '\u0445\u0432\u043E\u0441\u0442\u0438\u043A', '\u0448\u0430\u0440\u0438\u043A', '\u043A\u043E\u043C\u043E\u0447\u0435\u043A',
-  '\u044C\u044E-\u0445\u044E', '\u0445\u0440\u044E\u043C', '\u043F\u0438\u0449\u0430\u043B\u043A\u0430', '\u0445\u0440\u044E\u0447\u0438\u043A'
+  '\u044C\u044E-\u0445\u044E', '\u0445\u0440\u044E\u043C', '\u043F\u0438\u0449\u0430\u043B\u043A\u0430', '\u0445\u0440\u044E\u0447\u0438\u043A',
+  '\u0420\u0436\u0430\u0432\u044B\u0439', '\u0425\u0432\u043E\u0441\u0442\u0438\u043A \u043F\u0443\u043F\u043E\u0447\u043A\u043E\u0439'
 ];
 function getRandomName() { return '\u0425\u043E\u043C\u044F\u043A ' + FUNNY_NAMES[Math.floor(Math.random() * FUNNY_NAMES.length)]; }
 function ensureUserName() {
@@ -139,19 +140,6 @@ function applyQualityToSender(pc, kind, bitrate, scale) {
       sender.setParameters(params).catch(e => log('setParams err: ' + e.message));
     } catch (e) { log('setParams err: ' + e.message); }
   }, 500);
-}
-
-function preferH264Codec(pc) {
-  try {
-    const caps = RTCRtpReceiver.getCapabilities('video');
-    if (!caps || !caps.codecs) return;
-    const h264 = caps.codecs.find(c => c.mimeType.toLowerCase() === 'video/h264' && c.sdpFmtpLine && c.sdpFmtpLine.includes('profile-level-id=42e01f'));
-    if (!h264) return;
-    const preferred = [h264, ...caps.codecs.filter(c => c !== h264)];
-    pc.getTransceivers().forEach(t => {
-      if (t.kind === 'video') try { t.setCodecPreferences(preferred); } catch(e) { log('setCodecPref err: ' + e.message); }
-    });
-  } catch(e) { log('H264 pref err: ' + e.message); }
 }
 
 function syncQuality() {
@@ -513,7 +501,6 @@ function createOfferToPeer(peerId) {
   if (peer.pc) { peer.pc.close(); }
   peer.pc = createPC(peerId);
   localStream.getTracks().forEach(t => peer.pc.addTrack(t, localStream));
-  preferH264Codec(peer.pc);
   peer.pc.createOffer().then(offer => {
     peer.pc.setLocalDescription(offer);
     socket.emit('offer', { to: peerId, sdp: offer, type: 'camera' });
@@ -541,7 +528,6 @@ function handleOffer(data) {
   if (peer.pc) { peer.pc.close(); }
   peer.pc = createPC(fromId);
   if (localStream) localStream.getTracks().forEach(t => peer.pc.addTrack(t, localStream));
-  preferH264Codec(peer.pc);
   peer.pc.setRemoteDescription(new RTCSessionDescription(data.sdp))
     .then(() => {
       peer.cameraCandidates.forEach(c => {
@@ -793,7 +779,6 @@ function createScreenOffer(peerId, stream) {
   if (peer.screenPC) { peer.screenPC.close(); }
   peer.screenPC = createScreenPC(peerId);
   stream.getTracks().forEach(t => peer.screenPC.addTrack(t, stream));
-  preferH264Codec(peer.screenPC);
   peer.screenPC.createOffer().then(offer => {
     peer.screenPC.setLocalDescription(offer);
     socket.emit('offer', { to: peerId, sdp: offer, type: 'screen' });

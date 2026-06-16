@@ -7,10 +7,6 @@ const { exec, spawn } = require('child_process');
 
 process.title = 'TV Hamsters';
 const APP_VERSION = require('./package.json').version;
-
-// Enable hardware acceleration for WebRTC video encode/decode
-app.commandLine.appendSwitch('enable-accelerated-video-encode');
-app.commandLine.appendSwitch('ignore-gpu-blocklist');
 const CLOUD_SERVER_URL = 'https://tv-hamsters-bot.onrender.com';
 let signalingServer = null;
 let upnpMapping = null;

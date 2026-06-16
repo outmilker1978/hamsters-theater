@@ -170,7 +170,7 @@ window.addEventListener('appinstalled', () => {
 window.addEventListener('DOMContentLoaded', () => {
   applyLang();
   document.getElementById('langBtn').onclick = () => {
-    setLang(lang === 'ru' ? 'en' : 'ru');
+    setLang(lang === 'ru' ? 'en' : lang === 'en' ? 'es' : 'ru');
     // re-apply dynamic JS strings
     if (typeof updateUILang === 'function') updateUILang();
   };

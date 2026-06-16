@@ -110,9 +110,65 @@ const I18N = {
     chatTitle: 'Chat',
     reactionTitle: 'Reaction',
     pttTitle: 'PTT (hold)',
+  },
+  es: {
+    brandSub: 'Miren videos juntos',
+    brandHint: 'Recomendado: Google Chrome',
+    roomCodePlaceholder: 'Código de sala',
+    joinBtn: 'Unirse a la sala',
+    or: 'o',
+    createBtn: '+ Crear nueva sala',
+    installBtn: 'Instalar en Android',
+    howItWorks: 'Cómo funciona',
+    namePromptTitle: '¿Cómo te llamas?',
+    namePromptDesc: 'Ingresa un nombre o salta — obtén uno aleatorio',
+    namePlaceholder: 'Tu nombre...',
+    nameConfirm: '¡Listo!',
+    nameSkip: 'Saltar',
+    helpTitle: 'Cómo usar',
+    helpCam: 'Cámara — encender/apagar tu cámara',
+    helpMic: 'Micrófono — toca: enc/apagar. Toca dos veces: entrar/salir del modo walkie-talkie',
+    helpPtt: 'Walkie-talkie (PTT) — mantén pulsado y habla. Toca dos veces PTT o micrófono para salir',
+    helpCams: 'Cámaras — mostrar/ocultar cámaras de participantes',
+    helpFullscreen: 'Pantalla completa — entrar/salir del modo pantalla completa',
+    helpShare: 'Compartir — enviar código de sala a amigos',
+    leaveBtn: 'Salir',
+    chat: 'Chat',
+    chatPlaceholder: 'Escribe un mensaje...',
+    toastConnecting: 'Conectando al servidor...',
+    toastReconnecting: 'Reconectando...',
+    toastConnected: 'Conectado, entrando a la sala...',
+    toastError: 'Error: ',
+    toastDisconnected: 'Conexión perdida, reconectando...',
+    toastPeerConnected: 'Hámster conectado',
+    toastNoMedia: 'Sin acceso a cámara/micrófono',
+    toastScreenStarted: 'Alguien está compartiendo su pantalla',
+    toastScreenStopped: 'Transmisión de pantalla finalizada',
+    toastChatMsg: 'Chat: ',
+    toastCodeCopied: 'Enlace copiado',
+    errorEnterCode: 'Ingrese un código de sala',
+    roomPrefix: 'Chat',
+    roomSuffix: 'Sala #',
+    hamster: 'Hámster',
+    i: 'Yo',
+    connecting: 'Conectando...',
+    reconnecting: 'Restaurando sala...',
+    shareTitle: 'TV Hamsters',
+    shareText: '¡Únete a mí en TV Hamsters! \uD83D\uDC39',
+    shareCode: 'Código de sala: ',
+    shareLink: 'Enlace: ',
+    wrote: ' escribió',
+    micTitle: 'Micrófono',
+    camTitle: 'Cámara',
+    camsTitle: 'Mostrar/ocultar cámaras',
+    fullscreenTitle: 'Pantalla completa',
+    shareTitleBtn: 'Compartir',
+    chatTitle: 'Chat',
+    reactionTitle: 'Reacción',
+    pttTitle: 'Walkie-talkie (mantener)',
   }
 };
-let lang = localStorage.getItem('mobileLang') || (navigator.language.startsWith('ru') ? 'ru' : 'en');
+let lang = localStorage.getItem('mobileLang') || (navigator.language.startsWith('ru') ? 'ru' : navigator.language.startsWith('es') ? 'es' : 'en');
 
 function t(key) { return I18N[lang][key] || key; }
 
@@ -127,7 +183,7 @@ function applyLang() {
     el.title = t(el.dataset.i18nTitle);
   });
   const btn = document.getElementById('langBtn');
-  if (btn) btn.textContent = lang === 'ru' ? 'RU' : 'EN';
+  if (btn) btn.textContent = lang === 'ru' ? 'RU' : lang === 'es' ? 'ES' : 'EN';
 }
 
 function setLang(l) {
