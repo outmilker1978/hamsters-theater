@@ -1,4 +1,4 @@
-import urllib.request, os, sys
+import urllib.request, os, sys, html
 
 CHAT = os.environ.get('CHAT')
 TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
@@ -15,6 +15,7 @@ if len(parts) >= 3:
     paras_first = paras_first + '\n\n' + third
 if len(paras_first.encode('utf-8')) > 700:
     paras_first = paras_first[:700].encode('utf-8').decode('utf-8', 'ignore')
+paras_first = html.escape(paras_first)
 
 caption = '<b>TV Hamsters ' + TAG + '</b>\n'
 caption += paras_first + '\n\n'
