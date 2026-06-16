@@ -365,6 +365,7 @@
         <div class="lang-switch">
           <button class="lang-btn active" data-lang="ru">RU</button>
           <button class="lang-btn" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="es">ES</button>
         </div>
       </div>
     </div>
@@ -433,6 +434,20 @@
       'tab.ideas': 'Ideas',
       'ideas.banner': 'Any idea you suggest \u2014 if I like it, I\'ll build it!',
       'ideas.banner_btn': 'Suggest an idea \u2192',
+    };
+    lang.es = {
+      'blog.title': 'Blog y noticias',
+      'blog.sub': 'Art\u00edculos, historias y novedades sobre TV Hamsters',
+      'blog.loading': 'Cargando...',
+      'blog.back': 'Volver al inicio',
+      'footer.issues': 'Reportar un problema',
+      'footer.contact': 'Cont\u00e1ctanos',
+      'tab.all': 'Todo',
+      'tab.articles': 'Art\u00edculos',
+      'tab.releases': 'Lanzamientos',
+      'tab.ideas': 'Ideas',
+      'ideas.banner': '\u00a1Cualquier idea que sugieras, si me gusta, la har\u00e9 realidad!',
+      'ideas.banner_btn': 'Sugerir una idea \u2192',
     };
 
     var releaseNotesEN = {};
@@ -571,7 +586,7 @@
 
     try {
       var saved = localStorage.getItem('tvh_lang');
-      if (saved && (saved === 'ru' || saved === 'en')) setLang(saved);
+      if (saved && (saved === 'ru' || saved === 'en' || saved === 'es')) setLang(saved);
     } catch(e) {}
 
     var activeTab = 'all';
@@ -587,7 +602,7 @@
         '<svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a></div>';
     }
     function renderArticles() {
-      var articles = currentLang === 'en' ? articlesEN : articlesRU;
+      var articles = currentLang === 'ru' ? articlesRU : articlesEN;
       var html = '';
       for (var a = 0; a < articles.length; a++) {
         html += '<div class="article-card">';
@@ -617,8 +632,8 @@
         '</div>';
     }
     function renderPreviews() {
-      var articles = currentLang === 'en' ? articlesEN : articlesRU;
-      var ideas = currentLang === 'en' ? ideasEN : ideasRU;
+      var articles = currentLang === 'ru' ? articlesRU : articlesEN;
+      var ideas = currentLang === 'ru' ? ideasRU : ideasEN;
       var html = '<div class="section-sub-articles" style="margin-bottom:16px">' +
         lang[currentLang]['tab.articles'] + '</div>';
 
@@ -660,7 +675,7 @@
       return html;
     }
     function renderIdeas() {
-      var ideas = currentLang === 'en' ? ideasEN : ideasRU;
+      var ideas = currentLang === 'ru' ? ideasRU : ideasEN;
       var statusLabel = currentLang === 'ru'
         ? { done: '\u2713 \u0421\u0434\u0435\u043B\u0430\u043D\u043E', progress: '\u25CF \u0412 \u0440\u0430\u0431\u043E\u0442\u0435', planned: '\u25CB \u0412 \u043F\u043B\u0430\u043D\u0430\u0445' }
         : { done: '\u2713 Done', progress: '\u25CF In progress', planned: '\u25CB Planned' };
@@ -702,7 +717,7 @@
               var downloadUrl = asset ? asset.browser_download_url : '';
               var body = rel.body || '';
               var bodyEN = releaseNotesEN[ver] || body;
-              var displayBody = currentLang === 'en' ? fmtRN(bodyEN) : fmtRN(body);
+              var displayBody = currentLang === 'ru' ? fmtRN(body) : fmtRN(bodyEN);
               var sizeMB = asset ? (asset.size / 1024 / 1024).toFixed(1) : '';
               html += '<div class="blog-card">';
               html += '<h2>' + ver + '</h2>';
@@ -732,7 +747,7 @@
                 var downloadUrl = asset ? asset.browser_download_url : '';
                 var body = rel.body || '';
                 var bodyEN = releaseNotesEN[ver] || body;
-                var displayBody = currentLang === 'en' ? fmtRN(bodyEN) : fmtRN(body);
+                var displayBody = currentLang === 'ru' ? fmtRN(body) : fmtRN(bodyEN);
                 var sizeMB = asset ? (asset.size / 1024 / 1024).toFixed(1) : '';
                 html += '<div class="blog-card">';
                 html += '<h2>' + ver + '</h2>';
@@ -761,7 +776,7 @@
       generateSchema();
     }
     function generateSchema() {
-      var articles = currentLang === 'en' ? articlesEN : articlesRU;
+      var articles = currentLang === 'ru' ? articlesRU : articlesEN;
       var items = [];
       for (var i = 0; i < articles.length; i++) {
         items.push({

@@ -203,6 +203,107 @@ lang.en = {
   'footer.contact': 'Contact us',
 };
 
+lang.es = {
+  'page.title': 'TV Hamsters \u2014 vean v\u00eddeos juntos',
+  'hero.title': 'Vean v\u00eddeos juntos,<br>como si estuvieran en la misma sala',
+  'hero.sub': 'Compartir pantalla con sonido, chat de voz, videollamada y walkie-talkie \u2014<br>todo en una app. Gratis.',
+  'hero.download': 'Windows (escritorio)',
+  'hero.win_btn': 'Descargar',
+  'hero.learn': 'M\u00e1s informaci\u00f3n',
+  'hero.version': 'Versi\u00f3n 1.7.1 \u00b7 77 MB \u00b7 Portable',
+  'hero.channel': 'Canal de Telegram',
+  'hero.channel_desc': 'Noticias y lanzamientos',
+  'hero.channel_btn': 'Suscribirse',
+  'hero.bot': 'Bot de Telegram',
+  'hero.bot_desc': 'Crear salas desde el chat',
+  'hero.bot_btn': 'Abrir',
+  'hero.mobile': 'Cliente m\u00f3vil',
+  'hero.mobile_desc': 'Ver sin PC',
+  'hero.soon': 'Pronto',
+  'about.title': 'C\u00f3mo funciona',
+  'about.desc': 'TV Hamsters es una aplicaci\u00f3n de escritorio para ver v\u00eddeos juntos en l\u00ednea. Un h\u00e1mster comparte su pantalla (con v\u00eddeo y audio del sistema), los dem\u00e1s ven y escuchan \u2014 y todos pueden hablar al mismo tiempo. Sin registro, sin suscripciones.',
+  'about.feat1_title': 'Ver juntos',
+  'about.feat1_desc': 'Pon una pel\u00edcula o v\u00eddeo en tu PC, activa la pantalla compartida con audio \u2014 y tus amigos ven exactamente lo que t\u00fa ves. Ideal para noches de cine, maratones de series o trabajo colaborativo con v\u00eddeo.',
+  'about.feat2_title': 'Chat de voz + Walkie-talkie',
+  'about.feat2_desc': 'Micr\u00f3fono para conversar mientras ven. Adem\u00e1s, modo walkie-talkie (Push-to-Talk): mant\u00e9n presionada la Barra espaciadora \u2014 habla, su\u00e9ltala \u2014 el micr\u00f3fono se apaga. \u00datil para comentarios r\u00e1pidos.',
+  'about.feat3_title': 'Videollamada + C\u00e1mara',
+  'about.feat3_desc': 'Enciende tu c\u00e1mara y ve las reacciones de tus amigos en tiempo real. Hasta 5 participantes por sala. Conexiones directas peer-to-peer sin retrasos.',
+  'about.feat4_title': 'Dos modos',
+  'about.feat4_desc': '<strong>Local</strong> \u2014 misma red (a trav\u00e9s del router). Todo queda en tu red, sin necesidad de internet.<br><strong>En l\u00ednea</strong> \u2014 un servidor en la nube ayuda a encontrarse, mientras el v\u00eddeo y el audio van directamente entre participantes (P2P).',
+  'about.local_label': 'Local',
+  'about.cloud_label': 'En l\u00ednea',
+  'uses.title': 'Qu\u00e9 hacer',
+  'uses.sub': 'TV Hamsters es m\u00e1s que una app. Esto es lo que puedes hacer:',
+  'uses.item1_title': 'Cine en el sof\u00e1',
+  'uses.item1_desc': 'Pon una pel\u00edcula o serie \u2014 tus amigos la ven y comentan en vivo. Re\u00edr, llorar y discutir la trama es el doble de divertido juntos.',
+  'uses.item2_title': 'Sin VPN ni fronteras',
+  'uses.item2_desc': '\u00bfAmigos en Canad\u00e1, EE.UU., Europa? Sin bloqueos ni ralentizaciones. Abre la app y ya est\u00e1n en la misma sala. P2P \u2014 los datos van directamente, sin intermediarios.',
+  'uses.item3_title': 'Transmite tu juego a tu grupo',
+  'uses.item3_desc': 'Jugando Dark Souls mientras los amigos animan y se r\u00eden con cada muerte. Sin Twitch, sin retrasos \u2014 solo tu gente, para tu gente.',
+  'uses.item4_title': 'Tutor\u00eda remota',
+  'uses.item4_desc': 'Muestra tu pantalla \u2014 el estudiante sigue. O mira su pantalla y gu\u00edalo con la voz. Reparaci\u00f3n de PC, edici\u00f3n de v\u00eddeo, configuraci\u00f3n de software, <a class="easter-link" href="https://t.me/happy_spanish">espa\u00f1ol</a> \u2014 ense\u00f1a a distancia.',
+  'uses.item5_title': 'Celebra con los que est\u00e1n lejos',
+  'uses.item5_desc': 'Cumplea\u00f1os, A\u00f1o Nuevo, viernes por la noche \u2014 sopla las velas, brinda virtualmente y mira la reacci\u00f3n del homenajeado en tiempo real. Hasta 5 personas \u2014 la compa\u00f1\u00eda m\u00e1s acogedora.',
+  'uses.item6_title': 'Fiesta online',
+  'uses.item6_desc': 'Elige un DJ \u2014 \u00e9l transmite m\u00fasica desde su PC. Los dem\u00e1s se relajan, charlan, cantan y piden la siguiente canci\u00f3n. Reuniones acogedoras sin salir de casa.',
+  'screens.title': 'Capturas de pantalla',
+  'screens.main': 'Pantalla principal',
+  'screens.settings': 'Ajustes / Modos',
+  'screens.room': 'Sala de visualizaci\u00f3n',
+  'manual.title': 'C\u00f3mo usar',
+  'manual.sub': 'Simple \u2014 sin registro, sin cuentas, sin SMS',
+  'manual.step1_title': 'Crea una sala',
+  'manual.step1_desc': 'Abre la app, selecciona el modo "En l\u00ednea" (por defecto) y haz clic en "Crear sala". Comparte el c\u00f3digo de 4 d\u00edgitos con tus amigos (ya est\u00e1 copiado al portapapeles).',
+  'manual.step2_title': '\u00danete a la sala',
+  'manual.step2_desc': 'Los amigos eligen el modo "En l\u00ednea", ingresan tu c\u00f3digo y hacen clic en "Unirse a la sala". Todos est\u00e1n dentro \u2014 hasta 5 personas.',
+  'manual.step3_title': 'Controla la transmisi\u00f3n',
+  'manual.step3_desc': 'C\u00e1mara, micr\u00f3fono, pantalla compartida con audio del sistema, modo walkie-talkie (clic derecho en el micr\u00f3fono \u2192 mantener Barra espaciadora). Al compartir, la ventana principal se minimiza \u2014 aparecen un panel de control flotante y una ventana con los rostros.',
+  'manual.step4_title': 'Charla en tiempo real',
+  'manual.step4_desc': 'Todo funciona peer-to-peer (P2P) \u2014 v\u00eddeo y audio sin retrasos. Discute, r\u00ede y comenta como si estuvieras en un cine real.',
+  'manual.local_title': 'Modo local',
+  'manual.local_desc': 'Sin internet. Si est\u00e1n en la misma red local (por ejemplo, conectados al mismo Wi-Fi pero en diferentes habitaciones) \u2014 selecciona el modo "Local", el anfitri\u00f3n crea una sala y los dem\u00e1s se conectan usando la direcci\u00f3n que muestra la app. Funciona directamente, incluso sin acceso a internet.',
+  'team.title': 'Sobre el equipo',
+  'team.dev_role': 'Desarrollador',
+  'team.dev_name': 'H\u00e1mster Loco "Outmilker"',
+  'team.dev_desc': 'Construy\u00f3 todo desde la primera l\u00ednea de c\u00f3digo hasta el \u00faltimo build',
+  'team.idea_role': 'Idea',
+  'team.idea_name': 'Homamoomy y Anastasia "Senya"',
+  'team.idea_desc': 'Gracias a mis queridos h\u00e1msteres por la inspiraci\u00f3n que lleg\u00f3 por la noche mientras no me dejaban dormir tranquilo...',
+  'team.help_role': 'Ayuda y soporte',
+  'team.help_name': 'Vasilka',
+  'team.help_desc': 'Muchas gracias por la ayuda en el desarrollo y las pruebas',
+  'team.ai_role': 'Asistente IA',
+  'team.ai_desc': 'Compa\u00f1ero de c\u00f3digo, que tambi\u00e9n es genial',
+  'team.motto': 'Juntos somos el equipo "\u00a1Guau!"... trabajando hasta las dos.... de la ma\u00f1ana)',
+  'contact.title': 'Cont\u00e1ctanos',
+  'contact.sub': '\u00bfEncontraste un error? \u00bfTienes una idea? \u00bfSolo quieres agradecer? Llena el formulario \u2014 te responderemos.',
+  'contact.name_ph': 'Tu nombre',
+  'contact.email_ph': 'Tu correo electr\u00f3nico (para responder)',
+  'contact.msg_ph': '\u00bfQu\u00e9 te gustar\u00eda decir?',
+  'contact.send': 'Enviar',
+  'contact.success': '\u2713 \u00a1Gracias! Mensaje enviado. Te responderemos pronto.',
+  'download.title': 'Descargar TV Hamsters',
+  'download.sub': 'Elige c\u00f3mo conectarte',
+  'download.btn': 'Windows (escritorio)',
+  'download.note': 'Sin anuncios. Sin rastreadores. Simplemente funciona.',
+  'download.platforms_title': 'Otras formas',
+  'download.tg_channel': 'Canal de Telegram',
+  'download.tg_channel_desc': 'Noticias, lanzamientos, anuncios',
+  'download.tg_channel_btn': 'Suscribirse',
+  'download.tg_bot': 'Bot de Telegram',
+  'download.tg_bot_desc': 'Salas desde el chat',
+  'download.tg_bot_btn': 'Abrir',
+  'download.mobile': 'Cliente m\u00f3vil',
+  'download.mobile_desc': 'Pr\u00f3ximamente',
+  'download.soon': 'En desarrollo',
+  'download.release_title': 'Novedades',
+  'nav.blog': 'Blog',
+  'download.blog_desc': 'Art\u00edculos, ideas, historia del proyecto',
+  'download.blog_btn': 'Leer',
+  'footer.issues': 'Reportar un problema',
+  'footer.contact': 'Cont\u00e1ctanos',
+};
+
 // === Release notes (English) ===
 var releaseNotesEN = {};
 releaseNotesEN['v1.7.2'] = 'TV Hamsters v1.7.2\n\nWhat\'s new\n\nWard No. Instead of boring "Room code: 1234" now "Ward No. 1234". Because hamsters gather in a ward, not in some "room".\nScenarios in the "About" modal Added a "Things to do" section with real use cases: home cinema, remote mentorship, connecting with those far away.\nDeep-link hamsters:// Registered the hamsters:// protocol. Now you can send friends links like hamsters://join?code=XXXX — the app will open and connect automatically. Handy for a future Telegram bot.\nDonations Two support buttons: Boosty and CloudTips — open in your system browser, not inside the app. We\'d appreciate any support for the project.\n\nFixes\n\nDonation links now open in the system browser (previously opened inside Electron, breaking auth).\nDesktop shortcut prompt now shows for the new version.';
@@ -243,16 +344,16 @@ function setLang(l) {
   // Обновить текст кнопки скачивания, если есть данные о размере
   var btn = document.getElementById('downloadBtnText');
   if (btn && window._releaseSize) {
-    btn.textContent = (l === 'ru' ? 'Windows (' + window._releaseSize + ' МБ)' : 'Windows (' + window._releaseSize + ' MB)');
+    btn.textContent = (l === 'ru' ? 'Windows (' + window._releaseSize + ' \u041C\u0411)' : 'Windows (' + window._releaseSize + ' MB)');
   }
   var hbtn = document.getElementById('heroBtnText');
   if (hbtn && window._releaseSize) {
-    hbtn.textContent = (l === 'ru' ? 'Windows (' + window._releaseSize + ' МБ)' : 'Windows (' + window._releaseSize + ' MB)');
+    hbtn.textContent = (l === 'ru' ? 'Windows (' + window._releaseSize + ' \u041C\u0411)' : 'Windows (' + window._releaseSize + ' MB)');
   }
   // Обновить версию в герое
   var hv = document.getElementById('heroVersion');
   if (hv && window._releaseVer && window._releaseSize) {
-    hv.textContent = (l === 'ru' ? 'Версия ' + window._releaseVer + ' · ' + window._releaseSize + ' МБ · Portable' : 'Version ' + window._releaseVer + ' · ' + window._releaseSize + ' MB · Portable');
+    hv.textContent = (l === 'ru' ? '\u0412\u0435\u0440\u0441\u0438\u044F ' + window._releaseVer + ' \u00B7 ' + window._releaseSize + ' \u041C\u0411 \u00B7 Portable' : 'Version ' + window._releaseVer + ' \u00B7 ' + window._releaseSize + ' MB \u00B7 Portable');
   }
 }
 
@@ -267,7 +368,7 @@ for (var i = 0; i < langBtns.length; i++) {
 // === Восстановить язык ===
 try {
   var saved = localStorage.getItem('tvh_lang');
-  if (saved && (saved === 'ru' || saved === 'en')) {
+  if (saved && (saved === 'ru' || saved === 'en' || saved === 'es')) {
     setLang(saved);
   }
 } catch(e) {}
