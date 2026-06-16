@@ -454,8 +454,9 @@ ipcMain.handle('create-panel', (event) => {
   panelWindow.loadFile('renderer/panel.html');
   sharingActive = true;
   panelWindow.once('ready-to-show', () => panelWindow.show());
-  panelWindow.setAlwaysOnTop(true, 'pop-up-menu');
-  setTimeout(() => { if (panelWindow && !panelWindow.isDestroyed()) panelWindow.setAlwaysOnTop(true, 'pop-up-menu'); }, 2000);
+  panelWindow.setAlwaysOnTop(true, 'screen-saver');
+  var panelTopTimer = setInterval(() => { if (panelWindow && !panelWindow.isDestroyed()) panelWindow.setAlwaysOnTop(true, 'screen-saver'); }, 5000);
+  panelWindow.on('close', () => { clearInterval(panelTopTimer); });
 
   // Position bottom-center
   const { workArea } = require('electron').screen.getPrimaryDisplay();
@@ -785,7 +786,9 @@ ipcMain.handle('create-faces', (event) => {
 
   facesWindow.loadFile('renderer/faces.html');
   facesWindow.once('ready-to-show', () => facesWindow.show());
-  facesWindow.setAlwaysOnTop(true, 'pop-up-menu');
+  facesWindow.setAlwaysOnTop(true, 'screen-saver');
+  var facesTopTimer = setInterval(() => { if (facesWindow && !facesWindow.isDestroyed()) facesWindow.setAlwaysOnTop(true, 'screen-saver'); }, 5000);
+  facesWindow.on('close', () => { clearInterval(facesTopTimer); });
 
   // Position bottom-right
   facesWindow.setPosition(
