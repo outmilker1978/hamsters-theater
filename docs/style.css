@@ -989,6 +989,12 @@ footer {
 .donate-footer-link:hover {
   color: #d4b8ff !important;
 }
+.footer-rss {
+  color: #f97316 !important;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
 
 .footer-copy {
   font-size: 13px;
