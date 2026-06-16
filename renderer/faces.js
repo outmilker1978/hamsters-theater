@@ -51,7 +51,13 @@ ipcRenderer.on('faces-frames', (event, frames) => {
       const label = document.createElement('div');
       label.className = 'label';
       label.id = 'lbl-' + f.id;
-      label.textContent = f.isLocal ? '\u0412\u044B' : (f.name || '\u0425\u043E\u043C\u044F\u0447\u043E\u043A');
+      var qualityDot = document.createElement('span');
+      qualityDot.className = 'quality-dot ' + (f.quality || 'waiting');
+      qualityDot.id = 'qdot-' + f.id;
+      label.appendChild(qualityDot);
+      var nameSpan = document.createElement('span');
+      nameSpan.textContent = f.isLocal ? '\u0412\u042B' : (f.name || '\u0425\u043E\u043C\u044F\u0447\u043E\u043A');
+      label.appendChild(nameSpan);
       card.appendChild(label);
       const volContainer = document.createElement('div');
       volContainer.className = 'vol-container';
@@ -76,7 +82,12 @@ ipcRenderer.on('faces-frames', (event, frames) => {
       faceData[f.id] = { card, wrap, img, label, slider };
     } else {
       const entry = faceData[f.id];
-      if (entry.label) entry.label.textContent = f.isLocal ? '\u0412\u042B' : (f.name || '\u0425\u043E\u043C\u044F\u0447\u043E\u043A');
+      if (entry.label) {
+        var qdot = entry.label.querySelector('.quality-dot');
+        if (qdot) { qdot.className = 'quality-dot ' + (f.quality || 'waiting'); }
+        var ns = entry.label.querySelector('span:last-child');
+        if (ns) ns.textContent = f.isLocal ? '\u0412\u042B' : (f.name || '\u0425\u043E\u043C\u044F\u0447\u043E\u043A');
+      }
     }
     if (f.data) {
       faceData[f.id].img.src = f.data;

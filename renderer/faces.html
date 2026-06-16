@@ -78,7 +78,22 @@
       background: rgba(0,0,0,0.5);
       width: 100%;
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
     }
+    .quality-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .quality-dot.good { background: #22c55e; }
+    .quality-dot.medium { background: #eab308; }
+    .quality-dot.poor { background: #ef4444; }
+    .quality-dot.waiting { background: #6b5b7a; }
     .face-card .vol-container {
       position: absolute;
       right: 2px;

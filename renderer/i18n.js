@@ -86,7 +86,7 @@ const LOCALES = {
     'shortcut.no': 'Нет',
     'shortcut.dont_ask': 'Больше не спрашивать',
     'settings.quality': 'Качество видео',
-    'settings.quality_ultra_low': 'Минимальное',
+    'settings.quality_ultra_low': 'Минимум',
     'settings.quality_low': 'Низкое',
     'settings.quality_medium': 'Среднее',
     'settings.quality_high': 'Высокое',

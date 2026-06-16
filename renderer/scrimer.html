@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#000}
+body{display:flex;align-items:center;justify-content:center}
+#screamer{width:100%;height:100%;object-fit:contain;display:block}
+</style>
+</head>
+<body>
+<img id="screamer" alt="">
+<audio id="scream" preload="auto"></audio>
+<script>
+const images = ['scrimer/screamer_1.png','scrimer/screamer_2.png','scrimer/screamer_3.png','scrimer/screamer_4.png'];
+var img = document.getElementById('screamer');
+img.src = images[Math.floor(Math.random() * images.length)];
+var audio = document.getElementById('scream');
+audio.src = 'scrimer/jumpscare.mp3';
+audio.volume = 0.8;
+audio.play().catch(function(){});
+setTimeout(function(){ audio.pause(); audio.currentTime = 0; window.close(); }, 1500);
+</script>
+</body>
+</html>

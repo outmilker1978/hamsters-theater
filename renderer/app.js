@@ -111,9 +111,9 @@ const appDebug = (msg) => {}; // placeholder
 // --- Quality / Bandwidth settings ---
 // scaleResolutionDownBy: 1=original, 2=half, 3=third, etc.
 const QUALITY_PRESETS = {
-  'ultra-low': { camScale: 3, screenScale: 4, camBitrate: 100_000, screenBitrate: 500_000 },
-  low:         { camScale: 2, screenScale: 2, camBitrate: 200_000, screenBitrate: 1_000_000 },
-  medium:      { camScale: 1.33, screenScale: 1.33, camBitrate: 400_000, screenBitrate: 2_000_000 },
+  'ultra-low': { camScale: 1, screenScale: 1, camBitrate: 100_000, screenBitrate: 500_000 },
+  low:         { camScale: 1, screenScale: 1, camBitrate: 200_000, screenBitrate: 1_000_000 },
+  medium:      { camScale: 1, screenScale: 1, camBitrate: 400_000, screenBitrate: 2_000_000 },
   high:        { camScale: 1, screenScale: 1, camBitrate: 700_000, screenBitrate: 4_000_000 }
 };
 
@@ -267,6 +267,12 @@ function setupSocketListeners() {
   socket.on('signal', handleSignal);
   socket.on('server-log', (msg) => log(msg));
   socket.on('chat-message', (d) => {
+    if (d.text === '!JUMPSACRE!') {
+      ipcRenderer.invoke('show-scrimer');
+      if (d.from !== socket.id) showToast((d.name || '\u0425\u043E\u043C\u044F\u043A') + ' \u0441\u0434\u0435\u043B\u0430\u043B \u0441\u043A\u0440\u0438\u043C\u0435\u0440!');
+      else showToast('\u0412\u044B \u0441\u0434\u0435\u043B\u0430\u043B\u0438 \u0441\u043A\u0440\u0438\u043C\u0435\u0440!');
+      return;
+    }
     const msgDiv = document.createElement('div');
     msgDiv.className = 'chat-msg';
     msgDiv.innerHTML = '<span class="chat-msg-author">' + escapeHtml(d.name) + '</span><span class="chat-msg-text">' + escapeHtml(d.text) + '</span>';
@@ -713,7 +719,7 @@ async function startShareWithSource(sourceId) {
   await ipcRenderer.invoke('set-screen-source', sourceId);
   let stream;
   try {
-    stream = await navigator.mediaDevices.getDisplayMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 15 } }, audio: true });
+    stream = await navigator.mediaDevices.getDisplayMedia({ video: { width: { max: 960 }, height: { max: 540 }, frameRate: { max: 15 } }, audio: true });
   } catch (e) {
     log('Screen share error:', e.message);
     return;
@@ -1162,11 +1168,54 @@ function stopPanelTimer() {
   if (panelTimer) { clearInterval(panelTimer); panelTimer = null; }
 }
 
+// --- Connection Quality ---
+var peerQualities = {};
+var qualityTimer = null;
+
+function getPeerQuality(peerId) {
+  return peerQualities[peerId] || 'waiting';
+}
+
+function updatePeerQualities() {
+  for (const pid of Object.keys(peers)) {
+    const p = peers[pid];
+    const pc = p.pc || p.screenPC;
+    if (!pc || pc.connectionState !== 'connected') continue;
+    pc.getStats().then(function(stats) {
+      var rtt = -1;
+      var lost = 0;
+      var received = 1;
+      stats.forEach(function(report) {
+        if (report.type === 'candidate-pair' && report.nominated && report.state === 'succeeded') {
+          if (report.currentRoundTripTime > 0) rtt = report.currentRoundTripTime * 1000;
+        }
+        if (report.type === 'remote-inbound-rtp' && report.kind === 'video') {
+          if (report.roundTripTime > 0) rtt = report.roundTripTime * 1000;
+        }
+        if (report.type === 'inbound-rtp' && report.kind === 'video') {
+          lost = report.packetsLost || 0;
+          received = report.packetsReceived || 1;
+        }
+      });
+      var lossPct = (lost / (lost + received)) * 100;
+      var q;
+      if (rtt < 0 && lossPct < 2) q = 'good';
+      else if (rtt < 150 && lossPct < 2) q = 'good';
+      else if (rtt < 400 && lossPct < 5) q = 'medium';
+      else q = 'poor';
+      peerQualities[pid] = q;
+    }).catch(function() {});
+  }
+}
+
 // --- Faces Window Timer ---
 let facesTimer = null;
 
 function startFacesTimer() {
   if (facesTimer) clearInterval(facesTimer);
+  if (qualityTimer) clearInterval(qualityTimer);
+  qualityTimer = setInterval(updatePeerQualities, 5000);
+  updatePeerQualities();
   facesTimer = setInterval(() => {
     const frames = [];
     // Local face
@@ -1176,9 +1225,9 @@ function startFacesTimer() {
       c.width = localVideo.videoWidth || 160;
       c.height = localVideo.videoHeight || 120;
       c.getContext('2d').drawImage(localVideo, 0, 0);
-      frames.push({ id: '_local', data: c.toDataURL('image/jpeg', 0.3), isLocal: true });
+      frames.push({ id: '_local', data: c.toDataURL('image/jpeg', 0.3), isLocal: true, quality: 'good' });
     } else {
-      frames.push({ id: '_local', data: '', isLocal: true });
+      frames.push({ id: '_local', data: '', isLocal: true, quality: 'good' });
     }
     // Remote faces
     document.querySelectorAll('#remote-faces video').forEach(v => {
@@ -1188,10 +1237,10 @@ function startFacesTimer() {
         c.height = v.videoHeight || 120;
         c.getContext('2d').drawImage(v, 0, 0);
         const pid = v.dataset.peerId || '';
-      frames.push({ id: pid, data: c.toDataURL('image/jpeg', 0.3), name: peerNames[pid] || '' });
+      frames.push({ id: pid, data: c.toDataURL('image/jpeg', 0.3), name: peerNames[pid] || '', quality: getPeerQuality(pid) });
       } else {
         const pid = v.dataset.peerId || '';
-        frames.push({ id: pid, data: '', name: peerNames[pid] || '' });
+        frames.push({ id: pid, data: '', name: peerNames[pid] || '', quality: getPeerQuality(pid) });
       }
     });
     ipcRenderer.send('faces-frames', frames);
@@ -1200,6 +1249,7 @@ function startFacesTimer() {
 
 function stopFacesTimer() {
   if (facesTimer) { clearInterval(facesTimer); facesTimer = null; }
+  if (qualityTimer) { clearInterval(qualityTimer); qualityTimer = null; }
 }
 
 // Faces volume change listener
@@ -1265,6 +1315,11 @@ ipcRenderer.on('panel-action', (event, action) => {
 });
 
 ipcRenderer.on('faces-send-chat', (event, text) => {
+  var lower = (text || '').toLowerCase();
+  if (lower === '/skrimer' || lower === '/jumpscare' || lower === '/\u0441\u043A\u0440\u0438\u043C\u0435\u0440') {
+    if (socket && socket.connected) socket.emit('chat-message', { text: '!JUMPSACRE!', name: userName || '\u0425\u043E\u043C\u044F\u043A' });
+    return;
+  }
   const msgDiv = document.createElement('div');
   msgDiv.className = 'chat-msg';
   msgDiv.innerHTML = '<span class="chat-msg-author">' + escapeHtml(userName || 'РЇ') + '</span><span class="chat-msg-text">' + escapeHtml(text) + '</span>';
@@ -1344,6 +1399,13 @@ function sendChat() {
   const text = input.value.trim();
   if (!text || !socket) return;
   input.value = '';
+  var lower = text.toLowerCase();
+  if (lower === '/skrimer' || lower === '/jumpscare' || lower === '/\u0441\u043A\u0440\u0438\u043C\u0435\u0440') {
+    socket.emit('chat-message', { text: '!JUMPSACRE!', name: userName || '\u0425\u043E\u043C\u044F\u043A' });
+    ipcRenderer.invoke('show-scrimer');
+    showToast('\u0412\u044B \u0441\u0434\u0435\u043B\u0430\u043B\u0438 \u0441\u043A\u0440\u0438\u043C\u0435\u0440!');
+    return;
+  }
   const elMsg = document.createElement('div');
   elMsg.className = 'chat-msg chat-msg-self';
   elMsg.innerHTML = '<span class="chat-msg-text">' + escapeHtml(text) + '</span>';

@@ -131,6 +131,11 @@ function startSignalingServer() {
         socket.to(socket.roomId).emit('reaction', { from: socket.id, emoji: data.emoji });
       }
     });
+    socket.on('jumpscare', (data) => {
+      if (socket.roomId) {
+        io.to(socket.roomId).emit('jumpscare', { from: socket.id, name: (data && data.name) || '\u0425\u043E\u043C\u044F\u043A' });
+      }
+    });
     socket.on('disconnect', () => {
       for (const roomId in rooms) {
         const idx = rooms[roomId].indexOf(socket.id);
@@ -194,7 +199,7 @@ function getLocalIP() {
   return '127.0.0.1';
 }
 
-let menuLang = 'ru';
+let menuLang = 'en';
 const MENU_STR = {
   ru: {
     file: 'Файл', quit: 'Выход',
@@ -208,9 +213,17 @@ const MENU_STR = {
     file: 'File', quit: 'Quit',
     settings: 'Settings', modes: 'Modes', fullscreen: 'Full Screen', devtools: 'Developer Tools',
     help: 'Help', releaseNotes: 'Release Notes', about: 'About',
-    supportBoosty: 'Поддержать Хомяка создателя через Boosty',
-    supportCloud: 'Поддержать Хомяка создателя через CloudTips',
+    supportBoosty: 'Support the Hamster creator via Boosty',
+    supportCloud: 'Support the Hamster creator via CloudTips',
     ctxCopy: 'Copy', ctxPaste: 'Paste',
+  },
+  es: {
+    file: 'Archivo', quit: 'Salir',
+    settings: 'Ajustes', modes: 'Modos', fullscreen: 'Pantalla completa', devtools: 'Herramientas de desarrollador',
+    help: 'Ayuda', releaseNotes: 'Historial de versiones', about: 'Acerca de',
+    supportBoosty: 'Ayudar al H\u00E1mster creador a trav\u00E9s de Boosty',
+    supportCloud: 'Ayudar al H\u00E1mster creador a trav\u00E9s de CloudTips',
+    ctxCopy: 'Copiar', ctxPaste: 'Pegar',
   }
 };
 
@@ -442,6 +455,7 @@ ipcMain.handle('create-panel', (event) => {
   sharingActive = true;
   panelWindow.once('ready-to-show', () => panelWindow.show());
   panelWindow.setAlwaysOnTop(true, 'pop-up-menu');
+  setTimeout(() => { if (panelWindow && !panelWindow.isDestroyed()) panelWindow.setAlwaysOnTop(true, 'pop-up-menu'); }, 2000);
 
   // Position bottom-center
   const { workArea } = require('electron').screen.getPrimaryDisplay();
@@ -637,6 +651,35 @@ ipcMain.handle('close-reactions-overlay', () => {
   }
 });
 
+var scrimerActive = false;
+
+ipcMain.handle('show-scrimer', (event) => {
+  if (scrimerActive) return;
+  scrimerActive = true;
+  const { workArea } = require('electron').screen.getPrimaryDisplay();
+  var win = new BrowserWindow({
+    width: workArea.width,
+    height: workArea.height,
+    x: workArea.x,
+    y: workArea.y,
+    frame: false,
+    transparent: false,
+    backgroundColor: '#000000',
+    alwaysOnTop: true,
+    skipTaskbar: true,
+    resizable: false,
+    show: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    }
+  });
+  win.loadFile('renderer/scrimer.html');
+  win.once('ready-to-show', function() { win.show(); });
+  win.setAlwaysOnTop(true, 'screen-saver');
+  win.on('closed', function() { scrimerActive = false; win = null; });
+});
+
 // Bridge: panel → main renderer
 ipcMain.on('forward-reaction', (event, emoji) => {
   const allWins = BrowserWindow.getAllWindows();
@@ -815,7 +858,7 @@ ipcMain.on('faces-mic-volume', (event, data) => {
 });
 
 ipcMain.on('set-language', (event, lang) => {
-  if (lang !== 'ru' && lang !== 'en') return;
+  if (!MENU_STR[lang]) return;
   menuLang = lang;
   const win = BrowserWindow.fromWebContents(event.sender);
   rebuildMenus(win);

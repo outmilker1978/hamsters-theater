@@ -123,6 +123,12 @@ function connectAndDo(action) {
   });
   socket.on('peer-disconnected', removePeer);
   socket.on('chat-message', (d) => {
+    if (d.text === '!JUMPSACRE!') {
+      if (d.name && d.from !== socket.id) toast(d.name + ' \u0441\u0434\u0435\u043B\u0430\u043B \u0441\u043A\u0440\u0438\u043C\u0435\u0440!');
+      else toast('\u041A\u0442\u043E-\u0442\u043E \u0441\u0434\u0435\u043B\u0430\u043B \u0441\u043A\u0440\u0438\u043C\u0435\u0440!');
+      showMobileScrimer();
+      return;
+    }
     const el = document.createElement('div');
     el.className = 'chat-msg';
     el.innerHTML = '<span class="chat-msg-author">' + escapeHtml(d.name) + '</span><span class="chat-msg-text">' + escapeHtml(d.text) + '</span>';
@@ -133,6 +139,7 @@ function connectAndDo(action) {
   socket.on('reaction', (d) => {
     showReaction(d.emoji);
   });
+
   socket.on('user-info', (d) => {
     // mobile doesn't show peer labels, ignore
   });
@@ -466,6 +473,13 @@ function sendChat() {
   const text = input.value.trim();
   if (!text || !socket) return;
   input.value = '';
+  var lower = text.toLowerCase();
+  if (lower === '/skrimer' || lower === '/jumpscare' || lower === '/\u0441\u043A\u0440\u0438\u043C\u0435\u0440') {
+    socket.emit('chat-message', { text: '!JUMPSACRE!', name: userName || '\u0425\u043E\u043C\u044F\u043A' });
+    showMobileScrimer();
+    toast('\u0412\u044B \u0441\u0434\u0435\u043B\u0430\u043B\u0438 \u0441\u043A\u0440\u0438\u043C\u0435\u0440!');
+    return;
+  }
   const el = document.createElement('div');
   el.className = 'chat-msg chat-msg-self';
   el.innerHTML = '<span class="chat-msg-text">' + escapeHtml(text) + '</span>';
@@ -474,6 +488,36 @@ function sendChat() {
   socket.emit('chat-message', { text: text, name: userName || t('i') });
 }
 function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+var scrimerImages = [
+  'mobile/scrimer/screamer_1.png',
+  'mobile/scrimer/screamer_2.png',
+  'mobile/scrimer/screamer_3.png',
+  'mobile/scrimer/screamer_4.png'
+];
+var scrimerAudio = new Audio('mobile/scrimer/jumpscare.mp3');
+scrimerAudio.preload = 'auto';
+
+function showMobileScrimer() {
+  var ov = document.getElementById('scrimerOverlay');
+  if (ov) return;
+  ov = document.createElement('div');
+  ov.id = 'scrimerOverlay';
+  ov.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:999999;background:#000;display:flex;align-items:center;justify-content:center';
+  var img = document.createElement('img');
+  img.src = scrimerImages[Math.floor(Math.random() * scrimerImages.length)];
+  img.style.cssText = 'width:100%;height:100%;object-fit:contain';
+  ov.appendChild(img);
+  document.body.appendChild(ov);
+  scrimerAudio.currentTime = 0;
+  scrimerAudio.play().catch(function(){});
+  setTimeout(function() {
+    scrimerAudio.pause();
+    scrimerAudio.currentTime = 0;
+    var e = document.getElementById('scrimerOverlay');
+    if (e) e.remove();
+  }, 1500);
+}
 
 // Reactions
 $('reactionBtn').onclick = () => {
