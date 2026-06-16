@@ -273,6 +273,10 @@ function setupSocketListeners() {
       else showToast('\u0412\u044B \u0441\u0434\u0435\u043B\u0430\u043B\u0438 \u0441\u043A\u0440\u0438\u043C\u0435\u0440!');
       return;
     }
+    var lower = (d.text || '').toLowerCase();
+    if (lower === '/skrimer' || lower === '/jumpscare' || lower === '/\u0441\u043A\u0440\u0438\u043C\u0435\u0440') {
+      return;
+    }
     const msgDiv = document.createElement('div');
     msgDiv.className = 'chat-msg';
     msgDiv.innerHTML = '<span class="chat-msg-author">' + escapeHtml(d.name) + '</span><span class="chat-msg-text">' + escapeHtml(d.text) + '</span>';
@@ -1179,8 +1183,9 @@ function getPeerQuality(peerId) {
 function updatePeerQualities() {
   for (const pid of Object.keys(peers)) {
     const p = peers[pid];
-    const pc = p.pc || p.screenPC;
-    if (!pc || pc.connectionState !== 'connected') continue;
+    const pc = (p.screenPC && p.screenPC.connectionState === 'connected') ? p.screenPC :
+               (p.pc && p.pc.connectionState === 'connected') ? p.pc : null;
+    if (!pc) continue;
     pc.getStats().then(function(stats) {
       var rtt = -1;
       var lost = 0;
@@ -1316,7 +1321,7 @@ ipcRenderer.on('panel-action', (event, action) => {
 
 ipcRenderer.on('faces-send-chat', (event, text) => {
   var lower = (text || '').toLowerCase();
-  if (lower === '/skrimer' || lower === '/jumpscare' || lower === '/\u0441\u043A\u0440\u0438\u043C\u0435\u0440') {
+  if (lower === '/skrimer' || lower === '/jumpscare' || lower === '/\u0441\u043A\u0440\u0438\u043C\u0435\u0440' || lower.indexOf('!jumpsacre!') >= 0) {
     if (socket && socket.connected) socket.emit('chat-message', { text: '!JUMPSACRE!', name: userName || '\u0425\u043E\u043C\u044F\u043A' });
     return;
   }
@@ -1400,7 +1405,7 @@ function sendChat() {
   if (!text || !socket) return;
   input.value = '';
   var lower = text.toLowerCase();
-  if (lower === '/skrimer' || lower === '/jumpscare' || lower === '/\u0441\u043A\u0440\u0438\u043C\u0435\u0440') {
+    if (lower === '/skrimer' || lower === '/jumpscare' || lower === '/\u0441\u043A\u0440\u0438\u043C\u0435\u0440' || lower.indexOf('!jumpsacre!') >= 0) {
     socket.emit('chat-message', { text: '!JUMPSACRE!', name: userName || '\u0425\u043E\u043C\u044F\u043A' });
     ipcRenderer.invoke('show-scrimer');
     showToast('\u0412\u044B \u0441\u0434\u0435\u043B\u0430\u043B\u0438 \u0441\u043A\u0440\u0438\u043C\u0435\u0440!');

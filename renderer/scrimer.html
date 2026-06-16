@@ -15,12 +15,14 @@ body{display:flex;align-items:center;justify-content:center}
 <script>
 const images = ['scrimer/screamer_1.png','scrimer/screamer_2.png','scrimer/screamer_3.png','scrimer/screamer_4.png'];
 var img = document.getElementById('screamer');
-img.src = images[Math.floor(Math.random() * images.length)];
 var audio = document.getElementById('scream');
 audio.src = 'scrimer/jumpscare.mp3';
 audio.volume = 0.8;
-audio.play().catch(function(){});
-setTimeout(function(){ audio.pause(); audio.currentTime = 0; window.close(); }, 1500);
+img.onload = function() {
+  audio.play().catch(function(){});
+  setTimeout(function(){ audio.pause(); audio.currentTime = 0; window.close(); }, 1500);
+};
+img.src = images[Math.floor(Math.random() * images.length)];
 </script>
 </body>
 </html>

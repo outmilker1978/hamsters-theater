@@ -129,6 +129,10 @@ function connectAndDo(action) {
       showMobileScrimer();
       return;
     }
+    var lower = (d.text || '').toLowerCase();
+    if (lower === '/skrimer' || lower === '/jumpscare' || lower === '/\u0441\u043A\u0440\u0438\u043C\u0435\u0440') {
+      return;
+    }
     const el = document.createElement('div');
     el.className = 'chat-msg';
     el.innerHTML = '<span class="chat-msg-author">' + escapeHtml(d.name) + '</span><span class="chat-msg-text">' + escapeHtml(d.text) + '</span>';
@@ -474,7 +478,7 @@ function sendChat() {
   if (!text || !socket) return;
   input.value = '';
   var lower = text.toLowerCase();
-  if (lower === '/skrimer' || lower === '/jumpscare' || lower === '/\u0441\u043A\u0440\u0438\u043C\u0435\u0440') {
+  if (lower === '/skrimer' || lower === '/jumpscare' || lower === '/\u0441\u043A\u0440\u0438\u043C\u0435\u0440' || lower.indexOf('!jumpsacre!') >= 0) {
     socket.emit('chat-message', { text: '!JUMPSACRE!', name: userName || '\u0425\u043E\u043C\u044F\u043A' });
     showMobileScrimer();
     toast('\u0412\u044B \u0441\u0434\u0435\u043B\u0430\u043B\u0438 \u0441\u043A\u0440\u0438\u043C\u0435\u0440!');
@@ -505,18 +509,20 @@ function showMobileScrimer() {
   ov.id = 'scrimerOverlay';
   ov.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:999999;background:#000;display:flex;align-items:center;justify-content:center';
   var img = document.createElement('img');
-  img.src = scrimerImages[Math.floor(Math.random() * scrimerImages.length)];
   img.style.cssText = 'width:100%;height:100%;object-fit:contain';
   ov.appendChild(img);
   document.body.appendChild(ov);
   scrimerAudio.currentTime = 0;
-  scrimerAudio.play().catch(function(){});
-  setTimeout(function() {
-    scrimerAudio.pause();
-    scrimerAudio.currentTime = 0;
-    var e = document.getElementById('scrimerOverlay');
-    if (e) e.remove();
-  }, 1500);
+  img.onload = function() {
+    scrimerAudio.play().catch(function(){});
+    setTimeout(function() {
+      scrimerAudio.pause();
+      scrimerAudio.currentTime = 0;
+      var e = document.getElementById('scrimerOverlay');
+      if (e) e.remove();
+    }, 1500);
+  };
+  img.src = scrimerImages[Math.floor(Math.random() * scrimerImages.length)];
 }
 
 // Reactions
