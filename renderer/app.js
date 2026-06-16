@@ -108,10 +108,12 @@ const log = (msg) => console.log('[NT]', msg);
 const appDebug = (msg) => {}; // placeholder
 
 // --- Quality / Bandwidth settings ---
+// scaleResolutionDownBy: 1=original, 2=half, 3=third, etc.
 const QUALITY_PRESETS = {
-  low:   { camScale: 0.5,  screenScale: 0.5,  camBitrate: 200_000, screenBitrate: 1_000_000 },
-  medium:{ camScale: 0.75, screenScale: 0.75, camBitrate: 400_000, screenBitrate: 2_000_000 },
-  high:  { camScale: 1.0,  screenScale: 1.0,  camBitrate: 700_000, screenBitrate: 4_000_000 }
+  'ultra-low': { camScale: 3, screenScale: 4, camBitrate: 100_000, screenBitrate: 500_000 },
+  low:         { camScale: 2, screenScale: 2, camBitrate: 200_000, screenBitrate: 1_000_000 },
+  medium:      { camScale: 1.33, screenScale: 1.33, camBitrate: 400_000, screenBitrate: 2_000_000 },
+  high:        { camScale: 1, screenScale: 1, camBitrate: 700_000, screenBitrate: 4_000_000 }
 };
 
 function getQualityPreset() {
@@ -139,13 +141,26 @@ function applyQualityToSender(pc, kind, bitrate, scale) {
   }, 500);
 }
 
+function preferH264Codec(pc) {
+  try {
+    const caps = RTCRtpReceiver.getCapabilities('video');
+    if (!caps || !caps.codecs) return;
+    const h264 = caps.codecs.find(c => c.mimeType.toLowerCase() === 'video/h264' && c.sdpFmtpLine && c.sdpFmtpLine.includes('profile-level-id=42e01f'));
+    if (!h264) return;
+    const preferred = [h264, ...caps.codecs.filter(c => c !== h264)];
+    pc.getTransceivers().forEach(t => {
+      if (t.kind === 'video') try { t.setCodecPreferences(preferred); } catch(e) { log('setCodecPref err: ' + e.message); }
+    });
+  } catch(e) { log('H264 pref err: ' + e.message); }
+}
+
 function syncQuality() {
   const q = getQualityPreset();
   for (const peerId of Object.keys(peers)) {
     const p = peers[peerId];
     if (p.pc) {
       applyQualityToSender(p.pc, 'video', q.camBitrate, q.camScale);
-      applyQualityToSender(p.pc, 'audio', 64_000, null);
+      applyQualityToSender(p.pc, 'audio', 32_000, null);
     }
     if (p.screenPC) {
       applyQualityToSender(p.screenPC, 'video', q.screenBitrate, q.screenScale);
@@ -498,13 +513,14 @@ function createOfferToPeer(peerId) {
   if (peer.pc) { peer.pc.close(); }
   peer.pc = createPC(peerId);
   localStream.getTracks().forEach(t => peer.pc.addTrack(t, localStream));
+  preferH264Codec(peer.pc);
   peer.pc.createOffer().then(offer => {
     peer.pc.setLocalDescription(offer);
     socket.emit('offer', { to: peerId, sdp: offer, type: 'camera' });
     log('Offer sent to ' + peerId);
     const q = getQualityPreset();
     applyQualityToSender(peer.pc, 'video', q.camBitrate, q.camScale);
-    applyQualityToSender(peer.pc, 'audio', 64_000, null);
+    applyQualityToSender(peer.pc, 'audio', 32_000, null);
   });
   if (sharingScreen && screenStream) {
     createScreenOffer(peerId, screenStream);
@@ -525,6 +541,7 @@ function handleOffer(data) {
   if (peer.pc) { peer.pc.close(); }
   peer.pc = createPC(fromId);
   if (localStream) localStream.getTracks().forEach(t => peer.pc.addTrack(t, localStream));
+  preferH264Codec(peer.pc);
   peer.pc.setRemoteDescription(new RTCSessionDescription(data.sdp))
     .then(() => {
       peer.cameraCandidates.forEach(c => {
@@ -539,7 +556,7 @@ function handleOffer(data) {
       log('Answer sent to ' + fromId);
       const q = getQualityPreset();
       applyQualityToSender(peer.pc, 'video', q.camBitrate, q.camScale);
-      applyQualityToSender(peer.pc, 'audio', 64_000, null);
+      applyQualityToSender(peer.pc, 'audio', 32_000, null);
     });
 }
 
@@ -710,7 +727,7 @@ async function startShareWithSource(sourceId) {
   await ipcRenderer.invoke('set-screen-source', sourceId);
   let stream;
   try {
-    stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+    stream = await navigator.mediaDevices.getDisplayMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 15 } }, audio: true });
   } catch (e) {
     log('Screen share error:', e.message);
     return;
@@ -776,6 +793,7 @@ function createScreenOffer(peerId, stream) {
   if (peer.screenPC) { peer.screenPC.close(); }
   peer.screenPC = createScreenPC(peerId);
   stream.getTracks().forEach(t => peer.screenPC.addTrack(t, stream));
+  preferH264Codec(peer.screenPC);
   peer.screenPC.createOffer().then(offer => {
     peer.screenPC.setLocalDescription(offer);
     socket.emit('offer', { to: peerId, sdp: offer, type: 'screen' });
