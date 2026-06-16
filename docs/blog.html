@@ -230,17 +230,49 @@
     }
     .idea-status {
       flex-shrink: 0;
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
     }
-    .idea-status.done { background: #065f46; }
-    .idea-status.progress { background: #1e3a5f; }
-    .idea-status.planned { background: #3a2a5a; }
+    .idea-status.done { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+    .idea-status.progress { background: linear-gradient(135deg, #2563eb, #60a5fa); }
+    .idea-status.planned { background: transparent; border: 2px solid #6b7280; color: #9ca3af; }
+    .ideas-banner {
+      background: linear-gradient(135deg, #1e1e28, #23232e);
+      border: 1px solid #3a3a4a;
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .ideas-banner-text {
+      font-size: 18px;
+      color: #c4b5fd;
+      font-weight: 600;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .ideas-banner-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 12px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: transform .1s, box-shadow .15s;
+    }
+    .ideas-banner-btn:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+    }
     .idea-body { flex: 1; min-width: 0; }
     .idea-body h3 {
       font-size: 17px;
@@ -331,9 +363,11 @@
       'blog.back': '\u041D\u0430 \u0433\u043B\u0430\u0432\u043D\u0443\u044E',
       'footer.issues': '\u0421\u043E\u043E\u0431\u0449\u0438\u0442\u044C \u043E \u043F\u0440\u043E\u0431\u043B\u0435\u043C\u0435',
       'tab.all': '\u0412\u0441\u0435',
-      'tab.articles': '\u041D\u043E\u0432\u043E\u0441\u0442\u0438',
+      'tab.articles': '\u0421\u0442\u0430\u0442\u044C\u0438',
       'tab.releases': '\u0420\u0435\u043B\u0438\u0437\u044B',
       'tab.ideas': '\u0418\u0434\u0435\u0438',
+      'ideas.banner': '\u041B\u044E\u0431\u044B\u0435 \u0432\u0430\u0448\u0438 \u0438\u0434\u0435\u0438, \u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u043C\u043D\u0435 \u043F\u043E\u043D\u0440\u0430\u0432\u044F\u0442\u0441\u044F, \u044F \u0440\u0435\u0430\u043B\u0438\u0437\u0443\u044E!',
+      'ideas.banner_btn': '\u041F\u0440\u0435\u0434\u043B\u043E\u0436\u0438\u0442\u044C \u0438\u0434\u0435\u044E \u2192',
     };
     lang.en = {
       'blog.title': 'Blog & News',
@@ -345,6 +379,8 @@
       'tab.articles': 'Articles',
       'tab.releases': 'Releases',
       'tab.ideas': 'Ideas',
+      'ideas.banner': 'Any idea you suggest \u2014 if I like it, I\'ll build it!',
+      'ideas.banner_btn': 'Suggest an idea \u2192',
     };
 
     var releaseNotesEN = {};
@@ -409,31 +445,32 @@
       }
     ];
     var ideasRU = [
-      { title: '\u0422\u0451\u043C\u043D\u0430\u044F \u0442\u0435\u043C\u0430', status: 'done', version: '1.0', desc: '\u041F\u043E\u043B\u043D\u043E\u0446\u0435\u043D\u043D\u0430\u044F \u0442\u0451\u043C\u043D\u0430\u044F \u0442\u0435\u043C\u0430 \u0434\u043B\u044F \u043A\u043E\u043C\u0444\u043E\u0440\u0442\u043D\u043E\u0433\u043E \u043F\u0440\u043E\u0441\u043C\u043E\u0442\u0440\u0430 \u0432\u0435\u0447\u0435\u0440\u043E\u043C' },
+      { title: 'TURN-\u0441\u0435\u0440\u0432\u0435\u0440 \u0434\u043B\u044F \u0441\u043B\u043E\u0436\u043D\u044B\u0445 \u0441\u0435\u0442\u0435\u0439', status: 'planned', version: '', desc: '\u0420\u0435\u043B\u0435 \u0434\u043B\u044F \u043A\u043E\u0440\u043F\u043E\u0440\u0430\u0442\u0438\u0432\u043D\u044B\u0445 \u0441\u0435\u0442\u0435\u0439 \u0438 \u0441\u043B\u043E\u0436\u043D\u043E\u0433\u043E NAT' },
+      { title: 'iOS \u043F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435', status: 'planned', version: '', desc: '\u041D\u0430\u0442\u0438\u0432\u043D\u043E\u0435 \u043F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435 \u0434\u043B\u044F iPhone \u0438 iPad' },
+      { title: '\u0414\u043E 10 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u043E\u0432', status: 'planned', version: '', desc: '\u0420\u0430\u0441\u0448\u0438\u0440\u0435\u043D\u0438\u0435 mesh-\u0441\u0435\u0442\u0438 \u0434\u043E 10 \u0447\u0435\u043B\u043E\u0432\u0435\u043A' },
+      { title: '\u0427\u0430\u0442 \u0438 \u0440\u0435\u0430\u043A\u0446\u0438\u0438', status: 'done', version: '1.8', desc: '\u0422\u0435\u043A\u0441\u0442\u043E\u0432\u044B\u0439 \u0447\u0430\u0442 \u0438 \u044D\u043C\u043E\u0446\u0438\u0438 \u043D\u0430 \u0432\u0435\u0441\u044C \u044D\u043A\u0440\u0430\u043D' },
+      { title: '\u041E\u043A\u043D\u043E \u043A\u0430\u043C\u0435\u0440 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u043E\u0432', status: 'done', version: '1.7', desc: '\u041E\u0442\u0434\u0435\u043B\u044C\u043D\u043E\u0435 \u043E\u043A\u043D\u043E \u0441 \u043F\u0440\u0435\u0432\u044C\u044E \u043A\u0430\u043C\u0435\u0440 \u0438 \u043F\u043E\u043B\u0437\u0443\u043D\u043A\u0430\u043C\u0438 \u0433\u0440\u043E\u043C\u043A\u043E\u0441\u0442\u0438' },
       { title: 'Push-to-Talk (\u0440\u0430\u0446\u0438\u044F)', status: 'done', version: '1.6', desc: '\u0420\u0435\u0436\u0438\u043C \u0440\u0430\u0446\u0438\u0438: \u0433\u043E\u0432\u043E\u0440\u0438\u0448\u044C \u0442\u043E\u043B\u044C\u043A\u043E \u043A\u043E\u0433\u0434\u0430 \u0437\u0430\u0436\u0438\u043C\u0430\u0435\u0448\u044C \u043A\u043D\u043E\u043F\u043A\u0443' },
       { title: '\u041F\u043B\u0430\u0432\u0430\u044E\u0449\u0430\u044F \u043F\u0430\u043D\u0435\u043B\u044C', status: 'done', version: '1.6', desc: '\u041E\u043A\u043D\u043E \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F \u043F\u043E\u0432\u0435\u0440\u0445 \u0432\u0441\u0435\u0445 \u043E\u043A\u043E\u043D \u0432\u043E \u0432\u0440\u0435\u043C\u044F \u0442\u0440\u0430\u043D\u0441\u043B\u044F\u0446\u0438\u0438' },
-      { title: '\u041C\u043E\u0431\u0438\u043B\u044C\u043D\u0430\u044F \u0432\u0435\u0440\u0441\u0438\u044F (PWA)', status: 'done', version: '1.2', desc: '\u0412\u0435\u0431-\u043F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435 \u0434\u043B\u044F \u0442\u0435\u043B\u0435\u0444\u043E\u043D\u0430, \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 \u0431\u0435\u0437 \u0443\u0441\u0442\u0430\u043D\u043E\u0432\u043A\u0438' },
       { title: '\u0410\u043D\u0433\u043B\u0438\u0439\u0441\u043A\u0438\u0439 \u044F\u0437\u044B\u043A', status: 'done', version: '1.5', desc: '\u041F\u043E\u043B\u043D\u0430\u044F \u043B\u043E\u043A\u0430\u043B\u0438\u0437\u0430\u0446\u0438\u044F \u0438\u043D\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430 \u043D\u0430 \u0430\u043D\u0433\u043B\u0438\u0439\u0441\u043A\u0438\u0439' },
+      { title: '\u041C\u043E\u0431\u0438\u043B\u044C\u043D\u0430\u044F \u0432\u0435\u0440\u0441\u0438\u044F (PWA)', status: 'done', version: '1.2', desc: '\u0412\u0435\u0431-\u043F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435 \u0434\u043B\u044F \u0442\u0435\u043B\u0435\u0444\u043E\u043D\u0430, \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 \u0431\u0435\u0437 \u0443\u0441\u0442\u0430\u043D\u043E\u0432\u043A\u0438' },
       { title: '\u0422\u0440\u0430\u043D\u0441\u043B\u044F\u0446\u0438\u044F \u044D\u043A\u0440\u0430\u043D\u0430 \u0441\u043E \u0437\u0432\u0443\u043A\u043E\u043C', status: 'done', version: '1.1', desc: '\u041F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0442\u044C \u0444\u0438\u043B\u044C\u043C\u044B \u0438 \u0432\u0438\u0434\u0435\u043E \u0441 \u0430\u0443\u0434\u0438\u043E\u043C \u0434\u0440\u0443\u0437\u044C\u044F\u043C \u0432 \u0440\u0435\u0430\u043B\u044C\u043D\u043E\u043C \u0432\u0440\u0435\u043C\u0435\u043D\u0438' },
-      { title: '\u041E\u043A\u043D\u043E \u043A\u0430\u043C\u0435\u0440 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u043E\u0432', status: 'done', version: '1.7', desc: '\u041E\u0442\u0434\u0435\u043B\u044C\u043D\u043E\u0435 \u043E\u043A\u043D\u043E \u0441 \u043F\u0440\u0435\u0432\u044C\u044E \u043A\u0430\u043C\u0435\u0440 \u0438 \u043F\u043E\u043B\u0437\u0443\u043D\u043A\u0430\u043C\u0438 \u0433\u0440\u043E\u043C\u043A\u043E\u0441\u0442\u0438' },
-      { title: '\u0427\u0430\u0442 \u0438 \u0440\u0435\u0430\u043A\u0446\u0438\u0438', status: 'done', version: '1.8', desc: '\u0422\u0435\u043A\u0441\u0442\u043E\u0432\u044B\u0439 \u0447\u0430\u0442 \u0438 \u044D\u043C\u043E\u0446\u0438\u0438 \u043D\u0430 \u0432\u0435\u0441\u044C \u044D\u043A\u0440\u0430\u043D' },
-      { title: '\u0414\u043E 10 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u043E\u0432', status: 'planned', version: '', desc: '\u0420\u0430\u0441\u0448\u0438\u0440\u0435\u043D\u0438\u0435 mesh-\u0441\u0435\u0442\u0438 \u0434\u043E 10 \u0447\u0435\u043B\u043E\u0432\u0435\u043A' },
-      { title: 'iOS \u043F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435', status: 'planned', version: '', desc: '\u041D\u0430\u0442\u0438\u0432\u043D\u043E\u0435 \u043F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435 \u0434\u043B\u044F iPhone \u0438 iPad' },
-      { title: 'TURN-\u0441\u0435\u0440\u0432\u0435\u0440 \u0434\u043B\u044F \u0441\u043B\u043E\u0436\u043D\u044B\u0445 \u0441\u0435\u0442\u0435\u0439', status: 'planned', version: '', desc: '\u0420\u0435\u043B\u0435 \u0434\u043B\u044F \u043A\u043E\u0440\u043F\u043E\u0440\u0430\u0442\u0438\u0432\u043D\u044B\u0445 \u0441\u0435\u0442\u0435\u0439 \u0438 \u0441\u043B\u043E\u0436\u043D\u043E\u0433\u043E NAT' },
+      { title: '\u0422\u0451\u043C\u043D\u0430\u044F \u0442\u0435\u043C\u0430', status: 'done', version: '1.0', desc: '\u041F\u043E\u043B\u043D\u043E\u0446\u0435\u043D\u043D\u0430\u044F \u0442\u0451\u043C\u043D\u0430\u044F \u0442\u0435\u043C\u0430 \u0434\u043B\u044F \u043A\u043E\u043C\u0444\u043E\u0440\u0442\u043D\u043E\u0433\u043E \u043F\u0440\u043E\u0441\u043C\u043E\u0442\u0440\u0430 \u0432\u0435\u0447\u0435\u0440\u043E\u043C' },
     ];
     var ideasEN = [
-      { title: 'Dark theme', status: 'done', version: '1.0', desc: 'Full dark theme for comfortable evening viewing' },
+      { title: 'TURN server for complex networks', status: 'planned', version: '', desc: 'Relay for corporate networks and strict NAT' },
+      { title: 'iOS app', status: 'planned', version: '', desc: 'Native iPhone and iPad application' },
+      { title: 'Up to 10 participants', status: 'planned', version: '', desc: 'Extended P2P mesh network' },
+      { title: 'Chat & reactions', status: 'done', version: '1.8', desc: 'Text chat and fullscreen emoji reactions' },
+      { title: 'Participants camera window', status: 'done', version: '1.7', desc: 'Dedicated window with camera previews and volume sliders' },
       { title: 'Push-to-Talk (walkie-talkie)', status: 'done', version: '1.6', desc: 'Speak only while holding the button' },
       { title: 'Floating control panel', status: 'done', version: '1.6', desc: 'Always-on-top window during screen share' },
-      { title: 'Mobile version (PWA)', status: 'done', version: '1.2', desc: 'Web app for phones, no installation needed' },
       { title: 'English language', status: 'done', version: '1.5', desc: 'Full interface localization' },
+      { title: 'Mobile version (PWA)', status: 'done', version: '1.2', desc: 'Web app for phones, no installation needed' },
       { title: 'Screen sharing with audio', status: 'done', version: '1.1', desc: 'Show movies and videos with sound in real time' },
-      { title: 'Participants camera window', status: 'done', version: '1.7', desc: 'Dedicated window with camera previews and volume sliders' },
-      { title: 'Chat & reactions', status: 'done', version: '1.8', desc: 'Text chat and fullscreen emoji reactions' },
-      { title: 'Up to 10 participants', status: 'planned', version: '', desc: 'Extended P2P mesh network' },
-      { title: 'iOS app', status: 'planned', version: '', desc: 'Native iPhone and iPad application' },
-      { title: 'TURN server for complex networks', status: 'planned', version: '', desc: 'Relay for corporate networks and strict NAT' },
+      { title: 'Dark theme', status: 'done', version: '1.0', desc: 'Full dark theme for comfortable evening viewing' },
     ];
+
     function fmtRN(text) {
       text = text.replace(/[🏥🎬🔗💸🐛]/g, '').replace(/\u00A0/g, ' ').replace(/ +/g, ' ').trim();
       text = text.replace(/\r\n/g, '\n');
@@ -501,14 +538,19 @@
     function renderIdeas() {
       var ideas = currentLang === 'en' ? ideasEN : ideasRU;
       var statusLabel = currentLang === 'ru'
-        ? { done: '\u2714 \u0421\u0434\u0435\u043B\u0430\u043D\u043E', progress: '\U0001F504 \u0412 \u0440\u0430\u0431\u043E\u0442\u0435', planned: '\U0001F4CB \u0412 \u043F\u043B\u0430\u043D\u0430\u0445' }
-        : { done: '\u2714 Done', progress: '\U0001F504 In progress', planned: '\U0001F4CB Planned' };
-      var html = '';
+        ? { done: '\u2713 \u0421\u0434\u0435\u043B\u0430\u043D\u043E', progress: '\u25CF \u0412 \u0440\u0430\u0431\u043E\u0442\u0435', planned: '\u25CB \u0412 \u043F\u043B\u0430\u043D\u0430\u0445' }
+        : { done: '\u2713 Done', progress: '\u25CF In progress', planned: '\u25CB Planned' };
+      var bnKey = 'ideas.banner';
+      var bnBtnKey = 'ideas.banner_btn';
+      var html = '<div class="ideas-banner">' +
+        '<div class="ideas-banner-text">' + lang[currentLang][bnKey] + '</div>' +
+        '<a class="ideas-banner-btn" href="/#feedbackForm">' + lang[currentLang][bnBtnKey] + '</a>' +
+        '</div>';
       for (var i = 0; i < ideas.length; i++) {
         var st = ideas[i].status;
         var ver = ideas[i].version ? ' v' + ideas[i].version : '';
         html += '<div class="idea-card">';
-        html += '<div class="idea-status ' + st + '">' + (st === 'done' ? '\u2714' : st === 'progress' ? '\U0001F504' : '\U0001F4CB') + '</div>';
+        html += '<div class="idea-status ' + st + '">' + (st === 'done' ? '\u2713' : st === 'progress' ? '\u25CF' : '\u25CB') + '</div>';
         html += '<div class="idea-body">';
         html += '<h3>' + ideas[i].title + '</h3>';
         html += '<div class="idea-meta"><span>' + statusLabel[st] + '</span>' + (ver ? '<span>' + ver + '</span>' : '') + '</div>';
