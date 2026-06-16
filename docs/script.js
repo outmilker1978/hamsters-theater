@@ -96,8 +96,10 @@ lang.ru = {
   'download.soon': 'Готовится',
   'download.release_title': 'Что нового',
   'nav.blog': 'Блог',
-  'footer.issues': 'Сообщить о проблеме',
-  'footer.contact': 'Написать нам',
+  'download.blog_desc': '\u0421\u0442\u0430\u0442\u044C\u0438, \u0438\u0434\u0435\u0438, \u0438\u0441\u0442\u043E\u0440\u0438\u044F \u043F\u0440\u043E\u0435\u043A\u0442\u0430',
+  'download.blog_btn': '\u0427\u0438\u0442\u0430\u0442\u044C',
+  'footer.issues': '\u0421\u043E\u043E\u0431\u0449\u0438\u0442\u044C \u043E \u043F\u0440\u043E\u0431\u043B\u0435\u043C\u0435',
+  'footer.contact': '\u041D\u0430\u043F\u0438\u0441\u0430\u0442\u044C \u043D\u0430\u043C',
 };
 
 lang.en = {
@@ -195,6 +197,8 @@ lang.en = {
   'download.soon': 'In development',
   'download.release_title': 'What\'s new',
   'nav.blog': 'Blog',
+  'download.blog_desc': 'Articles, ideas, project history',
+  'download.blog_btn': 'Read',
   'footer.issues': 'Report an issue',
   'footer.contact': 'Contact us',
 };
