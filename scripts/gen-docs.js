@@ -31,7 +31,7 @@ const doc = new Document({
         spacing: { after: 400 }
       }),
       new Paragraph({
-        text: 'Версия продукта: 1.7.2',
+        text: 'Версия продукта: 1.8.2',
         alignment: AlignmentType.CENTER,
         spacing: { after: 100 }
       }),
@@ -44,15 +44,11 @@ const doc = new Document({
       // --- 1. О продукте ---
       new Paragraph({ text: '1. О продукте', heading: HeadingLevel.HEADING_1 }),
       new Paragraph({
-        text: 'TV Hamsters — смотрите фильмы, сериалы и видео вместе, будто вы рядом. Один включает трансляцию экрана со звуком, остальные видят видео и слышат голоса всех участников. Можно обсуждать происходящее в реальном времени, хохотать и комментировать — как в настоящем кинотеатре, только онлайн.',
+        text: 'TV Hamsters — смотрите фильмы, сериалы и видео вместе онлайн. Один включает трансляцию экрана со звуком, остальные видят видео и слышат голоса всех участников. Текстовый чат, реакции-эмодзи на весь экран, скример-пасхалка. Режим рации (Push-to-Talk). До 5 участников P2P mesh. i18n RU/EN/ES.',
         spacing: { after: 200 }
       }),
       new Paragraph({
-        text: 'Режим рации (Push-to-Talk): правый клик по микрофону → режим PTT. Зажать Пробел или кнопку — говорить. Отпустить — микрофон выключится. Выход из PTT — любой клик (левой/правой) по иконке микрофона. В обычном режиме микрофон работает постоянно.',
-        spacing: { after: 200 }
-      }),
-      new Paragraph({
-        text: 'Программа работает как через локальную сеть (LAN), так и через Интернет без необходимости настройки роутера. Для работы через Интернет используется облачный signalling-сервер на Render.com. Поддерживается до 5 участников в одной комнате.',
+        text: 'Основные возможности: трансляция экрана со звуком (любое окно); видеозвонок с камерами всех участников; текстовый чат; emoji-реакции на весь экран; режим рации (Push-to-Talk); индикатор качества связи; скример-пасхалка в чате; плавающая панель управления при трансляции; окно камер участников (faces); ползунки громкости; i18n (RU/EN/ES); локальный (LAN) и облачный режимы.',
         spacing: { after: 300 }
       }),
 
@@ -61,11 +57,12 @@ const doc = new Document({
       new Paragraph({ text: 'Стек:', heading: HeadingLevel.HEADING_2 }),
       new Paragraph({ text: '• Electron 34 — кросс-платформенная среда для десктопных приложений на веб-технологиях', spacing: { after: 60 } }),
       new Paragraph({ text: '• Socket.IO 4 — двунаправленная связь в реальном времени (signalling)', spacing: { after: 60 } }),
-      new Paragraph({ text: '• WebRTC — передача видео/аудио/экрана (P2P, через STUN)', spacing: { after: 60 } }),
-      new Paragraph({ text: '• desptopCapturer / getDisplayMedia — захват экрана (Windows)', spacing: { after: 60 } }),
+      new Paragraph({ text: '• WebRTC — передача видео/аудио/экрана (P2P, STUN, ICE restart)', spacing: { after: 60 } }),
+      new Paragraph({ text: '• getDisplayMedia — нативный захват экрана (Chromium)', spacing: { after: 60 } }),
       new Paragraph({ text: '• nat-upnp — автоматическое открытие портов на роутере (для LAN режима)', spacing: { after: 60 } }),
       new Paragraph({ text: '• Node.js v24 — среда выполнения JavaScript', spacing: { after: 60 } }),
       new Paragraph({ text: '• electron-builder 25 — сборка портативного .exe', spacing: { after: 60 } }),
+      new Paragraph({ text: '• node-telegram-bot-api — Telegram бот (команды /room, /download)', spacing: { after: 60 } }),
       new Paragraph({ text: '• docx — генерация этого документа', spacing: { after: 300 } }),
 
       // --- 3. Архитектура ---
@@ -88,12 +85,22 @@ const doc = new Document({
       }),
       new Paragraph({ text: '3.3. Плавающая панель при трансляции', heading: HeadingLevel.HEADING_2 }),
       new Paragraph({
-        text: 'При старте трансляции экрана создаётся отдельное frameless-окно 260×56 с прозрачным фоном и always-on-top. Панель содержит только кнопки управления (камера, микрофон, рация, экран, выход) с теми же SVG-иконками, что в главном окне. Состояние обновляется через IPC каждые 500 мс. При остановке трансляции панель закрывается.',
+        text: 'При старте трансляции экрана создаётся frameless-окно 310×78 (panel.html/panel.js) с always-on-top (уровень screen-saver). Кнопки 48×48 с SVG-иконками: камера, микрофон, рация (PTT), экран, выход. Состояние обновляется через IPC bridge каждые 500 мс. Правый клик по микрофону — переключение в режим PTT.',
         spacing: { after: 200 }
       }),
-      new Paragraph({ text: '3.4. Схема', heading: HeadingLevel.HEADING_2 }),
+      new Paragraph({ text: '3.4. Окно камер участников (faces)', heading: HeadingLevel.HEADING_2 }),
       new Paragraph({
-        text: 'ПК1 (хост) ←—— видео/аудио (WebRTC P2P) ——→ ПК2 (гость)\n     │                                        │\n     └── сигналы (Socket.IO) ——→ Render.com ——→──┘\n\n(только в облачном режиме; в локальном сигналы идут напрямую)\n\nПК1 (шарер) ←—— IPC —→ Плавающая панель (always-on-top)\n    │\n    └—— WebRTC screen stream —→ ПК2 (зритель)',
+        text: 'Третье BrowserWindow 300×220, bottom-right, always-on-top, с заголовком. Показывает canvas-кадры камер всех участников (отправляются через IPC, ~5 fps). Ползунки громкости для каждого. Качество связи: цветная точка (зелёный/жёлтый/красный/серый). Создаётся при старте трансляции, закрывается при остановке.',
+        spacing: { after: 200 }
+      }),
+      new Paragraph({ text: '3.5. Чат и реакции', heading: HeadingLevel.HEADING_2 }),
+      new Paragraph({
+        text: 'Текстовый чат работает через три IPC-канала (main-chat-send, panel-chat-send, forward-chat). Emoji-реакции на весь экран — анимированные взлетающие эмодзи. Скример-пасхалка: команда /скример в чате показывает пугающую картинку со звуком всем участникам.',
+        spacing: { after: 200 }
+      }),
+      new Paragraph({ text: '3.6. Схема', heading: HeadingLevel.HEADING_2 }),
+      new Paragraph({
+        text: 'ПК1 (хост) ←—— видео/аудио (WebRTC P2P) ——→ ПК2 (гость)\n     │                                        │\n     └── сигналы (Socket.IO) ——→ Render.com ——→──┘\n\n(только в облачном режиме; в локальном сигналы идут напрямую)\n\nПК1 (шарер) ←—— IPC —→ Плавающая панель (always-on-top screen-saver)\n    │\n    ├—— WebRTC screen stream —→ ПК2 (зритель)\n    │\n    └—— IPC canvas (5 fps) —→ Окно камер (faces)',
         spacing: { after: 300 }
       }),
 
@@ -121,30 +128,34 @@ const doc = new Document({
       new Paragraph({ text: '  • Плавающая панель (создание/закрытие, обновление состояния, приём действий)', spacing: { after: 40 } }),
       new Paragraph({ text: '  • i18n, настройки, release notes', spacing: { after: 100 } }),
 
-      new Paragraph({ text: 'renderer/panel.html — HTML плавающей панели (кнопки с SVG-иконками)', spacing: { after: 60 } }),
-      new Paragraph({ text: 'renderer/panel.js — JavaScript плавающей панели (IPC, состояние кнопок)', spacing: { after: 60 } }),
-      new Paragraph({ text: 'renderer/i18n.js — Строки перевода RU/EN, функции t()/setLang()/initLang()', spacing: { after: 60 } }),
+      new Paragraph({ text: 'renderer/panel.html — HTML плавающей панели (кнопки 48×48 с SVG-иконками)', spacing: { after: 60 } }),
+      new Paragraph({ text: 'renderer/panel.js — JavaScript плавающей панели (IPC bridge, PTT, состояние)', spacing: { after: 60 } }),
+      new Paragraph({ text: 'renderer/faces.html — HTML окна камер участников', spacing: { after: 60 } }),
+      new Paragraph({ text: 'renderer/faces.js — JavaScript окна камер (canvas-кадры, ползунки громкости, качество)', spacing: { after: 60 } }),
+      new Paragraph({ text: 'renderer/reactions.js — Emoji-реакции на весь экран', spacing: { after: 60 } }),
+      new Paragraph({ text: 'renderer/scrimer.html — Страница скримера (пасхалка)', spacing: { after: 60 } }),
+      new Paragraph({ text: 'renderer/scrimer/ — PNG-картинки и MP3 для скримера', spacing: { after: 60 } }),
+      new Paragraph({ text: 'renderer/i18n.js — Строки перевода RU/EN/ES, функции t()/setLang()/initLang()', spacing: { after: 60 } }),
       new Paragraph({ text: 'renderer/style.css — Тёмная тема (lavender/dark), все стили', spacing: { after: 60 } }),
-      new Paragraph({ text: 'server/cloud.js — Облачный signalling сервер для Render.com', spacing: { after: 60 } }),
-      new Paragraph({ text: 'server/package.json — Зависимости для облачного сервера (только socket.io)', spacing: { after: 60 } }),
+      new Paragraph({ text: 'bot/index.js — Telegram бот + облачный signalling сервер (Render.com)', spacing: { after: 60 } }),
+      new Paragraph({ text: 'bot/package.json — Зависимости для бота (socket.io, node-telegram-bot-api)', spacing: { after: 60 } }),
+      new Paragraph({ text: '.github/workflows/release-to-telegram.yml — CI: уведомления о релизах в Telegram', spacing: { after: 60 } }),
+      new Paragraph({ text: '.github/send_telegram.py — Python-скрипт отправки релизных уведомлений', spacing: { after: 60 } }),
       new Paragraph({ text: 'package.json — Основные зависимости, версия, скрипты сборки', spacing: { after: 60 } }),
       new Paragraph({ text: 'icon.ico — Иконка приложения (BMP-формат ICO, 16/32/48/256px, ensureAlpha)', spacing: { after: 60 } }),
       new Paragraph({ text: 'AGENTS.md — Гайд для AI-агента (opencode)', spacing: { after: 60 } }),
       new Paragraph({ text: 'scripts/gen-docs.js — Скрипт генерации этого документа', spacing: { after: 300 } }),
 
       // --- 5. Облачная часть ---
-      new Paragraph({ text: '5. Облачный сервер (Render.com)', heading: HeadingLevel.HEADING_1 }),
-      new Paragraph({ text: 'Адрес: https://hamsters-theater-cloud.onrender.com', spacing: { after: 100 } }),
-      new Paragraph({ text: 'Репозиторий: https://github.com/outmilker1978/hamsters-theater-cloud', spacing: { after: 200 } }),
+      new Paragraph({ text: '5. Облачный сервер и Telegram бот (Render.com)', heading: HeadingLevel.HEADING_1 }),
+      new Paragraph({ text: 'Все серверные функции объединены в bot/index.js на Render.com.', spacing: { after: 200 } }),
+      new Paragraph({ text: 'Адрес: https://tv-hamsters-bot.onrender.com', spacing: { after: 100 } }),
 
-      new Paragraph({ text: '5.1. Что делает облачный сервер', heading: HeadingLevel.HEADING_2 }),
-      new Paragraph({ text: 'Сервер реализован в файле server/cloud.js. Его единственная задача — пересылать сигнальные сообщения между клиентами:', spacing: { after: 100 } }),
-      new Paragraph({ text: '• create-room / room-created — создание комнаты с 4-значным PIN', spacing: { after: 40 } }),
-      new Paragraph({ text: '• join-room / joined / room-users / user-joined — подключение к комнате (multi-user)', spacing: { after: 40 } }),
-      new Paragraph({ text: '• offer / answer — обмен SDP (WebRTC)', spacing: { after: 40 } }),
-      new Paragraph({ text: '• ice-candidate — передача ICE кандидатов', spacing: { after: 40 } }),
-      new Paragraph({ text: '• signal — передача прикладных сигналов (screen-started/stopped, request-offer)', spacing: { after: 40 } }),
-      new Paragraph({ text: '• disconnect — очистка комнаты при отключении', spacing: { after: 200 } }),
+      new Paragraph({ text: '5.1. Что делает сервер', heading: HeadingLevel.HEADING_2 }),
+      new Paragraph({ text: '• Сигналинг Socket.IO (create-room, join-room, offer, answer, ice-candidate, signal, chat-message, reaction)', spacing: { after: 40 } }),
+      new Paragraph({ text: '• Telegram бот (node-telegram-bot-api): команды /start, /room, /help, /download', spacing: { after: 40 } }),
+      new Paragraph({ text: '• Автосоздание комнаты при ключевых словах в групповых чатах', spacing: { after: 40 } }),
+      new Paragraph({ text: '• Keep-alive ping каждые 10 минут (для предотвращения засыпания на бесплатном тарифе Render)', spacing: { after: 40 } }),
       new Paragraph({
         text: 'ВАЖНО: для обратной совместимости сервер дублирует peer-joined как user-joined. Старые и новые клиенты должны работать вместе.',
         spacing: { after: 200 },
@@ -154,7 +165,7 @@ const doc = new Document({
       new Paragraph({ text: '5.2. Как поддерживать', heading: HeadingLevel.HEADING_2 }),
       new Paragraph({ text: '1. Зайти в https://dashboard.render.com', spacing: { after: 40 } }),
       new Paragraph({ text: '2. Войти через GitHub (outmilker1978)', spacing: { after: 40 } }),
-      new Paragraph({ text: '3. Выбрать Web Service "hamsters-theater-cloud"', spacing: { after: 40 } }),
+      new Paragraph({ text: '3. Выбрать Web Service "tv-hamsters-bot"', spacing: { after: 40 } }),
       new Paragraph({ text: '4. Там можно:', spacing: { after: 40 } }),
       new Paragraph({ text: '   • Посмотреть логи (Logs)', spacing: { after: 40 } }),
       new Paragraph({ text: '   • Перезапустить (Manual Deploy → Deploy)', spacing: { after: 40 } }),
@@ -166,10 +177,10 @@ const doc = new Document({
       }),
 
       new Paragraph({ text: '5.3. Как обновить URL в приложении', heading: HeadingLevel.HEADING_2 }),
-      new Paragraph({ text: 'URL облачного сервера задаётся в двух местах:', spacing: { after: 100 } }),
-      new Paragraph({ text: '• main.js — константа CLOUD_SERVER_URL', spacing: { after: 40 } }),
-      new Paragraph({ text: '• renderer/app.js — начальное значение CLOUD_SERVER_URL (перезаписывается из main.js через IPC)', spacing: { after: 40 } }),
-      new Paragraph({ text: 'При сборке .exe нужно изменить в обоих файлах, затем пересобрать.', spacing: { after: 300 } }),
+      new Paragraph({ text: 'URL облачного сервера задаётся:', spacing: { after: 100 } }),
+      new Paragraph({ text: '• bot/index.js — токен Telegram бота и порт', spacing: { after: 40 } }),
+      new Paragraph({ text: '• renderer/app.js — начальное значение CLOUD_SERVER_URL (через IPC из main.js)', spacing: { after: 40 } }),
+      new Paragraph({ text: '• docs/mobile/app.js — константа CLOUD для мобильной версии', spacing: { after: 40 } }),
 
       // --- 6. Сборка ---
       new Paragraph({ text: '6. Сборка .exe', heading: HeadingLevel.HEADING_1 }),
@@ -191,22 +202,36 @@ const doc = new Document({
         spacing: { after: 40 }
       }),
       new Paragraph({
-        text: '• Ошибка winCodeSign про симлинки — НЕ КРИТИЧНА (только подпись кода, не влияет на portable)',
+        text: '• Ошибка winCodeSign про симлинки — НЕ КРИТИЧНА (только подпись кода, не влияет на portable). packaging (appOutDir) уже прошёл к этому моменту.',
         spacing: { after: 60 }
       }),
-      new Paragraph({ text: 'Сборка портативного .exe (из подготовленного ht-win):', spacing: { after: 40 } }),
       new Paragraph({
-        text: 'npx electron-builder --prepackaged "C:\\Users\\Hamster\\AppData\\Local\\Temp\\ht-win" --win portable',
+        text: '⚠ ВАЖНО: --prepackaged НЕ обновляет код — он перепаковывает уже существующий dist/win-unpacked. Всегда делайте полную сборку перед portable:',
+        spacing: { after: 60 },
+        bold: true
+      }),
+      new Paragraph({ text: 'npx electron-builder --prepackaged dist\\win-unpacked --win portable', spacing: { after: 40 } }),
+      new Paragraph({
+        text: 'Проверяйте: (Get-Item dist\\TV.Hamsters.*.exe).LastWriteTime должен быть после последнего изменения кода.',
         spacing: { after: 60 }
       }),
 
-      new Paragraph({ text: 'Результат: dist\\TV Hamsters X.X.X.exe', spacing: { after: 100 } }),
+      new Paragraph({         text: 'Результат: dist\\TV Hamsters X.X.X.exe (autoname, новый номер при каждой сборке — для обхода Windows Defender)', spacing: { after: 100 } }),
 
       new Paragraph({
         text: 'ВАЖНО: Старый .exe автоматически архивируется (prebuild). Новое имя файла с версией помогает избежать блокировки Windows Defender. Если Defender блокирует — используйте очередной новый номер версии.',
-        spacing: { after: 200 },
+        spacing: { after: 100 },
         bold: true
       }),
+
+      // --- 6.1. Известные проблемы ---
+      new Paragraph({ text: '6.1. Известные проблемы', heading: HeadingLevel.HEADING_2 }),
+      new Paragraph({ text: '• let vs var между скриптами — каждый <script> в Electron — отдельный scope. Переменная через let не видна между скриптами. Используйте var для кросс-скриптовых переменных (currentLang, peers и т.д.).', spacing: { after: 40 } }),
+      new Paragraph({ text: '• Screen share freeze — когда источник свёрнут, Chromium может не обновлять кадры. Ограничение браузера, не лечится.', spacing: { after: 40 } }),
+      new Paragraph({ text: '• Yandex Browser — встроенный VPN/Turbo ломает P2P (STUN не видит реальный IP). Chrome без прокси — лучший вариант.', spacing: { after: 40 } }),
+      new Paragraph({ text: '• WiFi роутеры — mesh-топология (5 участников = до 10 PC × N UDP портов) нагружает NAT-таблицу. Переключение одного участника на 4G/5G снижает нагрузку.', spacing: { after: 40 } }),
+      new Paragraph({ text: '• winCodeSign-2.6.0.7z extraction fails — Cannot create symbolic link (libcrypto.dylib/libssl.dylib для macOS на Windows). Не влияет на сборку — packaging проходит, portable собирается.', spacing: { after: 40 } }),
+      new Paragraph({ text: '• Модалки i18n — статичны в HTML (display: none), перевод только при вызове setLang(currentLang) при открытии.', spacing: { after: 40 } }),
 
       // --- 7. Разработка ---
       new Paragraph({ text: '7. Как продолжить разработку', heading: HeadingLevel.HEADING_1 }),
@@ -239,8 +264,10 @@ const doc = new Document({
       // --- 8. Версии ---
       new Paragraph({ text: '8. История версий', heading: HeadingLevel.HEADING_1 }),
 
-      new Paragraph({ text: '1.7.1 — Переименование в TV Hamsters. Исправление эха (applyConstraints-gain вместо AudioContext). Увеличен размер окна до 480×680. Ползунок громкости микрофона на панели лиц. Исправлены кнопки панели, PTT с панели, кодировка PowerShell, flex-wrap для 5 камер, модалка 3 колонки, авто-восстановление свёрнутых окон', spacing: { after: 40 } }),
-      new Paragraph({ text: '1.7.2 — «Палата №» вместо «Код комнаты». Сценарии использования в модалке О программе. Deep-link протокол hamsters://. Ссылка на донаты (Boosty) в программе.', spacing: { after: 40 } }),
+      new Paragraph({ text: '1.8.2 — Испанский язык (Español). Оптимизация видео/аудио (32k, 960×540). Индикатор качества связи (цветная точка). Скример-пасхалка (/скример). Чат-уведомления при трансляции. Авто ICE restart при плохом качестве. Совместимость с Celeron.', spacing: { after: 40 } }),
+      new Paragraph({ text: '1.8.0 — Плавающие окна, frameless drag, middle-click сброс. Реакции на весь экран. Три IPC-канала чата. EN-перевод (var). PTT правый клик. Полное нагрузочное тестирование.', spacing: { after: 40 } }),
+      new Paragraph({ text: '1.7.2 — «Палата №» вместо «Код комнаты». Сценарии использования. Deep-link hamsters://. Ссылка на донаты (Boosty).', spacing: { after: 40 } }),
+      new Paragraph({ text: '1.7.1 — Переименование в TV Hamsters. Исправление эха. Размер окна 480×680. Ползунок громкости микрофона. PTT с панели, flex-wrap 5 камер, модалка 3 колонки, авто-восстановление окон', spacing: { after: 40 } }),
       new Paragraph({ text: '1.7.0 — Нативный выбор окна (все окна включая свёрнутые), главное окно сворачивается при трансляции, плавающая панель как в главном окне, отдельное окно камер участников с ползунками громкости', spacing: { after: 40 } }),
       new Paragraph({ text: '1.6.1 — Плавающая панель управления (только кнопки, как в главном окне), исправление рации (не глушит собеседника), выбор окна с превью, подсказка о свёрнутых окнах, вход/выход без накопления, выход из рации любой кнопкой мыши', spacing: { after: 40 } }),
       new Paragraph({ text: '1.6.0 — Выбор окна при шаринге, компактный режим шарера, ползунки громкости, рация для всех (2 режима микрофона)', spacing: { after: 40 } }),

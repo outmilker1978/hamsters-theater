@@ -19,7 +19,7 @@
 | Сайт | `tvhamsters.outmilk.online` (GitHub Pages, кастомный домен) |
 | Владелец | Outmilk (outmilker1978 на GitHub) |
 | email | outmilker@gmail.com |
-| Текущая версия | 1.7.5 |
+| Текущая версия | 1.8.2 |
 | Модель | Freemium (Free 5 users → Pro 20 → Business 100+) |
 | Аналитика | Yandex.Metrica (счётчик 109746304) |
 
@@ -60,6 +60,9 @@ docs/
 ├── Screenshot_3.png
 ├── icon.png                  # Иконка для сайта
 ├── icon256.png
+├── modes_ru.png              # Скриншоты для статьи про связь
+├── modes_en.png
+├── modes_es.png
 ├── article_pikabu.md         # Статья для Пикабу
 ├── article_dzen.md           # Статья для Дзен (черновик)
 └── article_pikabu_dzen.md    # Комбинированная статья
@@ -68,7 +71,7 @@ docs/
 ### 2.4. Функционал сайта
 
 - **Лендинг:** Hero → Features → Use Cases → Screenshots → Manual → Team → Contact → Download → Footer
-- **Две локали:** Русский / English (переключение в хедере, сохраняется в localStorage ключ `tvh_lang`)
+- **Две локали:** Русский / English / Español (переключение в хедере, сохраняется в localStorage ключ `tvh_lang`)
 - **Форма обратной связи:** FormSubmit.co
   - Action: `https://formsubmit.co/ajax/f454d2a1c6f1ddb50020834507d9c29a`
   - Приходит на email: `outmilker@gmail.com`
@@ -211,17 +214,18 @@ GET https://api.github.com/repos/outmilker1978/hamsters-theater/releases/latest
 ## 6. Текущие проблемы и TODO
 
 ### P0 (критично)
-- **Telegram-канал пуст:** бот @tv_hamsters_bot не может постить в @tvhamsters. Нужно добавить бота в админы или найти/восстановить токен от другого бота
-- **Workflow release-to-telegram не работает:** по той же причине
+- ~~Telegram-канал пуст: бот @tv_hamsters_bot не может постить в @tvhamsters~~ ✅ **Решено:** release-to-telegram работает через GitHub Actions + Python `send_telegram.py` с `html.escape()`
+- ~~Workflow release-to-telegram не работает~~ ✅ **Решено**
+- **Канал @tvhamsters всё ещё пуст** — уведомления приходят, но канал не заполнен исторически. Добавить бота в админы канала, чтобы он мог постить напрямую (сейчас через GitHub API на publish, но канал может требовать прямого членства бота)
 
 ### P1 (важно)
 - **Сайт и GitHub Releases:** rate limit API GitHub. Нужно кешировать данные или использовать GitHub Actions для генерации статического JSON
 - **Мобильный клиент:** ✅ работает (PWA в `docs/mobile/`). Создание/вход в комнату, камера, микрофон, P2P WebRTC. См. `docs/mobile/app.js`
 
 ### P2 (среднее)
-- **`server/` — мёртвый код:** `cloud.js` и `index.js` из старого облачного сервера. Больше не деплоятся. Всё работает через `bot/index.js` на Render. Удалить или архивировать
+- ~~**`server/` — мёртвый код:** `cloud.js` и `index.js` из старого облачного сервера. Больше не деплоятся.~~ ✅ Удалены. Всё через `bot/index.js` на Render
 - **Статья на Дзен:** черновик сохранён (`docs/article_dzen.md`), но не опубликован (требуется верификация телефона)
-- **Сборка .exe:** winCodeSign extraction fails на Windows (symlink issue) — не критично для portable-сборки
+- **Сборка .exe:** winCodeSign extraction fails на Windows (symlink issue) — не критично для portable-сборки. Использовать `--prepackaged dist/win-unpacked`
 
 ### P3 (низкое)
 - **Кастомная почта:** используется `outmilker@gmail.com`, вместо `@outmilk.online`
@@ -277,17 +281,23 @@ hamsters-theater/
 ├── main.js                      # Electron main process + встроенный сервер
 ├── renderer/
 │   ├── index.html               # Главное окно приложения
-│   ├── app.js                   # Логика WebRTC, PTT, UI
-│   ├── style.css                # Стили приложения
-│   ├── i18n.js                  # Локализация RU/EN
+│   ├── app.js                   # Логика WebRTC, PTT, UI, качество, ICE restart
+│   ├── style.css                # Стили приложения (тёмная тема)
+│   ├── i18n.js                  # Локализация RU/EN/ES
 │   ├── panel.html / panel.js    # Плавающая панель при трансляции
-│   └── faces.html / faces.js    # Окно камер участников
-├── bot/                         # Код Telegram-бота
-├── server/                      # Облачный сервер (Render.com)
+│   ├── faces.html / faces.js    # Окно камер участников
+│   ├── reactions.js             # Emoji-реакции на весь экран
+│   ├── scrimer.html             # Скример-пасхалка
+│   └── scrimer/                 # PNG+MP3 для скримера
+├── bot/                         # Telegram бот + Socket.IO сервер (Render.com)
 ├── docs/                        # Сайт (GitHub Pages)
-│   ├── index.html
-│   ├── style.css
-│   └── script.js
+│   ├── index.html               # Лендинг
+│   ├── blog.html                # Блог (релизы + статья)
+│   ├── style.css                # Стили
+│   ├── script.js                # JS: i18n, Release API, форма
+│   ├── CNAME                    # Кастомный домен
+│   ├── mobile/                  # PWA
+│   └── article_*.md             # Статьи для платформ
 ├── .github/workflows/
 │   └── release-to-telegram.yml  # CI/CD: уведомление о релизе
 └── package.json                 # Конфигурация и скрипты

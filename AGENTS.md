@@ -17,8 +17,10 @@
 - **Electron 34** — нативное окно, IPC main↔renderer
 - **Socket.IO** (сервер встроенный в main.js + облачный relay на Render.com)
 - **WebRTC** (RTCPeerConnection) — P2P mesh: каждый участник соединяется с каждым напрямую
-- **STUN** — Google Public STUN (stun.l.google.com:19302), TURN не используется
-- **Облачный сервер**: `https://hamsters-theater-cloud.onrender.com` — только сигналинг (не ретранслирует медиа)
+- **STUN** — Google Public STUN (stun.l.google.com:19302) + Cloudflare (stun.cloudflare.com:3478), TURN не используется
+- **ICE restart** — `updatePeerQualities()`: 4 consecutive 'poor' (20s) → `restartPeerConnection(pid)` → `createOfferToPeer(pid)`. 60s cooldown. Не трогает `screenPC`
+- **Индикатор качества** — `peerQualities[pid]` обновляется каждые 5с. Точка 10px с border+glow: зелёный (хорошо), жёлтый (средне), красный (плохо), серый (нет данных/waiting)
+- **Облачный сервер**: `https://tv-hamsters-bot.onrender.com` — сигналинг + Telegram бот (bot/index.js, совмещён)
 - **Локальный сервер**: встроенный HTTP+Socket.IO в main.js, порт 3000 (авто-fallback 3000+)
 
 ## Сборка
@@ -49,6 +51,8 @@ npx electron-builder --prepackaged dist/win-unpacked --win portable   # portable
 
 1. **Совместный просмотр через трансляцию экрана со звуком** — один хомячок транслирует экран (видео + аудио системы), остальные видят и слышат. Все могут общаться голосом через микрофон одновременно.
 2. **Режим рации (Push-to-Talk)** — правый клик по микрофону → режим PTT. Зажать Пробел/кнопку → говорить. Отпустить → микрофон выключен. В обычном режиме микрофон работает постоянно. Выход из PTT — любой клик (левой/правой) по иконке микрофона.
+3. **Чат и реакции** — текстовый чат через три IPC-канала. Emoji-реакции на весь экран (анимированные взлетающие эмодзи). Скример-пасхалка: команда `/скример` в чате.
+4. **Три языка** — RU/EN/ES. Интерфейс, сайт, блог, пресс-релизы.
 
 ## Ключевые решения
 
@@ -99,6 +103,10 @@ npx electron-builder --prepackaged dist/win-unpacked --win portable   # portable
 - Сервер шлёт и `peer-joined`, и `user-joined` для старых клиентов
 - socket.io auto-fallback: WebSocket → HTTP long polling
 
+### Меню Help
+- `main.js` — меню "О нас (сайт)" → `shell.openExternal('https://tvhamsters.outmilk.online')`, "Рекомендации и полезности" → `shell.openExternal('https://tvhamsters.outmilk.online/blog.html')`. Переводы в i18n (menu.ourSite, menu.tips).
+- i18n ключи: `menu.ourSite` / `menu.ourSiteEn` / `menu.ourSiteEs` и `menu.tips` / `menu.tipsEn` / `menu.tipsEs`.
+
 ### Прочее
 - Средний клик (button 1) → fullscreen toggle (window с capture: true)
 - cleanupCall() очищает `#remote-faces` innerHTML, закрывает panel + faces, останавливает facesTimer, восстанавливает главное окно
@@ -112,11 +120,18 @@ npx electron-builder --prepackaged dist/win-unpacked --win portable   # portable
 | `renderer/app.js` | Renderer: WebRTC, UI, PTT, экран, панель |
 | `renderer/index.html` | HTML: модалки, landing, комната |
 | `renderer/style.css` | Стили: тема (lavender/dark), layout, модалки |
-| `renderer/i18n.js` | Локализация RU/EN (app) |
+| `renderer/i18n.js` | Локализация RU/EN/ES (app) |
 | `renderer/panel.html` | Плавающая панель (HTML) |
 | `renderer/panel.js` | Плавающая панель (JS) |
 | `renderer/faces.html` | Окно камер участников (HTML) |
 | `renderer/faces.js` | Окно камер участников (JS) |
+| `renderer/reactions.js` | Emoji-реакции на весь экран |
+| `renderer/scrimer.html` | Скример-пасхалка (HTML) |
+| `renderer/scrimer/` | PNG+MP3 для скримера |
+| `bot/index.js` | Telegram бот + облачный сервер (Render.com) |
+| `bot/package.json` | Зависимости бота |
+| `.github/workflows/release-to-telegram.yml` | CI: уведомление о релизе в Telegram |
+| `.github/send_telegram.py` | Python-скрипт отправки |
 | `package.json` | Версия, скрипты, dependencies, build config |
 | `icon.ico` | Иконка (BMP-формат, 16/32/48/256px, ensureAlpha) |
 | `AGENTS.md` | Этот гайд |
@@ -124,16 +139,18 @@ npx electron-builder --prepackaged dist/win-unpacked --win portable   # portable
 ## Правила работы
 
 1. **Не собирать .exe без команды пользователя.** Только готовить код.
-2. **Перед сборкой** — архив старого .exe создаётся автоматически (prebuild-скрипт). Проверить `dist/Archive`.
-3. **Release notes** — обновлять в `renderer/index.html` при каждой новой версии.
-4. **Backward compatibility** — сервер обязан поддерживать старые клиенты. Дублировать сигналы.
-5. **Не удалять i18n-ключи** без необходимости.
-6. **Описание программы** — для «хомячков», без техтерминов. Фокус на главной фишке.
-7. **Пресс-релиз — никаких эмодзи и спецсимволов.** Только чистый структурированный текст. Заголовок, пустая строка, описание, пустая строка, списки с • (bullet). Без ✨📱🔧⭐🚀 и прочего.
-8. **Перед редактированием — прочитать** текущее содержимое файла.
-9. **Не добавлять комментарии** в код без необходимости.
-10. **Три языка для сайта (docs/):** все статьи, пресс-релизы, UI-строки на блоге и главной странице должны быть на трёх языках: RU, EN, ES. Добавлять `articlesES`, `ideasES`, `releaseNotesES`, `lang.es` при создании нового контента. Для ES-контента блога (статьи/идеи) — отдельные массивы в `blog.html`. Для релизов — `releaseNotesES[]`.
-11. **Автоперевод EN+ES:** при публикации нового релиза или статьи на сайте — сразу переводить контент на английский и испанский языки (EN + ES), чтобы все три версии были доступны. Не оставлять раздел без перевода. **Всегда проверять, есть ли в оригинале (RU) картинки, скриншоты, embed-контент — и копировать их в EN и ES версии без изменений.**
+2. **Пользователь — non-developer.** Давать пошаговые команды для PowerShell. Не использовать `&&` (не работает в PowerShell 5.1) — использовать `;` или `if ($?)`.
+3. **Edit tool ломает Cyrillic** — при редактировании файлов с кириллицей использовать HTML entities или `\uXXXX`.
+4. **Перед сборкой** — архив старого .exe создаётся автоматически (prebuild-скрипт). Проверить `dist/Archive`.
+5. **Release notes** — обновлять в `renderer/index.html` при каждой новой версии.
+6. **Backward compatibility** — сервер обязан поддерживать старые клиенты. Дублировать сигналы.
+7. **Не удалять i18n-ключи** без необходимости.
+8. **Описание программы** — для «хомячков», без техтерминов. Фокус на главной фишке.
+9. **Пресс-релиз — никаких эмодзи и спецсимволов.** Только чистый структурированный текст. Заголовок, пустая строка, описание, пустая строка, списки с • (bullet). Без ✨📱🔧⭐🚀 и прочего.
+10. **Перед редактированием — прочитать** текущее содержимое файла.
+11. **Не добавлять комментарии** в код без необходимости.
+12. **Три языка для сайта (docs/):** все статьи, пресс-релизы, UI-строки на блоге и главной странице должны быть на трёх языках: RU, EN, ES. Добавлять `articlesES`, `ideasES`, `releaseNotesES`, `lang.es` при создании нового контента. Для ES-контента блога (статьи/идеи) — отдельные массивы в `blog.html`. Для релизов — `releaseNotesES[]`.
+13. **Автоперевод EN+ES:** при публикации нового релиза или статьи на сайте — сразу переводить контент на английский и испанский языки (EN + ES), чтобы все три версии были доступны. Не оставлять раздел без перевода. **Всегда проверять, есть ли в оригинале (RU) картинки, скриншоты, embed-контент — и копировать их в EN и ES версии без изменений.**
 
 ## ⚠️ Известные проблемы и ворэраунды
 
@@ -179,6 +196,15 @@ ipcRenderer.on('show-settings', () => { ... setLang(currentLang); });
 ### 7. Faces — обрезка видео
 `.face-card` → `flex-direction: column`, `.img-wrap` с `flex: 1`, `object-fit: contain`, `.label` `flex-shrink: 0` внизу. faces.js использует `.img-wrap` обёртку.
 
+### 8. Yandex Browser — встроенный VPN/Turbo ломает P2P
+STUN не видит реальный IP клиента. Chrome без прокси — лучший вариант для WebRTC.
+
+### 9. WiFi роутеры — перегрузка NAT при mesh
+5 участников = до 10 PC × N UDP портов. NAT-таблица роутера переполняется. Решение: один участник переключается на 4G/5G.
+
+### 10. Telegram release notification — html.escape()
+`.github/send_telegram.py` использует `html.escape(paras_first)` для release notes. Без этого Telegram `parse_mode: HTML` падает на тэгах в теле релиза. Workflow: `.github/workflows/release-to-telegram.yml`.
+
 ## ПРЕД-СБОРОЧНЫЙ ЧЕКЛИСТ (обязательно)
 
 - [ ] Ничего не сломал из работавшего? Проверить diff всех изменённых файлов
@@ -198,6 +224,7 @@ ipcRenderer.on('show-settings', () => { ... setLang(currentLang); });
 
 ## История версий (кратко)
 
+- **1.8.2** — Испанский язык (Español). Оптимизация видео/аудио (32k, 960×540). Индикатор качества связи (цветная точка в окне камер). Скример-пасхалка в чате (/скример). Чат-уведомления при трансляции в окне камер. Авто ICE restart при падении качества. Улучшена совместимость с Celeron.
 - **1.8.0 ★ ЭТАЛОН** — Плавающие окна чата и реакций, frameless-окна с кастомным drag, middle-click сброс. Окно Лица: flex-column, object-fit contain, подписи внизу. Реакции на весь экран. Чат: три IPC-канала, main-chat-send/faces-send-chat/forward-chat. EN-перевод (исправлен let→var). Panel: PTT правый клик (mousedown button 2), PTT кнопка видна при micMode === 'ptt'. Сборка: исправлен процесс (полная сборка перед portable). Полное нагрузочное тестирование пройдено.
 - **1.7.1** — Исправлены кнопки панели (onclick вместо DOMContentLoaded), PTT с панели (правая кнопка микрофона), исправлена кодировка PowerShell, уменьшен размер окна (680×520), возвращены ползунки громкости (починена CSS-ошибка), flex-wrap для 5 камер, модалка выбора окна — 3 колонки, авто-восстановление свёрнутых окон через PowerShell AppActivate
 - **1.7.0** — Нативное окно выбора трансляции (Chromium getDisplayMedia, все окна включая свёрнутые), главное окно сворачивается при трансляции, отдельное окно камер участников внизу справа с ползунками громкости, плавающая панель как в главном окне
