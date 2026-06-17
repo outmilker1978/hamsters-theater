@@ -1174,13 +1174,26 @@ function stopPanelTimer() {
 
 // --- Connection Quality ---
 var peerQualities = {};
+var poorQualityCount = {};
+var lastIceRestart = {};
 var qualityTimer = null;
 
 function getPeerQuality(peerId) {
   return peerQualities[peerId] || 'waiting';
 }
 
+function restartPeerConnection(pid) {
+  if (!peers[pid] || !peers[pid].pc) return;
+  var now = Date.now();
+  if (lastIceRestart[pid] && now - lastIceRestart[pid] < 60000) return;
+  lastIceRestart[pid] = now;
+  poorQualityCount[pid] = 0;
+  log('ICE restart for ' + pid + ' due to poor quality');
+  createOfferToPeer(pid);
+}
+
 function updatePeerQualities() {
+  var now = Date.now();
   for (const pid of Object.keys(peers)) {
     const p = peers[pid];
     const pc = (p.screenPC && p.screenPC.connectionState === 'connected') ? p.screenPC :
@@ -1209,6 +1222,14 @@ function updatePeerQualities() {
       else if (rtt < 400 && lossPct < 5) q = 'medium';
       else q = 'poor';
       peerQualities[pid] = q;
+      if (q === 'poor') {
+        poorQualityCount[pid] = (poorQualityCount[pid] || 0) + 1;
+        if (poorQualityCount[pid] >= 4) {
+          restartPeerConnection(pid);
+        }
+      } else {
+        poorQualityCount[pid] = 0;
+      }
     }).catch(function() {});
   }
 }
