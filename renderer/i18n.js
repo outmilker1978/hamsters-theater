@@ -108,6 +108,7 @@ const LOCALES = {
     'name.prompt_text': 'Введите ваше имя или пропустите — получите случайное имя',
     'name.confirm': 'Готово!',
     'name.skip': 'Пропустить',
+    'release.1_8_2': 'Desktop: испанский язык (Español) — кнопка в меню настроек. Оптимизация видео и аудио — стабильнее на слабых ПК. Индикатор качества связи — цветной кружок у имён участников в окне камер. Скример — пасхалка в чате: напиши /скример. Уведомления чата при трансляции — показываются в окне камер. Улучшена совместимость с Celeron.',
     'release.1_8_0': 'Desktop: плавающие панели чата и реакций — отдельные frameless-окна, кастомный drag без блокировки кликов, middle-click сброс позиции. Окно Лица масштабируется под любое количество участников, видео без обрезки, подписи всегда видны. Реакции на весь экран. Исправлена история чата в панели. Исправлен режим рации (PTT). Mobile: перевод на русский и английский, реакции-фейерверк, новый хедер, оптимизация. Пройдено нагрузочное тестирование.',
   },
   en: {
@@ -217,6 +218,7 @@ const LOCALES = {
     'name.prompt_text': 'Enter your name or skip — get a random funny name',
     'name.confirm': 'Done!',
     'name.skip': 'Skip',
+    'release.1_8_2': 'Desktop: Spanish language (Español) — button in settings menu. Video and audio optimization — more stable on weak PCs. Connection quality indicator — colored dot next to names in faces window. Scrimer — easter egg in chat: type /scrimer. Chat notifications during screen share — shown in faces window. Improved Celeron compatibility.',
     'release.1_8_0': 'Desktop: floating chat and reactions panels — separate frameless windows, custom drag without click blocking, middle-click position reset. Faces panel scales to any number of participants, video without cropping, labels always visible. Full-screen reaction animations. Fixed chat history in panel. Fixed PTT mode switching (right-click mic). Mobile: full Russian and English translation — auto-detect language and switch in settings. Mobile: reaction fireworks — each emoji flies a unique random path! Mobile: compact two-line header, optimized servers for less battery drain, video pause when minimized. Load testing completed — everything works stably.',
   },
   es: {
@@ -327,6 +329,7 @@ const LOCALES = {
     'name.prompt_text': 'Ingrese su nombre o salte — obtenga un nombre divertido aleatorio',
     'name.confirm': '¡Listo!',
     'name.skip': 'Saltar',
+    'release.1_8_2': 'Desktop: idioma español (Español) — botón en el menú de ajustes. Optimización de video y audio — más estable en PC débiles. Indicador de calidad de conexión — círculo de color junto a los nombres en la ventana de rostros. Scrimer — huevo de pascua en el chat: escribe /scrimer. Notificaciones de chat durante la transmisión — se muestran en la ventana de rostros. Compatibilidad mejorada con Celeron.',
     'release.1_8_0': 'Desktop: ventanas flotantes de chat y reacciones — ventanas frameless separadas, arrastre personalizado sin bloquear clics, reinicio de posición con clic central. Panel de Rostros se escala a cualquier número de participantes, vídeo sin recortes, etiquetas siempre visibles. Reacciones a pantalla completa — animaciones que vuelan sobre todas las ventanas. Historial de chat corregido en el panel. Modo walkie-talkie (PTT) corregido — cambiar con clic derecho en el micrófono. Mobile: traducción completa de la interfaz al ruso e inglés — detección automática de idioma y selector en ajustes. Mobile: reacciones — cada emoji vuela por una trayectoria aleatoria única, ¡un verdadero espectáculo de fuegos artificiales! Mobile: nuevo encabezado compacto — nombre arriba, sala abajo, cabe incluso en pantallas estrechas. Mobile: optimización de servidores para menor calentamiento del teléfono, pausa de vídeo al minimizar. Pruebas de carga completadas — todo funciona de forma estable.',
   }
 };

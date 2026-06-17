@@ -85,14 +85,15 @@
     }
     .quality-dot {
       display: inline-block;
-      width: 6px;
-      height: 6px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.15);
     }
-    .quality-dot.good { background: #22c55e; }
-    .quality-dot.medium { background: #eab308; }
-    .quality-dot.poor { background: #ef4444; }
+    .quality-dot.good { background: #22c55e; box-shadow: 0 0 4px rgba(34,197,94,0.5); }
+    .quality-dot.medium { background: #eab308; box-shadow: 0 0 4px rgba(234,179,8,0.5); }
+    .quality-dot.poor { background: #ef4444; box-shadow: 0 0 4px rgba(239,68,68,0.5); }
     .quality-dot.waiting { background: #6b5b7a; }
     .face-card .vol-container {
       position: absolute;

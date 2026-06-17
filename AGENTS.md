@@ -183,7 +183,7 @@ ipcRenderer.on('show-settings', () => { ... setLang(currentLang); });
 - [ ] Ничего не сломал из работавшего? Проверить diff всех изменённых файлов
 - [ ] EN-перевод добавлен для всех новых i18n-ключей?
 - [ ] ES-перевод добавлен (lang.es, articlesES, ideasES, releaseNotesES)?
-- [ ] Версия обновлена во всех местах (package.json, app.js, index.html)?
+- [ ] Версия обновлена во всех местах: `package.json` (version), `app.js` (`const ver =`), `index.html` (`id="versionDisplay"` и `class="modal-version"`)?
 - [ ] Release notes обновлены?
 - [ ] После сборки — проверить что .exe создался и не zero-size
 
