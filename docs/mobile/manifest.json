@@ -1,13 +1,25 @@
 {
   "name": "TV Hamsters",
   "short_name": "Hamsters",
-  "description": "Смотрите видео вместе с голосовым чатом",
+  "description": "Смотрите видео вместе с голосовым чатом, чатом и реакциями. Бесплатно, до 5 участников.",
   "start_url": "/mobile/",
+  "scope": "/mobile/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#1a1a2e",
   "theme_color": "#7c3aed",
+  "categories": ["entertainment", "communication", "social"],
+  "lang": "ru",
+  "dir": "ltr",
   "icons": [
-    { "src": "/icon256.png", "sizes": "256x256", "type": "image/png" },
-    { "src": "/icon.png", "sizes": "512x512", "type": "image/png" }
-  ]
+    { "src": "/icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon256.png", "sizes": "256x256", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "screenshots": [
+    { "src": "/mobile/photo_01.jpg", "sizes": "1080x1920", "type": "image/jpeg", "form_factor": "narrow", "label": "Главный экран комнаты" },
+    { "src": "/mobile/photo_02.jpg", "sizes": "1080x1920", "type": "image/jpeg", "form_factor": "narrow", "label": "Чат и видеозвонок" },
+    { "src": "/mobile/photo_03.jpg", "sizes": "1080x1920", "type": "image/jpeg", "form_factor": "narrow", "label": "Трансляция экрана" },
+    { "src": "/mobile/photo_04.jpg", "sizes": "1080x1920", "type": "image/jpeg", "form_factor": "narrow", "label": "Управление комнатой" }
+  ],
+  "splash_pages": null
 }

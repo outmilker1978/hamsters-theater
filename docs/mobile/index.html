@@ -11,9 +11,23 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="/icon256.png">
 <title>TV Hamsters</title>
+<style>
+/* Splash screen — shows immediately before CSS loads */
+#splash { position:fixed; inset:0; z-index:99999; background:#1a1a2e; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; transition:opacity 0.5s; }
+#splash.hide { opacity:0; pointer-events:none; }
+#splash img { width:64px; height:64px; border-radius:12px; }
+#splash span { font:700 22px -apple-system,sans-serif; color:#c285e4; }
+#splash .spinner { width:24px; height:24px; border:3px solid #2e2638; border-top-color:#7c3aed; border-radius:50%; animation:spin .8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+</style>
 <link rel="stylesheet" href="style.css?v=25">
 </head>
 <body>
+<div id="splash"><img src="/icon.png" alt=""><span>TV Hamsters</span><div class="spinner"></div></div>
+<script>
+// Hide splash once CSS is ready
+window.addEventListener('DOMContentLoaded', function(){ setTimeout(function(){ var s=document.getElementById('splash'); if(s) s.classList.add('hide'); }, 200); });
+</script>
 <div id="landing">
   <div class="brand">
     <img src="/icon.png" alt="" class="brand-icon">
