@@ -101,6 +101,8 @@ lang.ru = {
   'download.blog_desc': '\u0421\u0442\u0430\u0442\u044C\u0438, \u0438\u0434\u0435\u0438, \u0438\u0441\u0442\u043E\u0440\u0438\u044F \u043F\u0440\u043E\u0435\u043A\u0442\u0430',
   'download.blog_btn': '\u0427\u0438\u0442\u0430\u0442\u044C',
   'footer.issues': '\u0421\u043E\u043E\u0431\u0449\u0438\u0442\u044C \u043E \u043F\u0440\u043E\u0431\u043B\u0435\u043C\u0435',
+  'social.downloads': '\u0441\u043A\u0430\u0447\u0438\u0432\u0430\u043D\u0438\u0439',
+
   'social.stars': '\u043D\u0430 GitHub',
   'social.releases': '\u0440\u0435\u043B\u0438\u0437\u0430',
   'social.langs': '\u044F\u0437\u044B\u043A\u0430 \u0438\u043D\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430',
@@ -207,6 +209,7 @@ lang.en = {
   'nav.blog': 'Blog',
   'download.blog_desc': 'Articles, ideas, project history',
   'download.blog_btn': 'Read',
+  'social.downloads': 'downloads',
   'social.stars': 'on GitHub',
   'social.releases': 'releases',
   'social.langs': 'interface languages',
@@ -314,6 +317,7 @@ lang.es = {
   'nav.blog': 'Blog',
   'download.blog_desc': 'Art\u00edculos, ideas, historia del proyecto',
   'download.blog_btn': 'Leer',
+  'social.downloads': 'descargas',
   'social.stars': 'en GitHub',
   'social.releases': 'lanzamientos',
   'social.langs': 'idiomas de interfaz',
@@ -485,6 +489,21 @@ fetch('https://api.github.com/repos/outmilker1978/hamsters-theater')
     if (data.stargazers_count !== undefined) {
       document.getElementById('statStars').textContent = '\u2605 ' + data.stargazers_count;
     }
+  });
+
+// === GitHub Download Count ===
+fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases?per_page=20')
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var total = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].assets) {
+        for (var j = 0; j < data[i].assets.length; j++) {
+          total += data[i].assets[j].download_count;
+        }
+      }
+    }
+    document.getElementById('statDownloads').textContent = total;
   });
 
 // === Localization helper for dynamic elements ===
