@@ -1,3 +1,4 @@
+html { scroll-behavior: smooth; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 img { max-width: 100%; height: auto; }
 
@@ -163,6 +164,26 @@ header {
   text-align: center;
   padding: 120px 24px 80px;
   background: radial-gradient(ellipse at 50% 0%, rgba(120,90,200,0.08) 0%, transparent 60%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at 30% 50%, rgba(139,92,246,0.03) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 50%, rgba(168,85,247,0.03) 0%, transparent 50%);
+  animation: heroBg 20s ease-in-out infinite alternate;
+}
+
+@keyframes heroBg {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-2%, -1%); }
+  100% { transform: translate(2%, 1%); }
 }
 
 .hero-content {
@@ -179,6 +200,12 @@ header {
   height: 96px;
   border-radius: 24px;
   filter: drop-shadow(0 0 32px rgba(139,92,246,0.3));
+  animation: heroFloat 4s ease-in-out infinite;
+}
+
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 h1 {
@@ -242,7 +269,12 @@ h1 {
 
 .pf-card:hover {
   background: rgba(255,255,255,0.05);
-  border-color: rgba(139,92,246,0.25);
+  border-color: rgba(139,92,246,0.4);
+  box-shadow: 0 0 20px rgba(139,92,246,0.08);
+}
+
+.pf-card:hover .pf-name {
+  color: #a78bfa;
 }
 
 .hero-dl-card {
@@ -647,14 +679,20 @@ h2 {
 }
 
 .screenshot-card:hover {
-  border-color: rgba(139,92,246,0.3);
+  border-color: rgba(139,92,246,0.4);
   transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(139,92,246,0.1);
 }
 
 .screenshot-img {
   width: 100%;
   display: block;
   border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: transform 0.3s;
+}
+
+.screenshot-card:hover .screenshot-img {
+  transform: scale(1.02);
 }
 
 .screenshot-label {
@@ -817,7 +855,8 @@ h2 {
 
 .platform-card:hover {
   background: rgba(255,255,255,0.05);
-  border-color: rgba(139,92,246,0.25);
+  border-color: rgba(139,92,246,0.4);
+  box-shadow: 0 0 20px rgba(139,92,246,0.08);
 }
 
 .platform-card-disabled {
@@ -1005,7 +1044,7 @@ footer {
 }
 
 /* Анимация */
-.hero-content, .feature-card, .download-card {
+.hero-content, .feature-card, .download-card, .stat-card {
   animation: fadeUp 0.8s ease both;
 }
 
