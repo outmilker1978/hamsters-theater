@@ -85,6 +85,8 @@ lang.ru = {
   'download.btn': 'Windows (десктоп)',
   'download.note': 'Никакой рекламы. Никаких следилок. Просто работает.',
   'download.platforms_title': 'Дополнительно',
+  'download.win_desc': 'Portable .exe',
+
   'download.tg_channel': 'Telegram-канал',
   'download.tg_channel_desc': 'Новости, релизы, анонсы',
   'download.tg_channel_btn': 'Подписаться',
@@ -99,6 +101,10 @@ lang.ru = {
   'download.blog_desc': '\u0421\u0442\u0430\u0442\u044C\u0438, \u0438\u0434\u0435\u0438, \u0438\u0441\u0442\u043E\u0440\u0438\u044F \u043F\u0440\u043E\u0435\u043A\u0442\u0430',
   'download.blog_btn': '\u0427\u0438\u0442\u0430\u0442\u044C',
   'footer.issues': '\u0421\u043E\u043E\u0431\u0449\u0438\u0442\u044C \u043E \u043F\u0440\u043E\u0431\u043B\u0435\u043C\u0435',
+  'social.stars': '\u043D\u0430 GitHub',
+  'social.releases': '\u0440\u0435\u043B\u0438\u0437\u0430',
+  'social.langs': '\u044F\u0437\u044B\u043A\u0430 \u0438\u043D\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430',
+
   'footer.contact': '\u041D\u0430\u043F\u0438\u0441\u0430\u0442\u044C \u043D\u0430\u043C',
 };
 
@@ -186,6 +192,8 @@ lang.en = {
   'download.btn': 'Windows (desktop)',
   'download.note': 'No ads. No trackers. Just works.',
   'download.platforms_title': 'Other ways',
+  'download.win_desc': 'Portable .exe',
+
   'download.tg_channel': 'Telegram channel',
   'download.tg_channel_desc': 'News, releases, announcements',
   'download.tg_channel_btn': 'Subscribe',
@@ -199,6 +207,10 @@ lang.en = {
   'nav.blog': 'Blog',
   'download.blog_desc': 'Articles, ideas, project history',
   'download.blog_btn': 'Read',
+  'social.stars': 'on GitHub',
+  'social.releases': 'releases',
+  'social.langs': 'interface languages',
+
   'footer.issues': 'Report an issue',
   'footer.contact': 'Contact us',
 };
@@ -287,6 +299,8 @@ lang.es = {
   'download.btn': 'Windows (escritorio)',
   'download.note': 'Sin anuncios. Sin rastreadores. Simplemente funciona.',
   'download.platforms_title': 'Otras formas',
+  'download.win_desc': 'Portable .exe',
+
   'download.tg_channel': 'Canal de Telegram',
   'download.tg_channel_desc': 'Noticias, lanzamientos, anuncios',
   'download.tg_channel_btn': 'Suscribirse',
@@ -300,6 +314,10 @@ lang.es = {
   'nav.blog': 'Blog',
   'download.blog_desc': 'Art\u00edculos, ideas, historia del proyecto',
   'download.blog_btn': 'Leer',
+  'social.stars': 'en GitHub',
+  'social.releases': 'lanzamientos',
+  'social.langs': 'idiomas de interfaz',
+
   'footer.issues': 'Reportar un problema',
   'footer.contact': 'Cont\u00e1ctanos',
 };
@@ -418,6 +436,16 @@ fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases/late
       document.getElementById('downloadLink').href = asset.browser_download_url;
       document.getElementById('heroDownloadLink').href = asset.browser_download_url;
       var sizeMB = (asset.size / 1024 / 1024).toFixed(1);
+      var pcHref = asset.browser_download_url;
+      var heroPcCard = document.getElementById('heroPcCard');
+      var dlPcCard = document.getElementById('dlPcCard');
+      if (heroPcCard) heroPcCard.href = pcHref;
+      if (dlPcCard) dlPcCard.href = pcHref;
+      var sizeText = currentLang === 'ru' ? 'Portable .exe, ' + sizeMB + ' \u041C\u0411' : 'Portable .exe, ' + sizeMB + ' MB';
+      var heroPcDesc = heroPcCard ? heroPcCard.querySelector('.pf-desc') : null;
+      var dlPcDesc = dlPcCard ? dlPcCard.querySelector('.platform-desc') : null;
+      if (heroPcDesc) heroPcDesc.textContent = sizeText;
+      if (dlPcDesc) dlPcDesc.textContent = sizeText;
       window._releaseSize = sizeMB;
       window._releaseVer = ver.slice(1);
       var btnText = (currentLang === 'ru' ? 'Windows (' + sizeMB + ' МБ)' : 'Windows (' + sizeMB + ' MB)');
@@ -449,3 +477,21 @@ fetch('https://api.github.com/repos/outmilker1978/hamsters-theater/releases/late
     window._releaseBodyEN = fmtRN(bodyEN);
     document.getElementById('releaseBody').innerHTML = (currentLang === 'en' ? window._releaseBodyEN : window._releaseBodyRU);
   });
+
+// === GitHub Repo Stats ===
+fetch('https://api.github.com/repos/outmilker1978/hamsters-theater')
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.stargazers_count !== undefined) {
+      document.getElementById('statStars').textContent = '\u2605 ' + data.stargazers_count;
+    }
+  });
+
+// === Localization helper for dynamic elements ===
+var _origSetLang = setLang;
+setLang = function(l) {
+  _origSetLang(l);
+  if (window._releaseBodyRU && document.getElementById('releaseBody')) {
+    document.getElementById('releaseBody').innerHTML = (l === 'en' ? window._releaseBodyEN : window._releaseBodyRU);
+  }
+};

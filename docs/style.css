@@ -1103,3 +1103,26 @@ footer {
   }
   .byline { font-size: 9px; }
 }
+/* Social proof stats */
+.stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.stat-card {
+  text-align: center;
+  padding: 20px 30px;
+}
+.stat-number {
+  font-size: 36px;
+  font-weight: bold;
+  color: #a855f7;
+  margin-bottom: 6px;
+}
+.stat-label {
+  font-size: 14px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
