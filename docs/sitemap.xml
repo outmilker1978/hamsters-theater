@@ -8,13 +8,19 @@
   </url>
   <url>
     <loc>https://tvhamsters.outmilk.online/blog.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://tvhamsters.outmilk.online/join.html</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://tvhamsters.outmilk.online/mobile/</loc>
-    <lastmod>2026-06-16</lastmod>
+    <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
