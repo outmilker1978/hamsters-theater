@@ -183,6 +183,29 @@
       font-size: 20px;
       margin: 16px 0;
     }
+    .cmp-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 13px;
+    }
+    .cmp-table th, .cmp-table td {
+      padding: 8px 10px;
+      border: 1px solid #3a3a4a;
+      text-align: left;
+    }
+    .cmp-table th {
+      background: #2a2a3a;
+      color: #c285e4;
+      font-weight: 600;
+    }
+    .cmp-table td.cmp-yes { color: #4ade80; }
+    .cmp-table td.cmp-no { color: #f87171; }
+    .cmp-table td.cmp-part { color: #fbbf24; }
+    @media (max-width: 600px) {
+      .cmp-table { font-size: 11px; }
+      .cmp-table th, .cmp-table td { padding: 5px 6px; }
+    }
     .article-links {
       margin-top: 20px;
       padding-top: 18px;
@@ -582,6 +605,35 @@
         '\u003Cp\u003E\u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0432\u044b. \u042d\u0442\u043e \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u043e \u0438 \u043d\u0435 \u0437\u0430\u0439\u043c\u0451\u0442 \u043c\u043d\u043e\u0433\u043e \u0432\u0440\u0435\u043c\u0435\u043d\u0438.\u003C\u002Fp\u003E' +
         '\u003Ca class="art-cta" href="/"\u003E\u041F\u0440\u043E\u0431\u043E\u0432\u0430\u0442\u044C \u0431\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u043E\u003C\u002Fa\u003E',
         links: '\u0421\u0430\u0439\u0442: \u003Ca href="https:\u002F\u002Ftvhamsters.outmilk.online\u002F"\u003Etvhamsters.outmilk.online\u003C\u002Fa\u003E \u2022 \u0422\u0435\u043B\u0435\u0433\u0440\u0430\u043C: \u003Ca href="https:\u002F\u002Ft.me\u002Ftvhamsters"\u003Et.me\u002Ftvhamsters\u003C\u002Fa\u003E \u2022 \u041A\u043E\u0434: \u003Ca href="https:\u002F\u002Fgithub.com\u002Foutmilker1978\u002Fhamsters-theater"\u003EGitHub\u003C\u002Fa\u003E'
+      },
+      {
+        title: 'TV Hamsters vs Zoom vs Discord: \u0447\u0442\u043E \u043B\u0443\u0447\u0448\u0435 \u0434\u043B\u044F \u0441\u043E\u0432\u043C\u0435\u0441\u0442\u043D\u043E\u0433\u043E \u043F\u0440\u043E\u0441\u043C\u043E\u0442\u0440\u0430 \u0444\u0438\u043B\u044C\u043C\u043E\u0432?',
+        date: '2026-07-01',
+        content: '\u003Cp class="art-hook"\u003E\u041A\u043E\u0433\u0434\u0430 \u0445\u043E\u0447\u0435\u0442\u0441\u044F \u043F\u043E\u0441\u043C\u043E\u0442\u0440\u0435\u0442\u044C \u0444\u0438\u043B\u044C\u043C \u0441 \u0434\u0440\u0443\u0437\u044C\u044F\u043C\u0438 \u0438\u0437 \u0434\u0440\u0443\u0433\u0438\u0445 \u0433\u043E\u0440\u043E\u0434\u043E\u0432, \u043C\u043D\u043E\u0433\u0438\u0435 \u0431\u0435\u0440\u0443\u0442 Zoom \u0438\u043B\u0438 Discord. \u042D\u0442\u043E \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442, \u043D\u043E \u0435\u0441\u0442\u044C \u043D\u044E\u0430\u043D\u0441\u044B. \u042F \u0441\u0440\u0430\u0432\u043D\u0438\u043B \u0432\u0441\u0435 \u0442\u0440\u0438 \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u0430, \u0447\u0442\u043E\u0431\u044B \u0432\u044B \u043C\u043E\u0433\u043B\u0438 \u0432\u044B\u0431\u0440\u0430\u0442\u044C \u0441\u0432\u043E\u0451.\u003C\u002Fp\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp class="art-hook"\u003E\u0427\u0435\u043C \u043E\u0442\u043B\u0438\u0447\u0430\u044E\u0442\u0441\u044F \u043F\u043E\u0434\u0445\u043E\u0434\u044B\u003C\u002Fp\u003E' +
+        '\u003Cp\u003EZoom \u0441\u043E\u0437\u0434\u0430\u0432\u0430\u043B\u0441\u044F \u0434\u043B\u044F \u0432\u0438\u0434\u0435\u043E\u043A\u043E\u043D\u0444\u0435\u0440\u0435\u043D\u0446\u0438\u0439, Discord \u2014 \u0434\u043B\u044F \u043E\u0431\u0449\u0435\u043D\u0438\u044F \u0433\u0435\u0439\u043C\u0435\u0440\u043E\u0432. \u041E\u0431\u0430 \u043F\u0440\u043E\u043F\u0443\u0441\u043A\u0430\u044E\u0442 \u0432\u0441\u0451 \u0447\u0435\u0440\u0435\u0437 \u0441\u0432\u043E\u0438 \u0441\u0435\u0440\u0432\u0435\u0440\u044B. TV Hamsters \u0441\u0434\u0435\u043B\u0430\u043D \u0441\u043F\u0435\u0446\u0438\u0430\u043B\u044C\u043D\u043E \u0434\u043B\u044F \u0441\u043E\u0432\u043C\u0435\u0441\u0442\u043D\u043E\u0433\u043E \u043F\u0440\u043E\u0441\u043C\u043E\u0442\u0440\u0430: \u0434\u0430\u043D\u043D\u044B\u0435 \u0438\u0434\u0443\u0442 \u043D\u0430\u043F\u0440\u044F\u043C\u0443\u044E \u043C\u0435\u0436\u0434\u0443 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u0430\u043C\u0438 (P2P), \u0431\u0435\u0437 \u043F\u043E\u0441\u0440\u0435\u0434\u043D\u0438\u043A\u043E\u0432.\u003C\u002Fp\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp class="art-hook"\u003E\u0421\u0440\u0430\u0432\u043D\u0435\u043D\u0438\u0435 \u0432 \u0442\u0430\u0431\u043B\u0438\u0446\u0435\u003C\u002Fp\u003E' +
+        '\u003Ctable class="cmp-table"\u003E\u003Cthead\u003E\u003Ctr\u003E\u003Cth\u003E\u041F\u0430\u0440\u0430\u043C\u0435\u0442\u0440\u003C\u002Fth\u003E\u003Cth\u003ETV Hamsters\u003C\u002Fth\u003E\u003Cth\u003EZoom\u003C\u002Fth\u003E\u003Cth\u003EDiscord\u003C\u002Fth\u003E\u003C\u002Ftr\u003E\u003C\u002Fthead\u003E\u003Ctbody\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003E\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044F\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u041D\u0435 \u043D\u0443\u0436\u043D\u0430\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003E\u041D\u0443\u0436\u043D\u0430\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003E\u041D\u0443\u0436\u043D\u0430\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003E\u0411\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u043E\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u041F\u043E\u043B\u043D\u043E\u0441\u0442\u044C\u044E\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003E40 \u043C\u0438\u043D\u0443\u0442\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u0414\u0430\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003E\u0422\u0440\u0430\u043D\u0441\u043B\u044F\u0446\u0438\u044F \u044D\u043A\u0440\u0430\u043D\u0430 \u0441\u043E \u0437\u0432\u0443\u043A\u043E\u043C\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u0414\u0430\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u0414\u0430\u003C\u002Ftd\u003E\u003Ctd class="cmp-part"\u003E\u0421 \u043E\u0433\u0440\u0430\u043D\u0438\u0447\u0435\u043D\u0438\u044F\u043C\u0438\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EP2P (\u043F\u0440\u044F\u043C\u0430\u044F \u0441\u0432\u044F\u0437\u044C)\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u0414\u0430\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003E\u0427\u0435\u0440\u0435\u0437 \u0441\u0435\u0440\u0432\u0435\u0440\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003E\u0427\u0435\u0440\u0435\u0437 \u0441\u0435\u0440\u0432\u0435\u0440\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003E\u041F\u0440\u0438\u0432\u0430\u0442\u043D\u043E\u0441\u0442\u044C\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u041F\u043E\u043B\u043D\u0430\u044F (P2P)\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003E\u0421\u0435\u0440\u0432\u0435\u0440 \u0432\u0438\u0434\u0438\u0442\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003E\u0421\u0435\u0440\u0432\u0435\u0440 \u0432\u0438\u0434\u0438\u0442\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003E\u0420\u0435\u0436\u0438\u043C \u0440\u0430\u0446\u0438\u0438 (PTT)\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u0414\u0430\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003E\u041D\u0435\u0442\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u0414\u0430\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003E\u041C\u043E\u0431\u0438\u043B\u044C\u043D\u0430\u044F \u0432\u0435\u0440\u0441\u0438\u044F\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u0414\u0430 (PWA)\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u0414\u0430\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u0414\u0430\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003E\u041E\u043A\u043D\u043E \u043A\u0430\u043C\u0435\u0440 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u043E\u0432\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u0414\u0430\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u0414\u0430\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003E\u041D\u0435\u0442\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003E\u041C\u0430\u043A\u0441. \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u043E\u0432\u003C\u002Ftd\u003E\u003Ctd class="cmp-part"\u003E\u0414\u043E 5\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u0414\u043E 100\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u041D\u0435\u043E\u0433\u0440\u0430\u043D\u0438\u0447\u0435\u043D\u043E\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003E\u041B\u043E\u043A\u0430\u043B\u044C\u043D\u044B\u0439 \u0440\u0435\u0436\u0438\u043C (\u0431\u0435\u0437 \u0438\u043D\u0442\u0435\u0440\u043D\u0435\u0442\u0430)\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003E\u0414\u0430\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003E\u041D\u0435\u0442\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003E\u041D\u0435\u0442\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003C\u002Ftbody\u003E\u003C\u002Ftable\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp class="art-hook"\u003E\u0427\u0442\u043E \u0432\u044B\u0431\u0440\u0430\u0442\u044C?\u003C\u002Fp\u003E' +
+        '\u003Cp\u003E\u0415\u0441\u043B\u0438 \u043D\u0443\u0436\u043D\u043E \u043F\u0440\u043E\u0441\u0442\u043E \u043F\u043E\u0441\u043C\u043E\u0442\u0440\u0435\u0442\u044C \u0444\u0438\u043B\u044C\u043C \u0438\u043B\u0438 \u0441\u0435\u0440\u0438\u0430\u043B \u0441 \u0431\u043B\u0438\u0437\u043A\u0438\u043C\u0438 \u2014 TV Hamsters \u043F\u043E\u0434\u0445\u043E\u0434\u0438\u0442 \u0431\u043E\u043B\u044C\u0448\u0435 \u0432\u0441\u0435\u0433\u043E: \u0431\u0435\u0437 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438, \u0431\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u043E, \u043F\u0440\u0438\u0432\u0430\u0442\u043D\u043E. \u0414\u043B\u044F \u0431\u043E\u043B\u044C\u0448\u0438\u0445 \u043A\u043E\u043D\u0444\u0435\u0440\u0435\u043D\u0446\u0438\u0439 \u0438\u043B\u0438 \u043E\u0431\u0449\u0435\u043D\u0438\u044F \u0432 \u043A\u0440\u0443\u043F\u043D\u044B\u0445 \u0441\u043E\u043E\u0431\u0449\u0435\u0441\u0442\u0432\u0430\u0445 \u043B\u0443\u0447\u0448\u0435 \u043F\u043E\u0434\u043E\u0439\u0434\u0443\u0442 Zoom \u0438\u043B\u0438 Discord. \u0410 \u0434\u043B\u044F \u0443\u044E\u0442\u043D\u043E\u0433\u043E \u043A\u0438\u043D\u043E\u0432\u0435\u0447\u0435\u0440\u0430 \u0432\u043A\u0440\u0443\u0433\u0443 \u0441\u0435\u043C\u044C\u0438 \u0438\u043B\u0438 \u0434\u0440\u0443\u0437\u0435\u0439 \u2014 TV Hamsters \u043F\u0440\u043E\u0449\u0435 \u0438 \u0443\u0434\u043E\u0431\u043D\u0435\u0435.\u003C\u002Fp\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp\u003E\u041F\u043E\u043F\u0440\u043E\u0431\u0443\u0439\u0442\u0435 TV Hamsters \u043F\u0440\u044F\u043C\u043E \u0441\u0435\u0439\u0447\u0430\u0441. \u042D\u0442\u043E \u0437\u0430\u0439\u043C\u0451\u0442 \u043C\u0435\u043D\u044C\u0448\u0435 \u043C\u0438\u043D\u0443\u0442\u044B, \u0447\u0435\u043C \u0443\u0441\u0442\u0430\u043D\u043E\u0432\u043A\u0430 Zoom.\u003C\u002Fp\u003E' +
+        '\u003Ca class="art-cta" href="/"\u003E\u041F\u043E\u043F\u0440\u043E\u0431\u043E\u0432\u0430\u0442\u044C \u0431\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u043E\u003C\u002Fa\u003E',
+        links: '\u0421\u0430\u0439\u0442: \u003Ca href="https:\u002F\u002Ftvhamsters.outmilk.online\u002F"\u003Etvhamsters.outmilk.online\u003C\u002Fa\u003E \u2022 \u0422\u0435\u043B\u0435\u0433\u0440\u0430\u043C: \u003Ca href="https:\u002F\u002Ft.me\u002Ftvhamsters"\u003Et.me\u002Ftvhamsters\u003C\u002Fa\u003E \u2022 \u041A\u043E\u0434: \u003Ca href="https:\u002F\u002Fgithub.com\u002Foutmilker1978\u002Fhamsters-theater"\u003EGitHub\u003C\u002Fa\u003E'
       }
     ];
     var articlesEN = [
@@ -675,6 +727,35 @@
         '\u003Cp\u003ETry it yourself. It\u2019s free and won\u2019t take much of your time.\u003C\u002Fp\u003E' +
         '\u003Ca class="art-cta" href="/"\u003ETry it free\u003C\u002Fa\u003E',
         links: 'Site: \u003Ca href="https:\u002F\u002Ftvhamsters.outmilk.online\u002F"\u003Etvhamsters.outmilk.online\u003C\u002Fa\u003E \u2022 Telegram: \u003Ca href="https:\u002F\u002Ft.me\u002Ftvhamsters"\u003Et.me\u002Ftvhamsters\u003C\u002Fa\u003E \u2022 Code: \u003Ca href="https:\u002F\u002Fgithub.com\u002Foutmilker1978\u002Fhamsters-theater"\u003EGitHub\u003C\u002Fa\u003E'
+      },
+      {
+        title: 'TV Hamsters vs Zoom vs Discord: what\u2019s best for watching movies together?',
+        date: '2026-07-01',
+        content: '\u003Cp class="art-hook"\u003EWhen you want to watch a movie with friends in different cities, many people reach for Zoom or Discord. It works, but there are nuances. I compared all three so you can choose the right one.\u003C\u002Fp\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp class="art-hook"\u003EHow they differ\u003C\u002Fp\u003E' +
+        '\u003Cp\u003EZoom was built for video meetings, Discord for gamers. Both route everything through their servers. TV Hamsters is made specifically for watching together: data goes directly between participants (P2P), no middleman.\u003C\u002Fp\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp class="art-hook"\u003EComparison table\u003C\u002Fp\u003E' +
+        '\u003Ctable class="cmp-table"\u003E\u003Cthead\u003E\u003Ctr\u003E\u003Cth\u003EFeature\u003C\u002Fth\u003E\u003Cth\u003ETV Hamsters\u003C\u002Fth\u003E\u003Cth\u003EZoom\u003C\u002Fth\u003E\u003Cth\u003EDiscord\u003C\u002Fth\u003E\u003C\u002Ftr\u003E\u003C\u002Fthead\u003E\u003Ctbody\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003ERegistration\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ENot needed\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003ERequired\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003ERequired\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EFree\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ECompletely\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003E40 min limit\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EYes\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EScreen share with audio\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EYes\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EYes\u003C\u002Ftd\u003E\u003Ctd class="cmp-part"\u003ELimited\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EP2P (direct connection)\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EYes\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003EThrough server\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003EThrough server\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EPrivacy\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EFull (P2P)\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003EServer sees\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003EServer sees\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EPush-to-Talk (PTT)\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EYes\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003ENo\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EYes\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EMobile version\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EYes (PWA)\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EYes\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EYes\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EParticipant camera window\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EYes\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EYes\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003ENo\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EMax participants\u003C\u002Ftd\u003E\u003Ctd class="cmp-part"\u003EUp to 5\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EUp to 100\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EUnlimited\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003ELocal mode (no internet)\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EYes\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003ENo\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003ENo\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003C\u002Ftbody\u003E\u003C\u002Ftable\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp class="art-hook"\u003EWhich to choose?\u003C\u002Fp\u003E' +
+        '\u003Cp\u003EIf you just want to watch a movie or show with family \u2014 TV Hamsters is the best fit: no registration, free, private. For large conferences or big communities, Zoom or Discord work better. But for a cozy movie night with the people who matter \u2014 TV Hamsters is simpler and more convenient.\u003C\u002Fp\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp\u003ETry TV Hamsters right now. It takes less time than installing Zoom.\u003C\u002Fp\u003E' +
+        '\u003Ca class="art-cta" href="/"\u003ETry it free\u003C\u002Fa\u003E',
+        links: 'Site: \u003Ca href="https:\u002F\u002Ftvhamsters.outmilk.online\u002F"\u003Etvhamsters.outmilk.online\u003C\u002Fa\u003E \u2022 Telegram: \u003Ca href="https:\u002F\u002Ft.me\u002Ftvhamsters"\u003Et.me\u002Ftvhamsters\u003C\u002Fa\u003E \u2022 Code: \u003Ca href="https:\u002F\u002Fgithub.com\u002Foutmilker1978\u002Fhamsters-theater"\u003EGitHub\u003C\u002Fa\u003E'
       }
     ];
     var articlesES = [
@@ -766,6 +847,35 @@
         '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
         '\u003Cp\u003EHice TV Hamsters en un fin de semana porque realmente quer\u00eda una soluci\u00f3n simple para m\u00ed mismo. Result\u00f3 simple, gratuita y funcional. Ahora otros tambi\u00e9n la usan.\u003C\u002Fp\u003E' +
         '\u003Cp\u003EPru\u00e9balo t\u00fa mismo. Es gratis y no te llevar\u00e1 mucho tiempo.\u003C\u002Fp\u003E' +
+        '\u003Ca class="art-cta" href="/"\u003EPru\u00e9balo gratis\u003C\u002Fa\u003E',
+        links: 'Sitio: \u003Ca href="https:\u002F\u002Ftvhamsters.outmilk.online\u002F"\u003Etvhamsters.outmilk.online\u003C\u002Fa\u003E \u2022 Telegram: \u003Ca href="https:\u002F\u002Ft.me\u002Ftvhamsters"\u003Et.me\u002Ftvhamsters\u003C\u002Fa\u003E \u2022 C\u00f3digo: \u003Ca href="https:\u002F\u002Fgithub.com\u002Foutmilker1978\u002Fhamsters-theater"\u003EGitHub\u003C\u002Fa\u003E'
+      },
+      {
+        title: 'TV Hamsters vs Zoom vs Discord: \u00bfqu\u00e9 es mejor para ver pel\u00edculas juntos?',
+        date: '2026-07-01',
+        content: '\u003Cp class="art-hook"\u003ECuando quieres ver una pel\u00edcula con amigos de otras ciudades, muchos usan Zoom o Discord. Funciona, pero hay matices. Compar\u00e9 los tres para que puedas elegir.\u003C\u002Fp\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp class="art-hook"\u003EC\u00f3mo se diferencian\u003C\u002Fp\u003E' +
+        '\u003Cp\u003EZoom se cre\u00f3 para videoconferencias, Discord para gamers. Ambos pasan todo por sus servidores. TV Hamsters est\u00e1 hecho espec\u00edficamente para ver juntos: los datos van directamente entre participantes (P2P), sin intermediarios.\u003C\u002Fp\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp class="art-hook"\u003ETabla comparativa\u003C\u002Fp\u003E' +
+        '\u003Ctable class="cmp-table"\u003E\u003Cthead\u003E\u003Ctr\u003E\u003Cth\u003ECaracter\u00edstica\u003C\u002Fth\u003E\u003Cth\u003ETV Hamsters\u003C\u002Fth\u003E\u003Cth\u003EZoom\u003C\u002Fth\u003E\u003Cth\u003EDiscord\u003C\u002Fth\u003E\u003C\u002Ftr\u003E\u003C\u002Fthead\u003E\u003Ctbody\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003ERegistro\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ENo necesario\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003EObligatorio\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003EObligatorio\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EGratuito\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ETotalmente\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003EL\u00edmite 40 min\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ES\u00ed\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003ECompartir pantalla con audio\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ES\u00ed\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ES\u00ed\u003C\u002Ftd\u003E\u003Ctd class="cmp-part"\u003ELimitado\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EP2P (conexi\u00f3n directa)\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ES\u00ed\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003EPor servidor\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003EPor servidor\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EPrivacidad\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ETotal (P2P)\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003EEl servidor ve\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003EEl servidor ve\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EPush-to-Talk (PTT)\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ES\u00ed\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003ENo\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ES\u00ed\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EVersi\u00f3n m\u00f3vil\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ES\u00ed (PWA)\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ES\u00ed\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ES\u00ed\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EVentana de c\u00e1maras\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ES\u00ed\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ES\u00ed\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003ENo\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EM\u00e1x. participantes\u003C\u002Ftd\u003E\u003Ctd class="cmp-part"\u003EHasta 5\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EHasta 100\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003EIlimitado\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003Ctr\u003E\u003Ctd\u003EModo local (sin internet)\u003C\u002Ftd\u003E\u003Ctd class="cmp-yes"\u003ES\u00ed\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003ENo\u003C\u002Ftd\u003E\u003Ctd class="cmp-no"\u003ENo\u003C\u002Ftd\u003E\u003C\u002Ftr\u003E' +
+        '\u003C\u002Ftbody\u003E\u003C\u002Ftable\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp class="art-hook"\u003E\u00bfCu\u00e1l elegir?\u003C\u002Fp\u003E' +
+        '\u003Cp\u003ESi solo quieres ver una pel\u00edcula con la familia \u2014 TV Hamsters es la mejor opci\u00f3n: sin registro, gratuito, privado. Para grandes conferencias o comunidades, Zoom o Discord son mejores. Pero para una noche de cine acogedora con las personas que importan \u2014 TV Hamsters es m\u00e1s simple y c\u00f3modo.\u003C\u002Fp\u003E' +
+        '\u003Cdiv class="art-divider"\u003E\u2728\u003C\u002Fdiv\u003E' +
+        '\u003Cp\u003EPrueba TV Hamsters ahora mismo. Te llevar\u00e1 menos tiempo que instalar Zoom.\u003C\u002Fp\u003E' +
         '\u003Ca class="art-cta" href="/"\u003EPru\u00e9balo gratis\u003C\u002Fa\u003E',
         links: 'Sitio: \u003Ca href="https:\u002F\u002Ftvhamsters.outmilk.online\u002F"\u003Etvhamsters.outmilk.online\u003C\u002Fa\u003E \u2022 Telegram: \u003Ca href="https:\u002F\u002Ft.me\u002Ftvhamsters"\u003Et.me\u002Ftvhamsters\u003C\u002Fa\u003E \u2022 C\u00f3digo: \u003Ca href="https:\u002F\u002Fgithub.com\u002Foutmilker1978\u002Fhamsters-theater"\u003EGitHub\u003C\u002Fa\u003E'
       }
