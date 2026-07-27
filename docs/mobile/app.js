@@ -6,7 +6,10 @@ const RTC = {
     { urls: 'turn:relay.metered.ca:443', ...TURN_CRED },
   ]
 };
-const MEDIA = { video: { facingMode: 'user', width: { ideal: 240 }, height: { ideal: 180 }, frameRate: { ideal: 15, max: 20 } }, audio: { echoCancellation: true, noiseSuppression: true } };
+const LOW_END = (navigator.hardwareConcurrency || 0) <= 4 || (navigator.deviceMemory || 8) <= 4;
+const MEDIA = LOW_END
+  ? { video: { facingMode: 'user', width: { ideal: 240 }, height: { ideal: 180 }, frameRate: { ideal: 10, max: 15 } }, audio: { echoCancellation: true, noiseSuppression: true } }
+  : { video: { facingMode: 'user', width: { ideal: 320 }, height: { ideal: 240 }, frameRate: { ideal: 15, max: 20 } }, audio: { echoCancellation: true, noiseSuppression: true } };
 
 let socket, localStream, roomId, isHost = false;
 let peers = {}, pendingOffers = [], pendingPeers = [];
@@ -238,6 +241,32 @@ function leaveRoom() {
   $('chatInput').value = '';
 }
 
+function setVideoCodecPreference(pc) {
+  try {
+    var caps = RTCRtpSender.getCapabilities('video');
+    if (!caps || !caps.codecs || caps.codecs.length === 0) return;
+    var priority = ['video/H264', 'video/VP9', 'video/VP8'];
+    var ordered = [], used = {};
+    for (var n = 0; n < priority.length; n++) {
+      for (var i = 0; i < caps.codecs.length; i++) {
+        var c = caps.codecs[i];
+        var key = c.mimeType + (c.sdpFmtpLine || '');
+        if (c.mimeType === priority[n] && !used[key]) { ordered.push(c); used[key] = true; }
+      }
+    }
+    for (var i = 0; i < caps.codecs.length; i++) {
+      var c = caps.codecs[i];
+      var key = c.mimeType + (c.sdpFmtpLine || '');
+      if (!used[key]) { ordered.push(c); used[key] = true; }
+    }
+    if (pc.getTransceivers) {
+      pc.getTransceivers().forEach(function(t) {
+        if (t.kind === 'video') { try { t.setCodecPreferences(ordered); } catch(e) {} }
+      });
+    }
+  } catch(e) { console.log('codecPref err:', e.message); }
+}
+
 function createPC(peerId) {
   if (peers[peerId]) return peers[peerId].pc;
   const pc = new RTCPeerConnection(RTC);
@@ -298,11 +327,13 @@ function createScreenPC(peerId) {
 
 function createOfferToPeer(peerId) {
   const pc = createPC(peerId);
+  setVideoCodecPreference(pc);
   pc.createOffer().then(o => { pc.setLocalDescription(o); socket.emit('offer', { to: peerId, sdp: o, type: 'video', name: userName || '' }); }).catch(e => log('offer err: ' + e.message));
 }
 
 function handleOffer(data) {
   const p = createPC(data.from);
+  setVideoCodecPreference(p);
   p.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(() => p.createAnswer())
     .then(a => { p.setLocalDescription(a); socket.emit('answer', { to: data.from, sdp: a, type: 'camera' }); })
     .catch(e => log('answer err: ' + e.message));

@@ -8,10 +8,26 @@ const PORT = process.env.PORT || 3001;
 const DL_URL = 'https://tvhamsters.outmilk.online';
 
 const server = http.createServer((req, res) => {
+  // Webhook endpoint for Telegram
+  if (req.method === 'POST' && req.url === '/webhook') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const update = JSON.parse(body);
+        if (typeof bot !== 'undefined') bot.processUpdate(update);
+      } catch (e) {
+        console.log('Webhook parse error:', e?.message);
+      }
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.end('OK');
+    });
+    return;
+  }
   res.writeHead(200, { 'Content-Type': 'text/plain' });
   res.end('TV Hamsters OK');
 });
-server.listen(PORT, () => console.log('Server on port', PORT));
+// NOTE: server.listen() is called at the end after all handlers and bot are set up
 
 // WebSocket signaling for the desktop app
 const io = new Server(server, { cors: { origin: '*' } });
@@ -65,7 +81,8 @@ io.on('connection', (socket) => {
 });
 
 const proxy = process.env.HTTP_PROXY || process.env.HTTPS_PROXY || '';
-const botOpts = { polling: true };
+const SELF_URL = process.env.RENDER_EXTERNAL_URL || 'https://tv-hamsters-bot.onrender.com';
+const botOpts = { polling: false };
 if (proxy) {
   const HttpsProxyAgent = require('https-proxy-agent');
   botOpts.request = { agent: new HttpsProxyAgent(proxy) };
@@ -73,6 +90,13 @@ if (proxy) {
 
 const TelegramBot = require('node-telegram-bot-api');
 const bot = new TelegramBot(token, botOpts);
+
+// Set webhook instead of polling
+bot.setWebHook(SELF_URL + '/webhook').then(() => {
+  console.log('Webhook set to ' + SELF_URL + '/webhook');
+}).catch(err => {
+  console.log('Webhook set error:', err?.message);
+});
 
 bot.setMyCommands([
   { command: 'start', description: '\u0413\u043B\u0430\u0432\u043D\u043E\u0435 \u043C\u0435\u043D\u044E' },
@@ -211,12 +235,7 @@ process.on('unhandledRejection', (err) => {
   console.log('Unhandled rejection:', err?.message || err);
 });
 
-const httpsKeepAlive = require('https');
-const SELF_URL = process.env.RENDER_EXTERNAL_URL || 'https://tv-hamsters-bot.onrender.com';
-setInterval(() => {
-  httpsKeepAlive.get(SELF_URL, (res) => {
-    console.log('Keep-alive ping, status:', res.statusCode);
-  }).on('error', (err) => {
-    console.log('Keep-alive error:', err?.message || err);
-  });
-}, 10 * 60 * 1000);
+console.log('Bot ready (webhook mode)');
+
+// Start listening AFTER bot is initialized
+server.listen(PORT, () => console.log('Server on port', PORT));

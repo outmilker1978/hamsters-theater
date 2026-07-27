@@ -116,12 +116,116 @@ const QUALITY_PRESETS = {
   medium:      { camScale: 1, screenScale: 1, camBitrate: 400_000, screenBitrate: 2_000_000 },
   high:        { camScale: 1, screenScale: 1, camBitrate: 700_000, screenBitrate: 4_000_000 }
 };
+// High- and low-water for adaptive bitrate (fraction of preset, then full)
+let dynamicBitrateEnabled = true;
+let bitrateHighWater = {}; // { peerId: { lastPacketLoss, direction } }
+const ADAPTIVE_BITRATE_INTERVAL = 10000; // 10s
+
+// Detect low-end devices (Chuwi, old phones, etc.)
+function isLowEndDevice() {
+  const cores = navigator.hardwareConcurrency || 0;
+  if (cores <= 4) return true;
+  // Check device memory API (Chrome 63+)
+  if (navigator.deviceMemory && navigator.deviceMemory <= 4) return true;
+  return false;
+}
+let lowEndMode = localStorage.getItem('lowEndMode') === 'true' || isLowEndDevice();
+
+// Set video codec priority: H.264 → VP9 → VP8 → rest
+function setVideoCodecPreference(pc) {
+  try {
+    const caps = RTCRtpSender.getCapabilities('video');
+    if (!caps || !caps.codecs || caps.codecs.length === 0) return;
+    const priority = ['video/H264', 'video/VP9', 'video/VP8'];
+    const ordered = [];
+    const used = new Set();
+    for (const name of priority) {
+      for (const c of caps.codecs) {
+        if (c.mimeType === name && !used.has(c.mimeType + (c.sdpFmtpLine || ''))) {
+          ordered.push(c);
+          used.add(c.mimeType + (c.sdpFmtpLine || ''));
+        }
+      }
+    }
+    for (const c of caps.codecs) {
+      const key = c.mimeType + (c.sdpFmtpLine || '');
+      if (!used.has(key)) { ordered.push(c); used.add(key); }
+    }
+    if (pc.getTransceivers) {
+      pc.getTransceivers().forEach(t => {
+        if (t.kind === 'video') {
+          try { t.setCodecPreferences(ordered); } catch(e) {}
+        }
+      });
+    }
+  } catch(e) { log('setCodecPrefs err: ' + e.message); }
+}
+
+// Monitor per-peer packet loss → adjust bitrate
+function monitorPeerBitrate(peerId) {
+  const peer = peers[peerId];
+  if (!peer || !peer.pc || !dynamicBitrateEnabled) return;
+  peer.pc.getStats().then(stats => {
+    let packetsLost = 0, packetsReceived = 0;
+    stats.forEach(r => {
+      if (r.type === 'inbound-rtp' && r.kind === 'video' && r.remoteId) {
+        packetsLost = r.packetsLost || 0;
+        packetsReceived = r.packetsReceived || 0;
+      }
+    });
+    const total = packetsLost + packetsReceived;
+    if (total === 0) return;
+    const lossRate = packetsLost / total;
+    const prev = bitrateHighWater[peerId];
+    if (!prev) { bitrateHighWater[peerId] = { lossRate, stableCount: 0 }; return; }
+    const q = getQualityPreset();
+    const sender = peer.pc.getSenders().find(s => s.track && s.track.kind === 'video');
+    if (!sender) return;
+    try {
+      const params = sender.getParameters();
+      if (!params.encodings || params.encodings.length === 0) return;
+      const currentBitrate = params.encodings[0].maxBitrate || q.camBitrate;
+      if (lossRate > 0.05) {
+        const reduced = Math.max(currentBitrate * 0.7, 80_000);
+        params.encodings[0].maxBitrate = reduced;
+        sender.setParameters(params).catch(() => {});
+        log('Adaptive bitrate: lowered ' + peerId + ' to ' + (reduced/1000).toFixed(0) + 'k (loss=' + (lossRate*100).toFixed(1) + '%)');
+        bitrateHighWater[peerId] = { lossRate, stableCount: 0 };
+      } else if (lossRate < 0.01 && currentBitrate < q.camBitrate) {
+        const increased = Math.min(currentBitrate * 1.2, q.camBitrate);
+        if (prev.stableCount >= 3) {
+          params.encodings[0].maxBitrate = increased;
+          sender.setParameters(params).catch(() => {});
+          log('Adaptive bitrate: raised ' + peerId + ' to ' + (increased/1000).toFixed(0) + 'k');
+          bitrateHighWater[peerId] = { lossRate, stableCount: 0 };
+        } else {
+          bitrateHighWater[peerId] = { lossRate, stableCount: prev.stableCount + 1 };
+        }
+      } else {
+        bitrateHighWater[peerId] = { lossRate, stableCount: 0 };
+      }
+    } catch(e) {}
+  }).catch(() => {});
+}
+function startAdaptiveBitrateLoop() {
+  setInterval(() => {
+    for (const pid of Object.keys(peers)) monitorPeerBitrate(pid);
+  }, ADAPTIVE_BITRATE_INTERVAL);
+}
+// Start on init
+setTimeout(startAdaptiveBitrateLoop, 5000);
 
 function getQualityPreset() {
   return QUALITY_PRESETS[qualityLevel] || QUALITY_PRESETS.medium;
 }
 
 function getCameraConstraints() {
+  if (lowEndMode) {
+    return {
+      video: { width: { ideal: 480 }, height: { ideal: 360 }, frameRate: { ideal: 15 } },
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+    };
+  }
   return {
     video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 20 } },
     audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
@@ -511,6 +615,7 @@ function createOfferToPeer(peerId) {
   if (peer.pc) { peer.pc.close(); }
   peer.pc = createPC(peerId);
   localStream.getTracks().forEach(t => peer.pc.addTrack(t, localStream));
+  setVideoCodecPreference(peer.pc);
   peer.pc.createOffer().then(offer => {
     peer.pc.setLocalDescription(offer);
     socket.emit('offer', { to: peerId, sdp: offer, type: 'camera' });
@@ -538,6 +643,7 @@ function handleOffer(data) {
   if (peer.pc) { peer.pc.close(); }
   peer.pc = createPC(fromId);
   if (localStream) localStream.getTracks().forEach(t => peer.pc.addTrack(t, localStream));
+  setVideoCodecPreference(peer.pc);
   peer.pc.setRemoteDescription(new RTCSessionDescription(data.sdp))
     .then(() => {
       peer.cameraCandidates.forEach(c => {
@@ -723,7 +829,8 @@ async function startShareWithSource(sourceId) {
   await ipcRenderer.invoke('set-screen-source', sourceId);
   let stream;
   try {
-    stream = await navigator.mediaDevices.getDisplayMedia({ video: { width: { max: 960 }, height: { max: 540 }, frameRate: { max: 15 } }, audio: true });
+    const screenRes = lowEndMode ? { width: { max: 640 }, height: { max: 360 }, frameRate: { max: 10 } } : { width: { max: 960 }, height: { max: 540 }, frameRate: { max: 15 } };
+    stream = await navigator.mediaDevices.getDisplayMedia({ video: screenRes, audio: true });
   } catch (e) {
     log('Screen share error:', e.message);
     return;
@@ -789,6 +896,7 @@ function createScreenOffer(peerId, stream) {
   if (peer.screenPC) { peer.screenPC.close(); }
   peer.screenPC = createScreenPC(peerId);
   stream.getTracks().forEach(t => peer.screenPC.addTrack(t, stream));
+  setVideoCodecPreference(peer.screenPC);
   peer.screenPC.createOffer().then(offer => {
     peer.screenPC.setLocalDescription(offer);
     socket.emit('offer', { to: peerId, sdp: offer, type: 'screen' });
@@ -1147,6 +1255,23 @@ window.createDesktopShortcut = async () => {
   if (ok) showToast(t('settings.shortcut_created') || 'Ярлык создан на рабочем столе');
   else showToast(t('settings.shortcut_failed') || 'Ошибка создания ярлыка');
 };
+
+// Settings - Low-end mode toggle
+window.toggleLowEndMode = () => {
+  lowEndMode = !lowEndMode;
+  localStorage.setItem('lowEndMode', lowEndMode);
+  const btn = document.getElementById('lowEndModeBtn');
+  if (btn) {
+    btn.classList.toggle('active', lowEndMode);
+    btn.textContent = lowEndMode ? '\u041F\u043E\u043D\u0438\u0436\u0435\u043D\u043D\u043E\u0435 (\u0430\u043A\u0442\u0438\u0432\u043D\u043E)' : '\u041F\u043E\u043D\u0438\u0436\u0435\u043D\u043D\u043E\u0435 \u0440\u0430\u0437\u0440\u0435\u0448\u0435\u043D\u0438\u0435 (640\u00D7360)';
+  }
+  showToast(lowEndMode ? '\u0420\u0435\u0436\u0438\u043C \u0441\u043B\u0430\u0431\u044B\u0445 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432 \u0432\u043A\u043B\u044E\u0447\u0451\u043D' : '\u0420\u0435\u0436\u0438\u043C \u0441\u043B\u0430\u0431\u044B\u0445 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432 \u0432\u044B\u043A\u043B\u044E\u0447\u0435\u043D');
+};
+// Init low-end button state
+(function() {
+  const btn = document.getElementById('lowEndModeBtn');
+  if (btn) btn.classList.toggle('active', lowEndMode);
+})();
 
 // Donate links - open in system browser
 el('donateLinkBoosty').onclick = () => {
