@@ -1263,14 +1263,17 @@ window.toggleLowEndMode = () => {
   const btn = document.getElementById('lowEndModeBtn');
   if (btn) {
     btn.classList.toggle('active', lowEndMode);
-    btn.textContent = lowEndMode ? '\u041F\u043E\u043D\u0438\u0436\u0435\u043D\u043D\u043E\u0435 (\u0430\u043A\u0442\u0438\u0432\u043D\u043E)' : '\u041F\u043E\u043D\u0438\u0436\u0435\u043D\u043D\u043E\u0435 \u0440\u0430\u0437\u0440\u0435\u0448\u0435\u043D\u0438\u0435 (640\u00D7360)';
+    btn.textContent = lowEndMode ? t('settings.low_end_btn_on') : t('settings.low_end_btn_off');
   }
-  showToast(lowEndMode ? '\u0420\u0435\u0436\u0438\u043C \u0441\u043B\u0430\u0431\u044B\u0445 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432 \u0432\u043A\u043B\u044E\u0447\u0451\u043D' : '\u0420\u0435\u0436\u0438\u043C \u0441\u043B\u0430\u0431\u044B\u0445 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432 \u0432\u044B\u043A\u043B\u044E\u0447\u0435\u043D');
+  showToast(lowEndMode ? t('settings.low_end_enabled') : t('settings.low_end_disabled'));
 };
 // Init low-end button state
 (function() {
   const btn = document.getElementById('lowEndModeBtn');
-  if (btn) btn.classList.toggle('active', lowEndMode);
+  if (btn) {
+    btn.classList.toggle('active', lowEndMode);
+    btn.textContent = lowEndMode ? t('settings.low_end_btn_on') : t('settings.low_end_btn_off');
+  }
 })();
 
 // Donate links - open in system browser
