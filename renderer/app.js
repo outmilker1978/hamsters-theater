@@ -1593,7 +1593,7 @@ function showReaction(emoji) {
 
 // First-launch shortcut prompt (shows once per version)
 (function() {
-   const ver = '1.8.2';
+   const ver = '1.9.0';
   // Set version in UI
   const verEls = document.querySelectorAll('#versionDisplay, .modal-version, title');
   verEls.forEach(el => {

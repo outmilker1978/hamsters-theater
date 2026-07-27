@@ -17,6 +17,10 @@
 - **Electron 34** — нативное окно, IPC main↔renderer
 - **Socket.IO** (сервер встроенный в main.js + облачный relay на Render.com)
 - **WebRTC** (RTCPeerConnection) — P2P mesh: каждый участник соединяется с каждым напрямую
+### WebRTC — Codec & Bitrate
+- **H.264 priority** — `setVideoCodecPreference(pc)` reorders `RTCRtpSender.getCapabilities('video')` to H.264 → VP9 → VP8 → rest. Applied in `createOfferToPeer()`, `handleOffer()`, `createScreenOffer()`. Uses HW encode on all devices with H.264 support.
+- **Adaptive bitrate** — `monitorPeerBitrate(pid)` via `peer.pc.getStats()` every 10s. >5% packet loss → reduce bitrate ×0.7 (floor 80k). <1% loss for 3 consecutive checks → increase ×1.2 up to preset max. `startAdaptiveBitrateLoop()` called after connection.
+- **Low-end mode** — `isLowEndDevice()` checks `navigator.hardwareConcurrency ≤ 4` or `navigator.deviceMemory ≤ 4`. Stored in `localStorage('lowEndMode')`. Toggle in Settings. Camera: 480×360@15fps. Screen: 640×360@10fps. Mobile: 240×180@10fps.
 - **STUN** — Google Public STUN (stun.l.google.com:19302) + Cloudflare (stun.cloudflare.com:3478), TURN не используется
 - **ICE restart** — `updatePeerQualities()`: 4 consecutive 'poor' (20s) → `restartPeerConnection(pid)` → `createOfferToPeer(pid)`. 60s cooldown. Не трогает `screenPC`
 - **Индикатор качества** — `peerQualities[pid]` обновляется каждые 5с. Точка 10px с border+glow: зелёный (хорошо), жёлтый (средне), красный (плохо), серый (нет данных/waiting)
@@ -224,7 +228,7 @@ STUN не видит реальный IP клиента. Chrome без прок�
 
 ## История версий (кратко)
 
-- **1.8.2** — Испанский язык (Español). Оптимизация видео/аудио (32k, 960×540). Индикатор качества связи (цветная точка в окне камер). Скример-пасхалка в чате (/скример). Чат-уведомления при трансляции в окне камер. Авто ICE restart при падении качества. Улучшена совместимость с Celeron.
+- **1.9.0** — Аппаратное кодирование H.264 (codec priority), адаптивный битрейт (packet loss → изменение битрейта), режим слабых устройств (640×360, авто для <=4 CPU cores или <=4GB RAM), Telegram webhook вместо polling (экономия ~500 ч/мес на Render). Mobile: H.264 + low-end (240×180 на слабых телефонах). Оптимизация видео/аудио (32k, 960×540). Индикатор качества связи (цветная точка в окне камер). Скример-пасхалка в чате (/скример). Чат-уведомления при трансляции в окне камер. Авто ICE restart при падении качества. Улучшена совместимость с Celeron.
 - **1.8.0 ★ ЭТАЛОН** — Плавающие окна чата и реакций, frameless-окна с кастомным drag, middle-click сброс. Окно Лица: flex-column, object-fit contain, подписи внизу. Реакции на весь экран. Чат: три IPC-канала, main-chat-send/faces-send-chat/forward-chat. EN-перевод (исправлен let→var). Panel: PTT правый клик (mousedown button 2), PTT кнопка видна при micMode === 'ptt'. Сборка: исправлен процесс (полная сборка перед portable). Полное нагрузочное тестирование пройдено.
 - **1.7.1** — Исправлены кнопки панели (onclick вместо DOMContentLoaded), PTT с панели (правая кнопка микрофона), исправлена кодировка PowerShell, уменьшен размер окна (680×520), возвращены ползунки громкости (починена CSS-ошибка), flex-wrap для 5 камер, модалка выбора окна — 3 колонки, авто-восстановление свёрнутых окон через PowerShell AppActivate
 - **1.7.0** — Нативное окно выбора трансляции (Chromium getDisplayMedia, все окна включая свёрнутые), главное окно сворачивается при трансляции, отдельное окно камер участников внизу справа с ползунками громкости, плавающая панель как в главном окне
