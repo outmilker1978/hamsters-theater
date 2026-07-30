@@ -8,7 +8,7 @@ lang.ru = {
   'hero.download': 'Windows (десктоп)',
   'hero.win_btn': 'Скачать',
   'hero.learn': 'Узнать больше',
-  'hero.version': 'Версия 1.7.1 · 77 МБ · Portable',
+  'hero.version': 'Версия 1.9.0 · 99 МБ · Portable',
   'hero.channel': 'Telegram-канал',
   'hero.channel_desc': 'Новости и релизы',
   'hero.channel_btn': 'Подписаться',
@@ -117,7 +117,7 @@ lang.en = {
   'hero.download': 'Windows (desktop)',
   'hero.win_btn': 'Download',
   'hero.learn': 'Learn more',
-  'hero.version': 'Version 1.7.1 · 77 MB · Portable',
+  'hero.version': 'Version 1.9.0 · 99 MB · Portable',
   'hero.channel': 'Telegram channel',
   'hero.channel_desc': 'News & releases',
   'hero.channel_btn': 'Subscribe',
@@ -225,7 +225,7 @@ lang.es = {
   'hero.download': 'Windows (escritorio)',
   'hero.win_btn': 'Descargar',
   'hero.learn': 'M\u00e1s informaci\u00f3n',
-  'hero.version': 'Versi\u00f3n 1.7.1 \u00b7 77 MB \u00b7 Portable',
+  'hero.version': 'Versi\u00f3n 1.9.0 \u00b7 99 MB \u00b7 Portable',
   'hero.channel': 'Canal de Telegram',
   'hero.channel_desc': 'Noticias y lanzamientos',
   'hero.channel_btn': 'Suscribirse',
@@ -328,6 +328,7 @@ lang.es = {
 
 // === Release notes (English) ===
 var releaseNotesEN = {};
+releaseNotesEN['v1.8.2'] = 'TV Hamsters v1.8.2\n\nWhat\'s new\n\n• Spanish language — settings, menus and interface fully translated to Español\n• Screamer easter egg in chat for horror movie nights. Scare your friends at the most intense moment!\n• Connection quality indicator — colored dot in the camera window shows connection status (green=great, yellow=fair, red=poor)\n• Video and audio optimization — screen sharing is more stable on low-end devices, cleaner audio\n• Chat notifications during screen share — now visible right in the participants camera window\n• Improved compatibility with Celeron devices\n\nFixes\n\nNone this release.';
 releaseNotesEN['v1.7.2'] = 'TV Hamsters v1.7.2\n\nWhat\'s new\n\nWard No. Instead of boring "Room code: 1234" now "Ward No. 1234". Because hamsters gather in a ward, not in some "room".\nScenarios in the "About" modal Added a "Things to do" section with real use cases: home cinema, remote mentorship, connecting with those far away.\nDeep-link hamsters:// Registered the hamsters:// protocol. Now you can send friends links like hamsters://join?code=XXXX — the app will open and connect automatically. Handy for a future Telegram bot.\nDonations Two support buttons: Boosty and CloudTips — open in your system browser, not inside the app. We\'d appreciate any support for the project.\n\nFixes\n\nDonation links now open in the system browser (previously opened inside Electron, breaking auth).\nDesktop shortcut prompt now shows for the new version.';
 
 // === Выбор языка ===

@@ -360,7 +360,14 @@ function removePeer(peerId) {
 
 function requestMedia() {
   if (localStream) return Promise.resolve(localStream);
-  return startMedia().then(s => { localStream = s; return s; }).catch(() => { toast(t('toastNoMedia')); return null; });
+  return Promise.race([
+    startMedia(),
+    new Promise(resolve => setTimeout(() => resolve(null), 4000))
+  ]).then(s => {
+    if (s) { localStream = s; return s; }
+    toast(t('toastNoMedia'));
+    return null;
+  });
 }
 $('createRoomBtn').onclick = () => {
   show('');
