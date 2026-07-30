@@ -77,7 +77,10 @@ ipcRenderer.on('panel-update', (e, state) => {
   const c = document.getElementById('btn-cam');
   if (c) { c.className = 'control-btn' + (state.camOn ? ' active' : ''); }
   const pt = document.getElementById('btn-ptt');
-  if (pt) { pt.style.display = (micMode === 'ptt') ? 'flex' : 'none'; }
+  if (pt) {
+    pt.style.display = (micMode === 'ptt') ? 'flex' : 'none';
+    pt.className = 'control-btn ptt' + (state.pttActive ? ' active' : '');
+  }
   const s = document.getElementById('btn-screen');
   if (s) { s.className = 'control-btn' + (state.sharingScreen ? ' active' : ''); }
 });
