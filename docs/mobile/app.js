@@ -241,6 +241,7 @@ function leaveRoom() {
   $('chatInput').value = '';
 }
 
+/* DISABLED - was causing connection regressions
 function setVideoCodecPreference(pc) {
   try {
     var caps = RTCRtpSender.getCapabilities('video');
@@ -266,6 +267,7 @@ function setVideoCodecPreference(pc) {
     }
   } catch(e) { console.log('codecPref err:', e.message); }
 }
+*/
 
 function createPC(peerId) {
   if (peers[peerId]) return peers[peerId].pc;
@@ -327,13 +329,11 @@ function createScreenPC(peerId) {
 
 function createOfferToPeer(peerId) {
   const pc = createPC(peerId);
-  setVideoCodecPreference(pc);
   pc.createOffer().then(o => { pc.setLocalDescription(o); socket.emit('offer', { to: peerId, sdp: o, type: 'video', name: userName || '' }); }).catch(e => log('offer err: ' + e.message));
 }
 
 function handleOffer(data) {
   const p = createPC(data.from);
-  setVideoCodecPreference(p);
   p.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(() => p.createAnswer())
     .then(a => { p.setLocalDescription(a); socket.emit('answer', { to: data.from, sdp: a, type: 'camera' }); })
     .catch(e => log('answer err: ' + e.message));

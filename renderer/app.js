@@ -131,7 +131,8 @@ function isLowEndDevice() {
 }
 let lowEndMode = localStorage.getItem('lowEndMode') === 'true' || isLowEndDevice();
 
-// Set video codec priority: H.264 → VP9 → VP8 → rest
+// Set video codec priority: H.264 → VP9 → VP8 → rest (NOT USED YET - was causing connection regressions)
+/*
 function setVideoCodecPreference(pc) {
   try {
     const caps = RTCRtpSender.getCapabilities('video');
@@ -160,6 +161,7 @@ function setVideoCodecPreference(pc) {
     }
   } catch(e) { log('setCodecPrefs err: ' + e.message); }
 }
+*/
 
 // Monitor per-peer packet loss → adjust bitrate
 function monitorPeerBitrate(peerId) {
@@ -615,7 +617,6 @@ function createOfferToPeer(peerId) {
   if (peer.pc) { peer.pc.close(); }
   peer.pc = createPC(peerId);
   localStream.getTracks().forEach(t => peer.pc.addTrack(t, localStream));
-  setVideoCodecPreference(peer.pc);
   peer.pc.createOffer().then(offer => {
     peer.pc.setLocalDescription(offer);
     socket.emit('offer', { to: peerId, sdp: offer, type: 'camera' });
@@ -643,7 +644,6 @@ function handleOffer(data) {
   if (peer.pc) { peer.pc.close(); }
   peer.pc = createPC(fromId);
   if (localStream) localStream.getTracks().forEach(t => peer.pc.addTrack(t, localStream));
-  setVideoCodecPreference(peer.pc);
   peer.pc.setRemoteDescription(new RTCSessionDescription(data.sdp))
     .then(() => {
       peer.cameraCandidates.forEach(c => {
@@ -896,7 +896,6 @@ function createScreenOffer(peerId, stream) {
   if (peer.screenPC) { peer.screenPC.close(); }
   peer.screenPC = createScreenPC(peerId);
   stream.getTracks().forEach(t => peer.screenPC.addTrack(t, stream));
-  setVideoCodecPreference(peer.screenPC);
   peer.screenPC.createOffer().then(offer => {
     peer.screenPC.setLocalDescription(offer);
     socket.emit('offer', { to: peerId, sdp: offer, type: 'screen' });
@@ -1260,21 +1259,17 @@ window.createDesktopShortcut = async () => {
 window.toggleLowEndMode = () => {
   lowEndMode = !lowEndMode;
   localStorage.setItem('lowEndMode', lowEndMode);
-  const btn = document.getElementById('lowEndModeBtn');
-  if (btn) {
-    btn.classList.toggle('active', lowEndMode);
-    btn.textContent = lowEndMode ? t('settings.low_end_btn_on') : t('settings.low_end_btn_off');
-  }
+  updateLowEndBtn();
   showToast(lowEndMode ? t('settings.low_end_enabled') : t('settings.low_end_disabled'));
 };
-// Init low-end button state
-(function() {
+function updateLowEndBtn() {
   const btn = document.getElementById('lowEndModeBtn');
-  if (btn) {
-    btn.classList.toggle('active', lowEndMode);
-    btn.textContent = lowEndMode ? t('settings.low_end_btn_on') : t('settings.low_end_btn_off');
-  }
-})();
+  if (!btn) return;
+  btn.classList.toggle('active', lowEndMode);
+  btn.textContent = lowEndMode ? t('settings.low_end_btn_on') : t('settings.low_end_btn_off');
+}
+// Init low-end button state (also called after setLang to prevent override)
+setTimeout(() => updateLowEndBtn(), 200);
 
 // Donate links - open in system browser
 el('donateLinkBoosty').onclick = () => {
