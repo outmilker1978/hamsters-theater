@@ -400,12 +400,45 @@ function setupSocketListeners() {
 }
 
 // --- Landing ---
+function connectWithTimeout(url, timeoutMs) {
+  if (socket) {
+    try { socket.off(); socket.close(); } catch(e) {}
+    socket = null;
+  }
+  const s = io(url, { timeout: timeoutMs });
+  let timedOut = false;
+  const restoreButtons = () => {
+    el('createRoomBtn').disabled = false;
+    el('createRoomBtn').textContent = t('landing.create_room') || '\u0421\u043E\u0437\u0434\u0430\u0442\u044C \u043A\u043E\u043C\u043D\u0430\u0442\u0443';
+    el('joinRoomBtn').disabled = false;
+  };
+  setTimeout(() => {
+    if (s.connected || timedOut) return;
+    timedOut = true;
+    showError(t('error.connection_timeout') || '\u041D\u0435\u0442 \u0441\u0432\u044F\u0437\u0438 \u0441 \u0441\u0435\u0440\u0432\u0435\u0440\u043E\u043C. \u041F\u043E\u043F\u0440\u043E\u0431\u0443\u0439\u0442\u0435 \u043F\u043E\u0437\u0436\u0435 \u0438\u043B\u0438 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439\u0442\u0435 \u043B\u043E\u043A\u0430\u043B\u044C\u043D\u044B\u0439 \u0440\u0435\u0436\u0438\u043C.');
+    restoreButtons();
+  }, timeoutMs);
+  s.on('connect_error', (err) => {
+    if (timedOut) return;
+    timedOut = true;
+    showError(t('error.connection_timeout') || '\u041D\u0435\u0442 \u0441\u0432\u044F\u0437\u0438 \u0441 \u0441\u0435\u0440\u0432\u0435\u0440\u043E\u043C: ' + err.message);
+    restoreButtons();
+  });
+  return s;
+}
+
 el('createRoomBtn').onclick = () => {
   showError('');
   isHost = true;
-  socket = io(getServerUrl());
+  el('createRoomBtn').disabled = true;
+  el('createRoomBtn').textContent = t('landing.connecting') || '\u0421\u043E\u0435\u0434\u0438\u043D\u0435\u043D\u0438\u0435...';
+  socket = connectWithTimeout(getServerUrl(), 10000);
   setupSocketListeners();
-  socket.on('connect', () => { log('Connected'); socket.emit('create-room'); });
+  socket.on('connect', () => {
+    el('createRoomBtn').disabled = false;
+    el('createRoomBtn').textContent = t('landing.create_room') || '\u0421\u043E\u0437\u0434\u0430\u0442\u044C \u043A\u043E\u043C\u043D\u0430\u0442\u0443';
+    log('Connected'); socket.emit('create-room');
+  });
   socket.on('room-created', async (id) => {
     roomId = id;
     mySocketId = socket.id;
@@ -433,9 +466,15 @@ el('joinRoomBtn').onclick = () => {
   if (!code) { showError(t('error.enter_code')); return; }
   isHost = false;
   roomId = code;
-  socket = io(getServerUrl());
+  el('createRoomBtn').disabled = true;
+  el('joinRoomBtn').disabled = true;
+  socket = connectWithTimeout(getServerUrl(), 10000);
   setupSocketListeners();
-  socket.on('connect', () => { log('Connected'); socket.emit('join-room', code); });
+  socket.on('connect', () => {
+    el('createRoomBtn').disabled = false;
+    el('joinRoomBtn').disabled = false;
+    log('Connected'); socket.emit('join-room', code);
+  });
   socket.on('joined', async () => {
     mySocketId = socket.id;
     showRoom();
