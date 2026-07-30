@@ -415,7 +415,7 @@ function connectWithTimeout(url, timeoutMs) {
   setTimeout(() => {
     if (s.connected || timedOut) return;
     timedOut = true;
-    showError(t('error.connection_timeout') || '\u041D\u0435\u0442 \u0441\u0432\u044F\u0437\u0438 \u0441 \u0441\u0435\u0440\u0432\u0435\u0440\u043E\u043C. \u041F\u043E\u043F\u0440\u043E\u0431\u0443\u0439\u0442\u0435 \u043F\u043E\u0437\u0436\u0435 \u0438\u043B\u0438 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439\u0442\u0435 \u043B\u043E\u043A\u0430\u043B\u044C\u043D\u044B\u0439 \u0440\u0435\u0436\u0438\u043C.');
+    showError(t('error.connection_timeout') || '\u041D\u0435\u0442 \u0441\u0432\u044F\u0437\u0438 \u0441 \u0441\u0435\u0440\u0432\u0435\u0440\u043E\u043C. \u0421\u0435\u0440\u0432\u0435\u0440 \u043C\u043E\u0436\u0435\u0442 \u043F\u0440\u043E\u0441\u044B\u043F\u0430\u0442\u044C\u0441\u044F \u0434\u043E 1 \u043C\u0438\u043D\u0443\u0442\u044B \u043F\u043E\u0441\u043B\u0435 \u043F\u0435\u0440\u0432\u043E\u0433\u043E \u0437\u0430\u043F\u0440\u043E\u0441\u0430. \u041F\u043E\u043F\u0440\u043E\u0431\u0443\u0439\u0442\u0435 \u0435\u0449\u0451 \u0440\u0430\u0437 \u0438\u043B\u0438 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439\u0442\u0435 \u043B\u043E\u043A\u0430\u043B\u044C\u043D\u044B\u0439 \u0440\u0435\u0436\u0438\u043C.');
     restoreButtons();
   }, timeoutMs);
   s.on('connect_error', (err) => {
@@ -432,7 +432,7 @@ el('createRoomBtn').onclick = () => {
   isHost = true;
   el('createRoomBtn').disabled = true;
   el('createRoomBtn').textContent = t('landing.connecting') || '\u0421\u043E\u0435\u0434\u0438\u043D\u0435\u043D\u0438\u0435...';
-  socket = connectWithTimeout(getServerUrl(), 10000);
+  socket = connectWithTimeout(getServerUrl(), 35000);
   setupSocketListeners();
   socket.on('connect', () => {
     el('createRoomBtn').disabled = false;
@@ -468,7 +468,7 @@ el('joinRoomBtn').onclick = () => {
   roomId = code;
   el('createRoomBtn').disabled = true;
   el('joinRoomBtn').disabled = true;
-  socket = connectWithTimeout(getServerUrl(), 10000);
+  socket = connectWithTimeout(getServerUrl(), 35000);
   setupSocketListeners();
   socket.on('connect', () => {
     el('createRoomBtn').disabled = false;

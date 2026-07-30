@@ -38,7 +38,7 @@ const LOCALES = {
     'error.room_not_found': 'Комната не найдена',
     'error.room_full': 'Комната заполнена (макс. 5)',
     'error.enter_code': 'Введите код комнаты',
-    'error.connection_timeout': 'Нет связи с сервером. Попробуйте позже или используйте локальный режим.',
+    'error.connection_timeout': 'Нет связи с сервером. Сервер может просыпаться до 1 минуты после первого запроса. Попробуйте ещё раз или используйте локальный режим.',
 
     'toast.copied': 'Код скопирован в буфер обмена',
     'help.about': 'О программе',
@@ -157,7 +157,7 @@ const LOCALES = {
     'error.room_not_found': 'Room not found',
     'error.room_full': 'Room is full (max 5)',
     'error.enter_code': 'Enter room code',
-    'error.connection_timeout': 'Cannot reach server. Try again later or use local mode.',
+    'error.connection_timeout': 'Cannot reach server. The server may take up to 1 minute to wake up after first request. Try again or use local mode.',
 
     'toast.copied': 'Code copied to clipboard',
     'help.about': 'About',
@@ -278,7 +278,7 @@ const LOCALES = {
     'error.room_not_found': 'Sala no encontrada',
     'error.room_full': 'Sala llena (máx. 5)',
     'error.enter_code': 'Ingrese el código de sala',
-    'error.connection_timeout': 'No se puede conectar al servidor. Intente más tarde o use el modo local.',
+    'error.connection_timeout': 'No se puede conectar al servidor. El servidor puede tardar hasta 1 minuto en despertarse después de la primera solicitud. Intente de nuevo o use el modo local.',
     'toast.copied': 'Código copiado al portapapeles',
     'help.about': 'Acerca de',
     'help.release_notes': 'Historial de versiones',
