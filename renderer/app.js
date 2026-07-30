@@ -1016,7 +1016,7 @@ function updateMicButtonUI() {
     el('toggleMicBtn').innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg><span class="ptt-badge">PTT</span>';
   } else {
     el('toggleMicBtn').innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>';
-    el('toggleMicBtn').className = 'control-btn' + (micOn ? ' active' : ' active off');
+    el('toggleMicBtn').className = 'control-btn' + (micOn ? ' active' : ' off');
   }
 }
 
