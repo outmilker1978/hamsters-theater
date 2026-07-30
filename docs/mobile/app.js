@@ -163,6 +163,9 @@ function connectAndDo(action) {
       $('toggleCamsBtn').classList.remove('off');
       $('toggleCamsBtn').classList.remove('screen-only');
       toast(t('toastScreenStarted'));
+      if (!$('room').classList.contains('fullscreen')) {
+        $('fullscreenBtn').click();
+      }
     }
     if (d.type === 'request-offer') { if (localStream) createOfferToPeer(d.from); }
     if (d.type === 'screen-stopped') {

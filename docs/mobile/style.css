@@ -286,14 +286,17 @@ body {
   width: 100%;
   background: #000;
   border-radius: 10px;
-  overflow: hidden;
+  overflow: auto;
   position: relative;
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 #screenVideo {
   width: 100%;
   display: block;
   background: #000;
   aspect-ratio: 16/9;
+  touch-action: none;
 }
 .screen-only { display: none !important; }
 
@@ -306,7 +309,7 @@ body {
 #faces.screen-mode #screenContainer {
   flex: 1;
   width: 100%;
-  max-height: 60vh;
+  max-height: none;
   display: block;
   border-radius: 8px;
   order: 0;
