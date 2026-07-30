@@ -829,7 +829,7 @@ async function startShareWithSource(sourceId) {
   await ipcRenderer.invoke('set-screen-source', sourceId);
   let stream;
   try {
-    const screenRes = lowEndMode ? { width: { max: 640 }, height: { max: 360 }, frameRate: { max: 10 } } : { width: { max: 960 }, height: { max: 540 }, frameRate: { max: 15 } };
+    const screenRes = lowEndMode ? { width: { max: 640 }, height: { max: 360 }, frameRate: { max: 10 } } : { width: { max: 1920 }, height: { max: 1080 }, frameRate: { max: 30 } };
     stream = await navigator.mediaDevices.getDisplayMedia({ video: screenRes, audio: true });
   } catch (e) {
     log('Screen share error:', e.message);
